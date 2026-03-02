@@ -1,58 +1,186 @@
-# Agent Operating Manual
+# Agent Operating Manual (Low-Oversight)
+
+## Required Reading
+
+**Before making any changes, agents MUST read:**
+
+1. [docs/ARCHITECTURE.md](./ARCHITECTURE.md) - File structure and component boundaries
+2. [docs/PROJECT.md](./PROJECT.md) - Performance budgets and constraints
+3. [docs/WORKFLOWS.md](./WORKFLOWS.md) - How to add features, routes, components
+4. `specs/<task>.md` - The assigned feature specification
 
 ## Mission
 
-Keep the repository stable, readable, and scalable while shipping incremental value.
+Keep the repository stable, readable, and scalable while shipping incremental value with minimal human oversight.
 
-## Branching model
+## Branching + PR Rules
 
-- Branch from `main`.
-- Use branch names: `feat/<scope>`, `fix/<scope>`, `chore/<scope>`, `docs/<scope>`, `test/<scope>`.
-- Keep branches short-lived and rebased regularly.
+### Branching
 
-## Commit message standard
+- **Work must be done on a branch, never directly on main**
+- Branch naming: `feat/<scope>`, `fix/<scope>`, `chore/<scope>`, `docs/<scope>`, `test/<scope>`
+- Keep branches short-lived and rebased regularly
+- Example: `feat/skip-intro-toggle`, `fix/mobile-nav-focus`
 
-Use Conventional Commits:
+### Pull Requests
 
-- `feat: ...`
-- `fix: ...`
-- `chore: ...`
-- `docs: ...`
-- `test: ...`
-- `refactor: ...`
+Every change must be delivered as a PR with:
 
-Examples:
+1. **Title**: Conventional commit style
+   - `feat: add skip intro button`
+   - `fix: correct mobile focus trap`
+   - `chore: update playwright config`
+   - `docs: clarify 3D asset workflow`
+   - `test: add e2e for homepage`
 
-- `feat(home): add hero skeleton`
-- `fix(nav): correct mobile focus trap`
+2. **PR Description MUST include**:
+   - Summary of changes (what and why)
+   - **Risk label**: `🟢 low` | `🟡 medium` | `🔴 high`
+   - Validation output (screenshot/paste of `npm run validate` passing)
+   - Preview link (Vercel URL once available)
+   - Screenshots/video if UI changed
+   - Reference to spec if applicable
 
-## File and boundary rules
+3. **Use the PR template**: [.github/pull_request_template.md](../.github/pull_request_template.md)
 
-- `src/app`: routing and page-level composition only.
-- `src/components/ui`: reusable, presentation-only components.
-- `src/components/features`: feature/domain components.
-- `src/lib`: pure utilities, config, constants.
-- `src/content`: source-of-truth content as project grows.
-- `src/types`: shared type contracts.
+## Definition of Done
 
-## Naming conventions
+A task is ONLY "done" if:
 
-- Components: PascalCase file names for exported components.
-- Hooks (future): `useX.ts`.
-- Utilities: lowercase file names with clear intent.
-- Tests: colocate as `*.test.ts(x)` near target module.
+1. ✅ `npm run validate` passes locally (or `just ci`)
+2. ✅ PR is opened with complete description + evidence
+3. ✅ All acceptance criteria from spec are met
+4. ✅ Tests cover new behavior
+5. ✅ No performance budgets violated (see [PROJECT.md](./PROJECT.md))
+6. ✅ Accessibility requirements met (keyboard nav, ARIA, contrast)
 
-## PR checklist for agents
+**The single source of truth for "done":**
 
-- [ ] Scope is minimal and aligned to issue/task.
-- [ ] Imports are sorted and paths use aliases where appropriate.
-- [ ] No dead code or commented blocks remain.
-- [ ] Checks pass: lint, typecheck, unit tests, build.
-- [ ] Docs/ADR updated when introducing new conventions or architecture shifts.
+```bash
+npm run validate
+```
 
-## Guardrails to prevent drift
+This command runs: lint → typecheck → test → build → e2e
 
-- Prefer existing patterns over introducing new styles.
-- Avoid adding dependencies unless there is measured value.
-- Document any non-obvious decision in `docs/adr`.
-- Preserve accessibility and performance baselines defined in `PROJECT.md`.
+## Failure Protocol (Stop Rules)
+
+**Agents must STOP and open a WIP PR with notes if:**
+
+1. ❌ `npm run validate` fails after **3 fix attempts**
+   - Document what was tried, where stuck
+   - Mark PR as draft, request human review
+
+2. ❌ Required secret/credential is missing
+   - Cannot proceed without API keys, etc.
+   - Document what's needed in PR notes
+
+3. ❌ Spec ambiguity prevents progress
+   - Unclear requirements or conflicting constraints
+   - Open draft PR with questions highlighted
+
+4. ❌ Performance budget clearly broken and cannot be fixed quickly
+   - Bundle size exceeded, LCP regression, etc.
+   - Document the issue, suggest alternatives
+
+5. ❌ Test failures unrelated to your changes
+   - Flaky tests, environment issues
+   - Note the issue, don't attempt to fix unrelated code
+
+**When in doubt, stop early and ask for clarification.**
+
+## Editing Discipline
+
+### Keep PRs Small
+
+- ✅ One feature/fix per PR
+- ✅ Aim for < 500 lines changed (excluding generated code)
+- ✅ Split large features across multiple PRs using specs
+
+### Avoid Scope Creep
+
+- ❌ Do not introduce massive refactors unless spec explicitly requests it
+- ❌ Do not "improve" unrelated code while working on a task
+- ❌ Do not add "nice to have" features not in the spec
+
+### Dependencies
+
+- ❌ **Do not introduce new libraries without:**
+  1. Documenting in an ADR (`docs/adr/XXXX-*.md`)
+  2. Updating [PROJECT.md](./PROJECT.md) "Forbidden Without ADR" section
+  3. Justifying bundle size impact in PR description
+- ✅ Prefer existing dependencies when possible
+- ✅ Always check if native/existing solution works first
+
+### Code Quality
+
+- ✅ Imports must be sorted (enforced by ESLint)
+- ✅ Use path aliases from `tsconfig.json` (`@/components`, `@/lib`, etc.)
+- ✅ No dead code or commented-out blocks
+- ✅ No console.log statements (use proper logging if needed)
+- ✅ Follow existing code style in the file/feature
+
+## Testing Requirements
+
+**If you change behavior, add or update a test:**
+
+### Unit/Integration Tests (Vitest + React Testing Library)
+
+- Component behavior changes → add component tests
+- Utility functions → add unit tests
+- Colocate tests: `MyComponent.test.tsx` next to `MyComponent.tsx`
+
+### E2E Tests (Playwright)
+
+- New user-facing flows → add e2e smoke test
+- Critical paths (auth, checkout, core UX) → must have e2e coverage
+- Tests go in `e2e/**/*.spec.ts`
+
+### Accessibility Tests
+
+- New interactive components → test keyboard navigation
+- Run axe-core checks in Playwright where applicable
+- Manual screen reader testing documented in PR
+
+## File and Boundary Rules
+
+Follow [ARCHITECTURE.md](./ARCHITECTURE.md):
+
+- `src/app/**` - Routing and page-level composition only (thin pages)
+- `src/components/ui/**` - Presentational primitives only (no domain logic)
+- `src/components/features/**` - Domain-specific components (3D scene, terminal, etc.)
+- `src/lib/**` - Framework-agnostic utilities, config, constants
+- `src/content/**` - Content source of truth
+- `src/types/**` - Shared TypeScript type definitions
+
+## Naming Conventions
+
+- **Components**: PascalCase file names (`Button.tsx`, `SceneSkeleton.tsx`)
+- **Hooks**: `useX.ts` (e.g., `useSceneState.ts`)
+- **Utilities**: lowercase with clear intent (`cn.ts`, `format-date.ts`)
+- **Tests**: Colocate as `*.test.ts(x)` near target module
+
+## Performance & Accessibility Guardrails
+
+**Always respect baselines from [PROJECT.md](./PROJECT.md):**
+
+- ✅ LCP < 2.5s (p75)
+- ✅ CLS < 0.1 (p75)
+- ✅ Initial JS bundle ≤ 200 KB (gzipped)
+- ✅ 3D assets ≤ 2 MB per model
+- ✅ Keyboard navigation works
+- ✅ Color contrast meets WCAG AA (4.5:1)
+- ✅ Respects `prefers-reduced-motion`
+
+**If your change violates a budget, it's not done.**
+
+## Guardrails to Prevent Drift
+
+1. **Prefer existing patterns** over introducing new styles
+2. **Avoid architecture churn** - keep feature work incremental
+3. **Document decisions** - add ADR for non-obvious choices
+4. **Ask before refactoring** - only refactor if spec requires it
+5. **Preserve baselines** - accessibility, performance, bundle size
+
+---
+
+**When in doubt: read the spec, check the docs, run `npm run validate`, open a draft PR with questions.**

@@ -36,6 +36,27 @@ A high-performance portfolio showcasing 3D interactive experiences with cinemati
 - **Model streaming**: Use Suspense + progressive loading with LOD fallbacks
 - **Texture loading**: Lazy + basis/ktx2 compression for supported browsers
 
+## UX Non-Negotiables
+
+These requirements apply to ALL features. Violating any of these makes a PR incomplete:
+
+1. **Intro must be skippable**
+   - "Skip Intro" button visible and accessible
+   - Keyboard shortcut available (e.g., Escape key)
+   - Preference remembered in localStorage
+
+2. **Must respect `prefers-reduced-motion`**
+   - Detect system preference
+   - Provide manual toggle in settings
+   - Fallback to static/simplified animations when enabled
+   - No parallax, autoplay videos, or spinning elements in reduced motion mode
+
+3. **Must have fallback for low-power devices**
+   - Detect GPU capability (via WebGL extensions or feature detection)
+   - Static hero image or simplified route for unsupported browsers
+   - Graceful degradation message if WebGL 2 unavailable
+   - No hard errors or blank screens
+
 ## Accessibility Requirements
 
 - **Keyboard navigation**: Full support, visible focus indicators
@@ -73,6 +94,22 @@ A high-performance portfolio showcasing 3D interactive experiences with cinemati
 - Heavyweight UI frameworks (MUI, Chakra)
 - Unoptimized image formats (always use Next.js Image + WebP/AVIF)
 
+## 3D Budgets (Detailed)
+
+### Final Production Targets
+
+- **Total scene GLB**: ≤ 10 MB (stretch goal: ≤ 5 MB)
+- **Car model triangle count**: ≤ 300k (stretch goal: ≤ 200k)
+- **Entire scene triangle count**: ≤ 500k triangles
+- **Postprocessing**: Avoid heavy effects by default; enable only if 60fps stable
+
+### Optimization Requirements
+
+- Use **Draco compression** for GLB files
+- Use **KTX2 textures** with Basis Universal compression for supported browsers
+- Implement **LOD (Level of Detail)** for models viewed at distance
+- Lazy-load non-critical 3D assets with React Suspense
+
 ## Development Principles
 
 1. **Ship incrementally**: UI shell → placeholder 3D → real assets
@@ -80,6 +117,24 @@ A high-performance portfolio showcasing 3D interactive experiences with cinemati
 3. **Optimize eagerly**: Bundle analysis, tree-shaking, code splitting
 4. **Test accessibly**: Automated a11y checks in CI
 5. **Document decisions**: ADR for any architectural change
+
+## Build Discipline
+
+### Dependency Management
+
+- **No new dependencies without:**
+  1. Clear justification in PR description
+  2. ADR entry for long-term impact decisions (`docs/adr/`)
+  3. Bundle size impact analysis (use `npx bundlephobia <package>`)
+- **Avoid architecture churn**: Keep feature work incremental, no large refactors
+- **Prefer native/existing solutions** before adding libraries
+
+### Code Quality Standards
+
+- **No dead code or commented-out blocks**
+- **No console.log in production** (use proper logging if needed)
+- **Follow existing patterns** - don't introduce new styles without discussion
+- **Keep PRs focused** - one feature/fix per PR, < 500 lines changed
 
 ## Monitoring & Validation
 
