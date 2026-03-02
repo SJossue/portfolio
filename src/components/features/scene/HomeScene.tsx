@@ -55,14 +55,18 @@ export function HomeScene() {
           className="absolute inset-0 flex gap-4 bg-black/50 p-4 backdrop-blur-sm"
           data-testid="garage-shell"
         >
-          {/* Left panel — terminal area */}
-          <div className="flex flex-1 rounded-xl border border-white/20 bg-white/10 p-4 backdrop-blur-md">
-            <span className="text-sm text-white/60">Terminal</span>
-          </div>
-          {/* Right panel — project modules */}
-          <div className="flex flex-1 rounded-xl border border-white/20 bg-white/10 p-4 backdrop-blur-md">
-            <span className="text-sm text-white/60">Projects</span>
-          </div>
+          <section
+            aria-label="Terminal"
+            className="flex flex-1 rounded-xl border border-white/20 bg-white/10 p-4 backdrop-blur-md"
+          >
+            <h2 className="text-sm text-white/60">Terminal</h2>
+          </section>
+          <section
+            aria-label="Projects"
+            className="flex flex-1 rounded-xl border border-white/20 bg-white/10 p-4 backdrop-blur-md"
+          >
+            <h2 className="text-sm text-white/60">Projects</h2>
+          </section>
         </div>
       )}
     </div>
