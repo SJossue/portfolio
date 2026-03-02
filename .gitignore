@@ -9,6 +9,9 @@ next-env.d.ts
 # TypeScript build cache
 *.tsbuildinfo
 
+# sprint runner logs
+docs/worklog/
+
 # tests
 coverage/
 playwright-report/
