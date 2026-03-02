@@ -52,6 +52,7 @@ export function HomeScene() {
       {introState === 'idle' && (
         <div className="absolute inset-0 flex items-center justify-center">
           <button
+            data-testid="air-out"
             onClick={handleAirOut}
             className="rounded-lg bg-white/20 px-6 py-3 text-white backdrop-blur-sm transition-colors hover:bg-white/30"
             aria-label="AIR OUT"
@@ -64,6 +65,7 @@ export function HomeScene() {
       {introState === 'idle' && (
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 transform">
           <button
+            data-testid="skip-intro"
             onClick={handleSkipIntro}
             className="rounded-lg bg-black/20 px-4 py-2 text-sm text-white backdrop-blur-sm transition-colors hover:bg-black/30"
             aria-label="Skip Intro"
