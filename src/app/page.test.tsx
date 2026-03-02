@@ -8,7 +8,27 @@ describe('HomePage', () => {
 
     expect(
       screen.getByRole('heading', {
-        name: /ship fast, accessible experiences with a structure designed for multiple coding agents/i,
+        name: /jossue/i,
+      }),
+    ).toBeInTheDocument();
+  });
+
+  it('renders the portfolio description', () => {
+    render(<HomePage />);
+
+    expect(
+      screen.getByText(
+        /a personal portfolio and engineering showcase built with next\.js, tailwind, and typescript\./i,
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it('renders architecture checks section', () => {
+    render(<HomePage />);
+
+    expect(
+      screen.getByRole('heading', {
+        name: /architecture checks/i,
       }),
     ).toBeInTheDocument();
   });

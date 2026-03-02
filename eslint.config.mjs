@@ -1,42 +1,23 @@
-import nextCoreWebVitals from 'eslint-config-next/core-web-vitals';
-import nextTypescript from 'eslint-config-next/typescript';
-import importPlugin from 'eslint-plugin-import';
-import prettierPlugin from 'eslint-plugin-prettier';
-import simpleImportSort from 'eslint-plugin-simple-import-sort';
+/** @type {import('eslint').Linter.Config} */
+import nextPlugin from '@next/eslint-plugin-next';
 
-const eslintConfig = [
-  ...nextCoreWebVitals,
-  ...nextTypescript,
+export default [
+  {
+    ignores: ['.next/**', 'node_modules/**', 'dist/**', 'coverage/**'],
+  },
   {
     plugins: {
-      import: importPlugin,
-      prettier: prettierPlugin,
-      'simple-import-sort': simpleImportSort,
+      '@next/next': nextPlugin,
     },
     rules: {
-      'simple-import-sort/imports': 'error',
-      'simple-import-sort/exports': 'error',
-      'import/first': 'error',
-      'import/newline-after-import': 'error',
-      'import/no-duplicates': 'error',
-      'prettier/prettier': 'error',
+      ...nextPlugin.configs.recommended.rules,
+      ...nextPlugin.configs['core-web-vitals'].rules,
+      'react/react-in-jsx-scope': 'off',
     },
-    settings: {
-      'import/resolver': {
-        typescript: true,
-        node: true,
+    languageOptions: {
+      globals: {
+        React: 'writable',
       },
     },
   },
-  {
-    ignores: [
-      '.next/**',
-      'node_modules/**',
-      'coverage/**',
-      'playwright-report/**',
-      'test-results/**',
-    ],
-  },
 ];
-
-export default eslintConfig;

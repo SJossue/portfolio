@@ -1,37 +1,24 @@
-import { Container } from '@/components/ui/container';
-
-export default function HomePage() {
+export default function Home() {
   return (
-    <main className="py-16 lg:py-24">
-      <Container>
+    <main className="flex min-h-screen flex-col items-center justify-center p-8 font-[family-name:var(--font-geist-sans)] sm:p-20">
+      <div className="w-full max-w-3xl space-y-8">
         <header className="space-y-4">
-          <p className="text-sm font-medium uppercase tracking-[0.2em] text-accent">
-            Portfolio Foundation
-          </p>
-          <h1 className="max-w-3xl text-4xl font-semibold tracking-tight sm:text-5xl">
-            Ship fast, accessible experiences with a structure designed for multiple coding agents.
-          </h1>
-          <p className="max-w-2xl text-lg text-slate-700">
-            This starter intentionally focuses on architecture, quality gates, and contribution
-            workflows so the portfolio can evolve safely.
+          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">Jossue</h1>
+          <p className="text-lg text-neutral-600 dark:text-neutral-400">
+            A personal portfolio and engineering showcase built with Next.js, Tailwind, and
+            TypeScript.
           </p>
         </header>
 
-        <section
-          aria-labelledby="baseline"
-          className="mt-12 rounded-2xl border border-slate-200 bg-white p-6"
-        >
-          <h2 id="baseline" className="text-xl font-semibold">
-            Baseline included
-          </h2>
-          <ul className="mt-4 list-disc space-y-2 pl-5 text-slate-800">
-            <li>Strict TypeScript + Next.js App Router</li>
-            <li>ESLint, Prettier, import sorting, and Husky hooks</li>
-            <li>Vitest unit testing + Playwright e2e scaffolding</li>
-            <li>CI pipeline for lint, typecheck, tests, and build</li>
+        <section className="border-t border-neutral-200 pt-8 dark:border-neutral-800">
+          <h2 className="mb-4 text-2xl font-semibold">Architecture Checks</h2>
+          <ul className="list-inside list-disc space-y-2 text-neutral-600 dark:text-neutral-400">
+            <li>App Router (`src/app`) routing enabled</li>
+            <li>Tailwind CSS successfully configured</li>
+            <li>Ready for modular `src/components/features`</li>
           </ul>
         </section>
-      </Container>
+      </div>
     </main>
   );
 }
