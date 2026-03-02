@@ -1,3 +1,5 @@
+import { HomeScene } from '@/components/features/scene/HomeScene';
+
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-8 font-[family-name:var(--font-geist-sans)] sm:p-20">
@@ -18,6 +20,10 @@ export default function Home() {
             <li>Ready for modular `src/components/features`</li>
           </ul>
         </section>
+
+        <div className="mt-8">
+          <HomeScene />
+        </div>
       </div>
     </main>
   );

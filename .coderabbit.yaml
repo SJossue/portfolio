@@ -1,0 +1,104 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+
+# CodeRabbit configuration for portfolio project
+# Aligned with CLAUDE.md, ARCHITECTURE.md, and PROJECT.md requirements
+
+reviews:
+  # Automatic reviews on PRs
+  auto_review:
+    enabled: true
+    drafts: false
+
+  # Review metadata and summaries
+  high_level_summary: true
+  review_status: true
+  poem: false
+
+  # Request changes workflow for stricter PR enforcement
+  request_changes_workflow: true
+
+  # Focus areas aligned with project standards
+  profile: "chill"
+
+  # Custom instructions for review focus
+  instructions: |
+    When reviewing, enforce these project-specific rules from CLAUDE.md and ARCHITECTURE.md:
+
+    **Architecture Boundaries:**
+    - `src/components/ui/` must contain ONLY presentational primitives with no domain logic
+    - `src/components/features/` is for domain-specific components
+    - UI components cannot import from features (one-way dependency)
+    - Route components in `src/app/` should be thin, delegating to features
+    - Server Components are preferred; `"use client"` requires justification
+
+    **Code Quality Gates:**
+    - All PRs must pass: lint (0 warnings), typecheck, test, build, e2e
+    - Use Conventional Commits format
+    - Imports must be sorted and use path aliases from tsconfig.json
+    - Tests required for behavior changes
+
+    **Performance & Accessibility:**
+    - LCP target under 2.0s, CLS under 0.1
+    - Keep JavaScript bundles lean (check bundle size impact)
+    - Semantic HTML, keyboard support, visible focus states required
+    - Progressive enhancement and reduced-motion support
+
+    **Dependencies:**
+    - New dependencies require justification
+    - Substantial architectural decisions require ADR in docs/adr/
+
+    **3D Assets:**
+    - Never commit raw unoptimized models > 10MB
+    - Prefer GLB format with Draco compression
+    - Assets go in public/models/
+
+    **Anti-patterns to flag:**
+    - Business logic in ui/ components
+    - Large page.tsx files with complex logic
+    - Client components without clear interactivity need
+    - Dead code or commented-out blocks
+    - Broad refactors without explicit request
+    - Hardcoded content in nested components
+
+# Ignore patterns for generated/vendor files
+path_filters:
+  exclude:
+    - "node_modules/**"
+    - ".next/**"
+    - "dist/**"
+    - "build/**"
+    - "coverage/**"
+    - "**/*.snap"
+    - "public/models/raw/**"  # raw unoptimized 3D assets
+    - ".husky/**"
+    - "*.tsbuildinfo"
+    - "next-env.d.ts"
+
+# Language-specific settings
+language: "en-US"
+
+# Reduce noise in reviews
+chat:
+  auto_reply: true
+
+# Early access features (optional)
+early_access: false
+
+# Enable specific tools for deeper analysis
+tools:
+  # AST-based analysis for architecture violations
+  ast-grep:
+    enabled: true
+    essential_rules: true
+
+  # Ruff for any Python tooling (if added later)
+  ruff:
+    enabled: false
+
+# Knowledge base hints for common patterns
+knowledge_base:
+  - "Prefer Server Components unless interactivity strictly requires client-side hooks"
+  - "All feature components should have collocated tests"
+  - "Path aliases (@/) are required instead of relative imports"
+  - "Accessibility is not optional - semantic HTML and keyboard support are baseline"
+  - "Bundle size matters - justify every dependency addition"

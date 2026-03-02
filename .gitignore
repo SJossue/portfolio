@@ -22,7 +22,13 @@ test-results/
 .env*
 !.env.example
 
+# build cache
+*.tsbuildinfo
+
 # editor
 .vscode/
 .idea/
 .aider*
+
+# Next.js generated types
+next-env.d.ts
