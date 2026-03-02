@@ -51,16 +51,17 @@ export function HomeScene() {
       )}
 
       {(introState === 'done' || introState === 'skipped') && (
-        <div className="absolute inset-0 bg-black/50 backdrop-blur-sm">
-          {/* Garage UI shell overlay */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div
-              className="rounded-xl border border-white/20 bg-white/10 p-8 backdrop-blur-md"
-              data-testid="garage-shell"
-            >
-              <h2 className="mb-4 text-2xl font-bold text-white">Garage UI Shell</h2>
-              <p className="text-white/80">This is the garage interface that appears after intro</p>
-            </div>
+        <div
+          className="absolute inset-0 flex gap-4 bg-black/50 p-4 backdrop-blur-sm"
+          data-testid="garage-shell"
+        >
+          {/* Left panel — terminal area */}
+          <div className="flex flex-1 rounded-xl border border-white/20 bg-white/10 p-4 backdrop-blur-md">
+            <span className="text-sm text-white/60">Terminal</span>
+          </div>
+          {/* Right panel — project modules */}
+          <div className="flex flex-1 rounded-xl border border-white/20 bg-white/10 p-4 backdrop-blur-md">
+            <span className="text-sm text-white/60">Projects</span>
           </div>
         </div>
       )}
