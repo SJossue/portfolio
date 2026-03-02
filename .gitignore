@@ -4,6 +4,10 @@ node_modules/
 # next
 .next/
 out/
+next-env.d.ts
+
+# TypeScript build cache
+*.tsbuildinfo
 
 # tests
 coverage/
