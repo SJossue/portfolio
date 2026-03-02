@@ -1,4 +1,3 @@
-specs/home-integrate-scene.md
 specs/add-intro-controls.md
 specs/reduced-motion-support.md
 specs/garage-shell-overlay.md

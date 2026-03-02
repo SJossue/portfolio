@@ -139,7 +139,7 @@ fi
 
 # Preflight: verify Aider can reach the LLM
 echo "Preflight: testing Aider → LLM connectivity..."
-PREFLIGHT_OUT="$(aider --no-git --yes --no-show-model-warnings --message "Say 'ok' and nothing else." 2>&1)"
+PREFLIGHT_OUT="$(aider --no-git --yes --no-stream --no-show-model-warnings --message "Say 'ok' and nothing else." 2>&1)"
 if ! echo "$PREFLIGHT_OUT" | grep -qi "ok"; then
   echo "ERROR: Aider preflight failed. LLM did not respond with 'ok'."
   echo "Output was:"
@@ -255,7 +255,7 @@ EOF
 
   log "--- Aider start (timeout: ${TASK_TIMEOUT_MIN}m) ---"
   set +e
-  timeout "${TASK_TIMEOUT_MIN}m" aider --yes --no-show-model-warnings --message "$AIDER_PROMPT" 2>&1 | tee -a "$LOG_FILE"
+  timeout "${TASK_TIMEOUT_MIN}m" aider --yes --no-stream --no-show-model-warnings --message "$AIDER_PROMPT" 2>&1 | tee -a "$LOG_FILE"
   AIDER_EXIT=${PIPESTATUS[0]}
   set -e
 
@@ -317,24 +317,50 @@ EOF
     log "VALIDATE: PASS"
     heartbeat "$SPEC" "success"
 
-    # Push branch
-    git push -u origin "$BRANCH" 2>&1 | tee -a "$LOG_FILE"
+    # --- Commit task results (must create a commit for PRs) ---
+    if ! git diff --quiet || [[ -n "$(git status --porcelain)" ]]; then
+      git add -A
+      if ! git commit --no-verify -m "feat: ${SPEC_BASE}" 2>&1 | tee -a "$LOG_FILE"; then
+        log "ERROR: commit failed for $SPEC; dumping status"
+        git status --porcelain 2>&1 | tee -a "$LOG_FILE"
+        git diff --stat 2>&1 | tee -a "$LOG_FILE"
+        heartbeat "$SPEC" "blocked"
 
-    # Optionally open PR
-    if [[ "$OPEN_PR" == true ]]; then
-      PR_TITLE="feat: ${SPEC_BASE}"
-      PR_BODY=$(
-        cat <<EOF
+        {
+          echo ""
+          echo "## Commit failed: $SPEC"
+          echo "- Branch: \`$BRANCH\`"
+          echo "- Run: \`$RUN_ID\`"
+          echo "- Reason: git commit failed after validate passed"
+        } >> "$BLOCKED_FILE"
+
+        git checkout main 2>&1 | tee -a "$LOG_FILE"
+        continue
+      fi
+    fi
+
+    # Guard: only push/PR if there is at least 1 commit vs main
+    if git log --oneline "main..HEAD" | grep -q .; then
+      git push -u origin "$BRANCH" 2>&1 | tee -a "$LOG_FILE"
+
+      # Optionally open PR
+      if [[ "$OPEN_PR" == true ]]; then
+        PR_TITLE="feat: ${SPEC_BASE}"
+        PR_BODY=$(
+          cat <<EOF
 Implements \`$SPEC\`.
 
 - Run ID: $RUN_ID
 - Validation: npm run validate passed
 EOF
-      )
-      if ! gh pr create --title "$PR_TITLE" --body "$PR_BODY" --base main --head "$BRANCH" 2>&1 | tee -a "$LOG_FILE"; then
-        log "PR create failed; branch pushed. Manual PR URL:"
-        log "https://github.com/SJossue/portfolio/compare/main...${BRANCH}?expand=1"
+        )
+        if ! gh pr create --title "$PR_TITLE" --body "$PR_BODY" --base main --head "$BRANCH" 2>&1 | tee -a "$LOG_FILE"; then
+          log "PR create failed; branch pushed. Manual PR URL:"
+          log "https://github.com/SJossue/portfolio/compare/main...${BRANCH}?expand=1"
+        fi
       fi
+    else
+      log "No commits vs main for $SPEC; skipping push/PR."
     fi
 
   else
