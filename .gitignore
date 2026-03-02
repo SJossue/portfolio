@@ -18,6 +18,9 @@ test-results/
 .env*
 !.env.example
 
+# build cache
+*.tsbuildinfo
+
 # editor
 .vscode/
 .idea/
