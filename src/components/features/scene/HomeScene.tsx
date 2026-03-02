@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { SceneSkeleton } from './SceneSkeleton';
 import { useSceneState } from './useSceneState';
 
@@ -12,38 +12,13 @@ function getPrefersReducedMotion(): boolean {
 
 export function HomeScene() {
   const { introState, setIntroState } = useSceneState();
-  const [hasReducedMotion, setHasReducedMotion] = useState(false);
-
+  
+  // Check for reduced motion preference on mount
   useEffect(() => {
-    setHasReducedMotion(getPrefersReducedMotion());
-
-    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
-
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const handler = (e: MediaQueryListEvent) => setHasReducedMotion(e.matches);
-    mediaQuery.addEventListener('change', handler);
-
-    return () => mediaQuery.removeEventListener('change', handler);
-  }, []);
-
-  useEffect(() => {
-    if (hasReducedMotion) {
+    if (getPrefersReducedMotion()) {
       setIntroState('skipped');
     }
-  }, [hasReducedMotion, setIntroState]);
-
-  const handleAirOut = () => {
-    setIntroState('animating');
-
-    // In a real implementation, this would be replaced with GSAP timeline completion
-    setTimeout(() => {
-      setIntroState('done');
-    }, 1000); // 1 second timeout for demo purposes
-  };
-
-  const handleSkipIntro = () => {
-    setIntroState('skipped');
-  };
+  }, [setIntroState]);
 
   return (
     <div className="relative h-screen w-full">
@@ -53,7 +28,7 @@ export function HomeScene() {
         <div className="absolute inset-0 flex items-center justify-center">
           <button
             data-testid="air-out"
-            onClick={handleAirOut}
+            onClick={() => setIntroState('animating')}
             className="rounded-lg bg-white/20 px-6 py-3 text-white backdrop-blur-sm transition-colors hover:bg-white/30"
             aria-label="AIR OUT"
           >
@@ -66,7 +41,7 @@ export function HomeScene() {
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 transform">
           <button
             data-testid="skip-intro"
-            onClick={handleSkipIntro}
+            onClick={() => setIntroState('skipped')}
             className="rounded-lg bg-black/20 px-4 py-2 text-sm text-white backdrop-blur-sm transition-colors hover:bg-black/30"
             aria-label="Skip Intro"
           >
