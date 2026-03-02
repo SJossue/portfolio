@@ -35,3 +35,4 @@ test-results/
 
 # Next.js generated types
 next-env.d.ts
+specs/QUEUE-test.txt
