@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Box, Cylinder } from '@react-three/drei';
-import { useSceneState } from './useSceneState';
 
 function CarModel() {
   return (
