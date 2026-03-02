@@ -1,0 +1,33 @@
+# Auto-Sprint Queue — Garage Intro Cinematic (Batch 1)
+# ====================================================
+#
+# Dependency graph:
+#
+#   Batch A (independent — can run against current main):
+#     01-intro-state-machine
+#     02-thin-page-fullscreen-scene
+#     03-install-gsap
+#
+#   Batch B (sequential — each needs previous specs merged):
+#     04-extract-car-rig       (needs 01 merged)
+#     05-camera-rig            (needs 01 + 04 merged)
+#     06-air-out-reveal        (needs 01 + 03 + 04 + 05 merged)
+#
+# INSTRUCTIONS:
+#   1. Run batch A first:        ./scripts/auto-sprint.sh --pr
+#   2. Review + merge the 3 PRs from batch A
+#   3. Comment out batch A lines below (add # prefix)
+#   4. Run batch B:              ./scripts/auto-sprint.sh --pr
+#   5. Review + merge PRs from batch B in order (04 -> 05 -> 06)
+#
+# To preview without executing:  ./scripts/auto-sprint.sh --list
+
+# --- Batch A (independent) ---
+specs/01-intro-state-machine.md
+specs/02-thin-page-fullscreen-scene.md
+specs/03-install-gsap.md
+
+# --- Batch B (sequential — uncomment after Batch A is merged) ---
+# specs/04-extract-car-rig.md
+# specs/05-camera-rig.md
+# specs/06-air-out-reveal.md

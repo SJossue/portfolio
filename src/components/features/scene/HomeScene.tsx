@@ -12,11 +12,11 @@ function getPrefersReducedMotion(): boolean {
 
 export function HomeScene() {
   const { introState, setIntroState } = useSceneState();
-  
+
   // Check for reduced motion preference on mount
   useEffect(() => {
     if (getPrefersReducedMotion()) {
-      setIntroState('skipped');
+      setIntroState('garage');
     }
   }, [setIntroState]);
 
@@ -28,7 +28,7 @@ export function HomeScene() {
         <div className="absolute inset-0 flex items-center justify-center">
           <button
             data-testid="air-out"
-            onClick={() => setIntroState('animating')}
+            onClick={() => setIntroState('airingOut')}
             className="rounded-lg bg-white/20 px-6 py-3 text-white backdrop-blur-sm transition-colors hover:bg-white/30"
             aria-label="AIR OUT"
           >
@@ -41,7 +41,7 @@ export function HomeScene() {
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 transform">
           <button
             data-testid="skip-intro"
-            onClick={() => setIntroState('skipped')}
+            onClick={() => setIntroState('garage')}
             className="rounded-lg bg-black/20 px-4 py-2 text-sm text-white backdrop-blur-sm transition-colors hover:bg-black/30"
             aria-label="Skip Intro"
           >
@@ -50,7 +50,7 @@ export function HomeScene() {
         </div>
       )}
 
-      {(introState === 'done' || introState === 'skipped') && (
+      {introState === 'garage' && (
         <div
           className="absolute inset-0 flex gap-4 bg-black/50 p-4 backdrop-blur-sm"
           data-testid="garage-shell"

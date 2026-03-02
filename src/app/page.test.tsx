@@ -1,35 +1,20 @@
 import { render, screen } from '@testing-library/react';
 
-import HomePage from '@/app/page';
+import Home from './page';
 
-describe('HomePage', () => {
-  it('renders the foundation heading', () => {
-    render(<HomePage />);
+// Mock the HomeScene client component
+vi.mock('@/components/features/scene/HomeScene', () => ({
+  HomeScene: () => <div data-testid="home-scene">HomeScene</div>,
+}));
 
-    expect(
-      screen.getByRole('heading', {
-        name: /jossue/i,
-      }),
-    ).toBeInTheDocument();
+describe('Home page', () => {
+  it('renders main landmark', () => {
+    render(<Home />);
+    expect(screen.getByRole('main')).toBeInTheDocument();
   });
 
-  it('renders the portfolio description', () => {
-    render(<HomePage />);
-
-    expect(
-      screen.getByText(
-        /a personal portfolio and engineering showcase built with next\.js, tailwind, and typescript\./i,
-      ),
-    ).toBeInTheDocument();
-  });
-
-  it('renders architecture checks section', () => {
-    render(<HomePage />);
-
-    expect(
-      screen.getByRole('heading', {
-        name: /architecture checks/i,
-      }),
-    ).toBeInTheDocument();
+  it('renders HomeScene', () => {
+    render(<Home />);
+    expect(screen.getByTestId('home-scene')).toBeInTheDocument();
   });
 });
