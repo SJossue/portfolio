@@ -255,7 +255,7 @@ EOF
 
   log "--- Aider start (timeout: ${TASK_TIMEOUT_MIN}m) ---"
   set +e
-  timeout "${TASK_TIMEOUT_MIN}m" aider --yes --no-stream --no-show-model-warnings --message "$AIDER_PROMPT" 2>&1 | tee -a "$LOG_FILE"
+  timeout "${TASK_TIMEOUT_MIN}m" aider --yes --no-stream --no-show-model-warnings --auto-commits --edit-format diff --message "$AIDER_PROMPT" 2>&1 | tee -a "$LOG_FILE"
   AIDER_EXIT=${PIPESTATUS[0]}
   set -e
 
@@ -286,6 +286,13 @@ EOF
   fi
 
   log "--- Aider end (exit=$AIDER_EXIT) ---"
+
+  # Salvage uncommitted working-tree changes (aider may edit files without committing)
+  if git diff --quiet main...HEAD && [[ -n "$(git status --porcelain)" ]]; then
+    log "WARNING: Aider left uncommitted changes — committing them now"
+    git add -A
+    git commit -m "chore: wip ${SPEC_BASE} (uncommitted aider edits)" 2>&1 | tee -a "$LOG_FILE"
+  fi
 
   # Fail fast: if aider produced no commits, the LLM likely didn't work
   if git diff --quiet main...HEAD && [[ -z "$(git status --porcelain)" ]]; then
@@ -354,7 +361,7 @@ Implements \`$SPEC\`.
 - Validation: npm run validate passed
 EOF
         )
-        if ! gh pr create --title "$PR_TITLE" --body "$PR_BODY" --base main --head "$BRANCH" 2>&1 | tee -a "$LOG_FILE"; then
+        if ! gh pr create --draft --title "$PR_TITLE" --body "$PR_BODY" --base main --head "$BRANCH" 2>&1 | tee -a "$LOG_FILE"; then
           log "PR create failed; branch pushed. Manual PR URL:"
           log "https://github.com/SJossue/portfolio/compare/main...${BRANCH}?expand=1"
         fi
