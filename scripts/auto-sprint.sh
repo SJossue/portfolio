@@ -187,7 +187,7 @@ heartbeat "init" "started"
 # ---------- baseline ----------
 log "== Baseline sync/install =="
 git checkout main 2>&1 | tee -a "$LOG_FILE"
-git pull 2>&1 | tee -a "$LOG_FILE"
+git pull --rebase 2>&1 | tee -a "$LOG_FILE"
 npm ci 2>&1 | tee -a "$LOG_FILE"
 
 log "== Baseline validate (must pass before sprint) =="
@@ -233,7 +233,7 @@ while IFS= read -r SPEC || [[ -n "$SPEC" ]]; do
 
   # Always start from a clean main state per task
   git checkout main 2>&1 | tee -a "$LOG_FILE"
-  git pull 2>&1 | tee -a "$LOG_FILE"
+  git pull --rebase 2>&1 | tee -a "$LOG_FILE"
 
   # Create branch
   git checkout -b "$BRANCH" 2>&1 | tee -a "$LOG_FILE"
