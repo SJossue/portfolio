@@ -1,3 +1,0 @@
-specs/reduced-motion-support.md
-specs/garage-shell-overlay.md
-specs/playwright-smoke-controls.md
