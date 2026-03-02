@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+export BROWSER=/bin/true   # suppress xdg-open attempts in WSL
 
 # ============================================
 # auto-sprint.sh — unattended Aider sprint runner
@@ -330,9 +331,10 @@ Implements \`$SPEC\`.
 - Validation: npm run validate passed
 EOF
       )
-      set +e
-      gh pr create --title "$PR_TITLE" --body "$PR_BODY" --base main --head "$BRANCH" 2>&1 | tee -a "$LOG_FILE"
-      set -e
+      if ! gh pr create --title "$PR_TITLE" --body "$PR_BODY" --base main --head "$BRANCH" 2>&1 | tee -a "$LOG_FILE"; then
+        log "PR create failed; branch pushed. Manual PR URL:"
+        log "https://github.com/SJossue/portfolio/compare/main...${BRANCH}?expand=1"
+      fi
     fi
 
   else
