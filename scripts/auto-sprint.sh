@@ -136,6 +136,19 @@ if [[ ! -f "package-lock.json" ]]; then
   exit 1
 fi
 
+# Preflight: verify Aider can reach the LLM
+echo "Preflight: testing Aider → LLM connectivity..."
+PREFLIGHT_OUT="$(aider --no-git --yes --no-show-model-warnings --message "Say 'ok' and nothing else." 2>&1)"
+if ! echo "$PREFLIGHT_OUT" | grep -qi "ok"; then
+  echo "ERROR: Aider preflight failed. LLM did not respond with 'ok'."
+  echo "Output was:"
+  echo "$PREFLIGHT_OUT"
+  echo ""
+  echo "Check ~/.aider.conf.yml and that your LLM server is running."
+  exit 1
+fi
+echo "Preflight passed: LLM reachable."
+
 if [[ ! -f "$QUEUE_FILE" ]]; then
   echo "ERROR: Queue file not found: $QUEUE_FILE"
   exit 1
@@ -241,7 +254,7 @@ EOF
 
   log "--- Aider start (timeout: ${TASK_TIMEOUT_MIN}m) ---"
   set +e
-  timeout "${TASK_TIMEOUT_MIN}m" aider --message "$AIDER_PROMPT" 2>&1 | tee -a "$LOG_FILE"
+  timeout "${TASK_TIMEOUT_MIN}m" aider --yes --no-show-model-warnings --message "$AIDER_PROMPT" 2>&1 | tee -a "$LOG_FILE"
   AIDER_EXIT=${PIPESTATUS[0]}
   set -e
 
@@ -272,6 +285,24 @@ EOF
   fi
 
   log "--- Aider end (exit=$AIDER_EXIT) ---"
+
+  # Fail fast: if aider produced no commits, the LLM likely didn't work
+  if git diff --quiet main...HEAD && [[ -z "$(git status --porcelain)" ]]; then
+    FAIL_COUNT=$((FAIL_COUNT + 1))
+    log "ERROR: No changes produced for $SPEC (LLM may be misconfigured)"
+    heartbeat "$SPEC" "no-changes"
+
+    {
+      echo ""
+      echo "## No changes: $SPEC"
+      echo "- Branch: \`$BRANCH\`"
+      echo "- Run: \`$RUN_ID\`"
+      echo "- Reason: Aider produced no commits or working-tree changes (check LLM provider config)"
+    } >> "$BLOCKED_FILE"
+
+    git checkout main 2>&1 | tee -a "$LOG_FILE"
+    continue
+  fi
 
   # Validate after aider
   log "Running npm run validate..."
