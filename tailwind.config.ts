@@ -15,6 +15,15 @@ export default {
       fontFamily: {
         mono: ['var(--font-mono)', 'ui-monospace', 'monospace'],
       },
+      keyframes: {
+        'slide-lr': {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(400%)' },
+        },
+      },
+      animation: {
+        'slide-lr': 'slide-lr 1.5s ease-in-out infinite',
+      },
     },
   },
   plugins: [],

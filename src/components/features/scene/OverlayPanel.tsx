@@ -117,6 +117,39 @@ export function OverlayPanel({ section, onClose }: OverlayPanelProps) {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleClose]);
 
+  // Focus trap: keep Tab key cycling within the panel
+  useEffect(() => {
+    const panel = panelRef.current;
+    if (!panel) return;
+
+    function handleTabKey(e: KeyboardEvent) {
+      if (e.key !== 'Tab') return;
+
+      const focusable = panel!.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])',
+      );
+      if (focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    }
+
+    window.addEventListener('keydown', handleTabKey);
+    return () => window.removeEventListener('keydown', handleTabKey);
+  }, []);
+
   const heading = SECTION_HEADINGS[section] ?? toTitleCase(section);
 
   return (
@@ -143,7 +176,9 @@ export function OverlayPanel({ section, onClose }: OverlayPanelProps) {
           Close
         </button>
       </div>
-      <div className="flex-1 overflow-y-auto">{SECTION_PANELS[section] ?? null}</div>
+      <div className="scrollbar-cyber flex-1 overflow-y-auto">
+        {SECTION_PANELS[section] ?? null}
+      </div>
     </div>
   );
 }

@@ -67,6 +67,7 @@ export function HomeScene() {
   return (
     <div className="relative h-screen w-full">
       <SceneSkeleton />
+      <div className="scanline-overlay absolute inset-0 z-[1]" aria-hidden="true" />
 
       {introState === 'idle' && (
         <div className="absolute inset-0 flex items-center justify-center">

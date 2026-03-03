@@ -61,3 +61,50 @@ test('clicking Projects in HUD opens overlay panel', async ({ page }) => {
   await page.getByTestId('close-panel').click();
   await expect(page.getByTestId('overlay-panel')).not.toBeVisible();
 });
+
+test('clicking About in HUD opens overlay panel', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('button', { name: /skip intro/i }).click();
+  await expect(page.getByTestId('garage-shell')).toBeVisible();
+
+  await page.getByRole('button', { name: /about/i }).click();
+
+  await expect(page.getByTestId('overlay-panel')).toBeVisible();
+  await expect(page.getByRole('heading', { name: /about/i })).toBeVisible();
+
+  await page.getByTestId('close-panel').click();
+  await expect(page.getByTestId('overlay-panel')).not.toBeVisible();
+});
+
+test('clicking Contact in HUD opens overlay panel', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('button', { name: /skip intro/i }).click();
+  await expect(page.getByTestId('garage-shell')).toBeVisible();
+
+  await page.getByRole('button', { name: /contact/i }).click();
+
+  await expect(page.getByTestId('overlay-panel')).toBeVisible();
+  await expect(page.getByRole('heading', { name: /contact/i })).toBeVisible();
+
+  await page.getByTestId('close-panel').click();
+  await expect(page.getByTestId('overlay-panel')).not.toBeVisible();
+});
+
+test('Escape key closes overlay panel', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('button', { name: /skip intro/i }).click();
+
+  await page.getByRole('button', { name: /projects/i }).click();
+  await expect(page.getByTestId('overlay-panel')).toBeVisible();
+
+  await page.keyboard.press('Escape');
+  await expect(page.getByTestId('overlay-panel')).not.toBeVisible();
+});
+
+test('HUD bar has toolbar role for accessibility', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('button', { name: /skip intro/i }).click();
+
+  const toolbar = page.getByRole('toolbar', { name: /navigation/i });
+  await expect(toolbar).toBeVisible();
+});
