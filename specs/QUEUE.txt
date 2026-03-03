@@ -1,9 +1,9 @@
-# Auto-Sprint Queue — Wave 4c (whole-file format)
-# ================================================
+# Auto-Sprint Queue — Wave 5
+# ===========================
 #
-# Run: ./scripts/aider-sprint.sh
+# Run: ./scripts/auto-sprint.sh --pr
 
-specs/18-site-config-seo.md
-specs/19-layout-metadata.md
-specs/20-hud-cyberpunk-buttons.md
-specs/21-overlay-panel-styling.md
+specs/22-custom-font.md
+specs/23-loading-screen.md
+specs/24-camera-object-transition.md
+specs/25-hud-keyboard-nav.md
