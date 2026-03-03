@@ -5,6 +5,7 @@ import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import { CameraRig } from './CameraRig';
 import { CarRig } from './CarRig';
+import { GarageEnvironment } from './GarageEnvironment';
 import { GarageInteractables } from './GarageInteractables';
 import { useSceneState } from './useSceneState';
 
@@ -56,8 +57,13 @@ export function SceneSkeleton() {
   return (
     <Suspense fallback={<SceneLoader />}>
       <Canvas camera={{ position: [1.5, 0.8, 3], fov: 50 }}>
-        <ambientLight intensity={0.5} />
-        <pointLight position={[10, 10, 10]} />
+        <color attach="background" args={['#0a0a0a']} />
+        <fog attach="fog" args={['#0a0a0a', 10, 35]} />
+        <ambientLight intensity={0.15} />
+        <pointLight position={[-3, 5, 0]} intensity={1} color="#e8e4df" />
+        <pointLight position={[3, 5, 0]} intensity={1} color="#e8e4df" />
+        <directionalLight position={[0, 3, 8]} intensity={0.4} />
+        {(introState === 'revealing' || introState === 'garage') && <GarageEnvironment />}
         <CameraRig />
         <CarRig />
         <GarageInteractables />

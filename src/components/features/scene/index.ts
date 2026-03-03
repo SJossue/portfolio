@@ -1,5 +1,6 @@
 export { CameraRig } from './CameraRig';
 export { CarRig } from './CarRig';
+export { GarageEnvironment } from './GarageEnvironment';
 export { GarageInteractables } from './GarageInteractables';
 export { Interactable } from './Interactable';
 export { OverlayPanel } from './OverlayPanel';
