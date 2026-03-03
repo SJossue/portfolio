@@ -8,7 +8,6 @@
 # Specs that modify existing files come later.
 
 # --- Pure new-file specs (highest success probability) ---
-specs/32-projects-panel-tests.md
 specs/33-about-panel-tests.md
 specs/34-contact-panel-tests.md
 specs/41-content-data-tests.md

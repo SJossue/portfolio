@@ -252,12 +252,18 @@ Only touch files listed or implied by the spec.
 Add/update tests as required by the spec.
 After changes, run: npm run validate.
 If npm run validate fails, fix and retry (max 3 attempts). If still failing, STOP and summarize why in $BLOCKED_FILE.
+
+CRITICAL INSTRUCTION FOR LOCAL LLM:
+You are running in an unattended, automated environment.
+You MUST format your code edits exactly as requested by the system instructions (e.g. using the specific edit block syntax).
+DO NOT output any conversational text, pleasantries, or preamble. Do not say "I will implement..."
+Output ONLY the requested code blocks.
 EOF
   )
 
   log "--- Aider start (timeout: ${TASK_TIMEOUT_MIN}m) ---"
   set +e
-  timeout "${TASK_TIMEOUT_MIN}m" aider --yes --no-stream --no-show-model-warnings --auto-commits --edit-format whole --message "$AIDER_PROMPT" 2>&1 | tee -a "$LOG_FILE"
+  timeout "${TASK_TIMEOUT_MIN}m" aider --yes --no-stream --no-show-model-warnings --auto-commits --edit-format udiff --message "$AIDER_PROMPT" 2>&1 | tee -a "$LOG_FILE"
   AIDER_EXIT=${PIPESTATUS[0]}
   set -e
 
