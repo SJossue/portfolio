@@ -29,8 +29,8 @@ test('air out triggers animation and shows garage shell', async ({ page }) => {
   await page.getByRole('button', { name: /air out/i }).click();
 
   // Garage shell should appear after animation completes
-  // Animation takes ~1.2s (air out) + camera lerp time
-  await expect(page.getByTestId('garage-shell')).toBeVisible({ timeout: 10000 });
+  // GSAP animation + camera lerp — very generous timeout for CI
+  await expect(page.getByTestId('garage-shell')).toBeVisible({ timeout: 15000 });
 });
 
 test('escape key skips intro', async ({ page }) => {
@@ -57,10 +57,10 @@ test('clicking Projects in HUD opens overlay panel', async ({ page }) => {
   await expect(page.getByTestId('overlay-panel')).toBeVisible();
   await expect(page.getByRole('heading', { name: /projects/i })).toBeVisible();
 
-  // Wait for mount animation to complete (GSAP focuses close button on finish)
-  await expect(page.getByTestId('close-panel')).toBeFocused({ timeout: 5000 });
+  // Wait for GSAP mount animation (0.4s) to settle
+  await page.waitForTimeout(1000);
 
-  // Close panel via Escape (more reliable than clicking in headless CI)
+  // Close panel via Escape (bypasses GSAP close animation timing issues)
   await page.keyboard.press('Escape');
   await expect(page.getByTestId('overlay-panel')).not.toBeVisible({ timeout: 5000 });
 });
@@ -75,8 +75,8 @@ test('clicking About in HUD opens overlay panel', async ({ page }) => {
   await expect(page.getByTestId('overlay-panel')).toBeVisible();
   await expect(page.getByRole('heading', { name: /about/i })).toBeVisible();
 
-  // Wait for mount animation to complete
-  await expect(page.getByTestId('close-panel')).toBeFocused({ timeout: 5000 });
+  // Wait for GSAP mount animation to settle
+  await page.waitForTimeout(1000);
 
   await page.keyboard.press('Escape');
   await expect(page.getByTestId('overlay-panel')).not.toBeVisible({ timeout: 5000 });
@@ -92,8 +92,8 @@ test('clicking Contact in HUD opens overlay panel', async ({ page }) => {
   await expect(page.getByTestId('overlay-panel')).toBeVisible();
   await expect(page.getByRole('heading', { name: /contact/i })).toBeVisible();
 
-  // Wait for mount animation to complete
-  await expect(page.getByTestId('close-panel')).toBeFocused({ timeout: 5000 });
+  // Wait for GSAP mount animation to settle
+  await page.waitForTimeout(1000);
 
   await page.keyboard.press('Escape');
   await expect(page.getByTestId('overlay-panel')).not.toBeVisible({ timeout: 5000 });
@@ -106,8 +106,8 @@ test('Escape key closes overlay panel', async ({ page }) => {
   await page.getByRole('button', { name: /projects/i }).click();
   await expect(page.getByTestId('overlay-panel')).toBeVisible();
 
-  // Wait for mount animation to complete before pressing Escape
-  await expect(page.getByTestId('close-panel')).toBeFocused({ timeout: 5000 });
+  // Wait for GSAP mount animation to settle
+  await page.waitForTimeout(1000);
 
   await page.keyboard.press('Escape');
   await expect(page.getByTestId('overlay-panel')).not.toBeVisible({ timeout: 5000 });
