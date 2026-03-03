@@ -1,26 +1,25 @@
 'use client';
 
 import gsap from 'gsap';
+import type { ReactNode } from 'react';
 import { useCallback, useEffect, useRef } from 'react';
+import { AboutPanel, ContactPanel, ProjectsPanel } from './panels';
 
 interface OverlayPanelProps {
   section: string;
   onClose: () => void;
 }
 
-const SECTION_CONTENT: Record<string, { heading: string; description: string }> = {
-  projects: {
-    heading: 'Projects',
-    description: 'A curated selection of engineering work.',
-  },
-  contact: {
-    heading: 'Contact',
-    description: 'Get in touch for collaboration or opportunities.',
-  },
-  about: {
-    heading: 'About',
-    description: 'Engineer, builder, systems thinker.',
-  },
+const SECTION_HEADINGS: Record<string, string> = {
+  projects: 'Projects',
+  contact: 'Contact',
+  about: 'About',
+};
+
+const SECTION_PANELS: Record<string, ReactNode> = {
+  projects: <ProjectsPanel />,
+  contact: <ContactPanel />,
+  about: <AboutPanel />,
 };
 
 function toTitleCase(str: string): string {
@@ -118,10 +117,7 @@ export function OverlayPanel({ section, onClose }: OverlayPanelProps) {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleClose]);
 
-  const content = SECTION_CONTENT[section] ?? {
-    heading: toTitleCase(section),
-    description: '',
-  };
+  const heading = SECTION_HEADINGS[section] ?? toTitleCase(section);
 
   return (
     <div
@@ -130,11 +126,11 @@ export function OverlayPanel({ section, onClose }: OverlayPanelProps) {
       style={{ transform: 'translateX(100%)', opacity: 0 }}
       role="dialog"
       aria-modal="true"
-      aria-label={content.heading}
+      aria-label={heading}
       data-testid="overlay-panel"
     >
       <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-white">{content.heading}</h2>
+        <h2 className="text-2xl font-bold text-white">{heading}</h2>
         <button
           ref={closeButtonRef}
           onClick={handleClose}
@@ -145,7 +141,7 @@ export function OverlayPanel({ section, onClose }: OverlayPanelProps) {
           Close
         </button>
       </div>
-      <p className="text-white/60">{content.description}</p>
+      <div className="flex-1 overflow-y-auto">{SECTION_PANELS[section] ?? null}</div>
     </div>
   );
 }
