@@ -30,7 +30,7 @@ test('air out triggers animation and shows garage shell', async ({ page }) => {
 
   // Garage shell should appear after animation completes
   // Animation takes ~1.2s (air out) + camera lerp time
-  await expect(page.getByTestId('garage-shell')).toBeVisible({ timeout: 15000 });
+  await expect(page.getByTestId('garage-shell')).toBeVisible({ timeout: 10000 });
 });
 
 test('escape key skips intro', async ({ page }) => {
