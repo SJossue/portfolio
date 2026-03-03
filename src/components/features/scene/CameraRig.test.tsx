@@ -11,8 +11,13 @@ vi.mock('@react-three/fiber', () => ({
 }));
 
 vi.mock('./useSceneState', () => ({
-  useSceneState: (selector: (s: { introState: string }) => string) =>
-    selector({ introState: 'idle' }),
+  useSceneState: (
+    selector: (s: {
+      introState: string;
+      selectedSection: string | null;
+      setIntroState: () => void;
+    }) => unknown,
+  ) => selector({ introState: 'idle', selectedSection: null, setIntroState: vi.fn() }),
 }));
 
 import { CameraRig } from './CameraRig';

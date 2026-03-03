@@ -21,8 +21,19 @@ function isWebGL2Available(): boolean {
 
 function SceneLoader() {
   return (
-    <div className="flex h-full w-full items-center justify-center" role="status">
-      <p className="text-sm text-white/60">Loading scene...</p>
+    <div
+      className="flex h-full w-full flex-col items-center justify-center gap-6 bg-[#050510]"
+      role="status"
+    >
+      <div className="font-mono text-2xl uppercase tracking-[0.3em] text-cyan-400">
+        Initializing
+      </div>
+      <div className="h-[2px] w-48 overflow-hidden rounded-full bg-white/10">
+        <div className="h-full w-1/3 animate-pulse rounded-full bg-gradient-to-r from-cyan-500 to-fuchsia-500" />
+      </div>
+      <div className="font-mono text-xs tracking-wider text-white/30">
+        Loading 3D environment...
+      </div>
     </div>
   );
 }

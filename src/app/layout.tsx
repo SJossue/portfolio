@@ -1,6 +1,13 @@
 import type { Metadata } from 'next';
+import { JetBrains_Mono } from 'next/font/google';
 import '@/styles/globals.css';
 import { siteConfig } from '@/lib/site';
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  variable: '--font-mono',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: {
@@ -40,8 +47,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className="flex min-h-screen flex-col antialiased">{children}</body>
+    <html lang="en" className={jetbrainsMono.variable}>
+      <body className="flex min-h-screen flex-col font-mono antialiased">{children}</body>
     </html>
   );
 }

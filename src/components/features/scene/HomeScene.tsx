@@ -100,6 +100,20 @@ export function HomeScene() {
           <div
             className="absolute bottom-0 left-0 right-0 z-10 flex items-center justify-center gap-4 border-t border-cyan-400/10 bg-black/70 p-4 backdrop-blur-md"
             data-testid="garage-shell"
+            role="toolbar"
+            aria-label="Navigation"
+            onKeyDown={(e) => {
+              const buttons = e.currentTarget.querySelectorAll('button');
+              const current = Array.from(buttons).indexOf(e.target as HTMLButtonElement);
+              if (current === -1) return;
+              if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                buttons[(current + 1) % buttons.length]?.focus();
+              } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                buttons[(current - 1 + buttons.length) % buttons.length]?.focus();
+              }
+            }}
           >
             {HUD_SECTIONS.map((s) => (
               <button
