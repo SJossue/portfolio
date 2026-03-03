@@ -26,6 +26,9 @@ vi.mock('@react-three/drei', () => ({
       {children}
     </div>
   ),
+  Html: ({ children }: { children?: React.ReactNode }) => (
+    <div data-testid="html-label">{children}</div>
+  ),
 }));
 
 vi.mock('./useSceneState', () => ({
