@@ -39,7 +39,7 @@ describe('useSceneState', () => {
   it('updates interactionLocked', () => {
     const { result } = renderHook(() => useSceneState((s) => s));
     act(() => {
-      result.current.setInteractionLocked(true);
+      result.current.interactionLocked = true;
     });
     expect(result.current.interactionLocked).toBe(true);
   });
