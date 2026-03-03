@@ -22,3 +22,13 @@ test('skip intro shows garage UI shell', async ({ page }) => {
 
   await expect(page.getByTestId('garage-shell')).toBeVisible();
 });
+
+test('air out triggers animation and shows garage shell', async ({ page }) => {
+  await page.goto('/');
+
+  await page.getByRole('button', { name: /air out/i }).click();
+
+  // Garage shell should appear after animation completes
+  // Animation takes ~1.2s (air out) + camera lerp time
+  await expect(page.getByTestId('garage-shell')).toBeVisible({ timeout: 10000 });
+});
