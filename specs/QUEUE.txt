@@ -1,10 +1,7 @@
-# Auto-Sprint Queue — Wave 4: Content & Polish
-# ==============================================
-#
-# Specs 12-13 handled separately (complex, multi-file).
-# Specs 14-15 queued for auto-sprint (well-defined, scoped changes).
+# Auto-Sprint Queue — Wave 4b
+# ============================
 #
 # Run: ./scripts/auto-sprint.sh --pr --timeout 60
 
-specs/14-seo-meta-tags.md
-specs/15-mobile-responsive.md
+specs/16-seo-meta-tags-v2.md
+specs/17-cyberpunk-hud-styling.md
