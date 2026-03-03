@@ -1,9 +1,13 @@
-# Auto-Sprint Queue — Wave 5
+# Auto-Sprint Queue — Wave 6
 # ===========================
 #
 # Run: ./scripts/auto-sprint.sh --pr
+#
+# Order matters: spec 30 depends on spec 26's changes
 
-specs/22-custom-font.md
-specs/23-loading-screen.md
-specs/24-camera-object-transition.md
-specs/25-hud-keyboard-nav.md
+specs/26-reduced-motion-fallback.md
+specs/27-overlay-panel-scrollbar.md
+specs/28-focus-trap-overlay.md
+specs/29-e2e-panel-navigation.md
+specs/30-loading-screen-css-animation.md
+specs/31-scanline-overlay-effect.md
