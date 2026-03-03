@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import { OverlayPanel } from './OverlayPanel';
 import { SceneSkeleton } from './SceneSkeleton';
 import { useSceneState } from './useSceneState';
 
@@ -10,8 +11,25 @@ function getPrefersReducedMotion(): boolean {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
+const HUD_SECTIONS = [
+  { id: 'projects', label: 'Projects' },
+  { id: 'contact', label: 'Contact' },
+  { id: 'about', label: 'About' },
+];
+
 export function HomeScene() {
-  const { introState, setIntroState } = useSceneState();
+  const { introState, setIntroState, selectedSection, setSelectedSection } = useSceneState();
+
+  // Check localStorage for skip preference on mount
+  useEffect(() => {
+    try {
+      if (localStorage.getItem('portfolio-skip-intro') === 'true') {
+        setIntroState('garage');
+      }
+    } catch {
+      // localStorage unavailable (SSR, privacy mode) — ignore
+    }
+  }, [setIntroState]);
 
   // Check for reduced motion preference on mount
   useEffect(() => {
@@ -19,6 +37,32 @@ export function HomeScene() {
       setIntroState('garage');
     }
   }, [setIntroState]);
+
+  // Escape key: close panel if open, otherwise skip intro
+  useEffect(() => {
+    if (introState === 'garage' && selectedSection !== null) return; // Panel handles its own Escape
+    if (introState === 'garage') return;
+
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') {
+        setIntroState('garage');
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [introState, selectedSection, setIntroState]);
+
+  // Persist skip preference when garage state is reached
+  useEffect(() => {
+    if (introState === 'garage') {
+      try {
+        localStorage.setItem('portfolio-skip-intro', 'true');
+      } catch {
+        // localStorage unavailable — ignore
+      }
+    }
+  }, [introState]);
 
   return (
     <div className="relative h-screen w-full">
@@ -51,23 +95,29 @@ export function HomeScene() {
       )}
 
       {introState === 'garage' && (
-        <div
-          className="absolute inset-0 flex gap-4 bg-black/50 p-4 backdrop-blur-sm"
-          data-testid="garage-shell"
-        >
-          <section
-            aria-label="Terminal"
-            className="flex flex-1 rounded-xl border border-white/20 bg-white/10 p-4 backdrop-blur-md"
+        <>
+          {/* Bottom HUD bar */}
+          <div
+            className="absolute bottom-0 left-0 right-0 z-10 flex items-center justify-center gap-4 bg-black/60 p-4 backdrop-blur-sm"
+            data-testid="garage-shell"
           >
-            <h2 className="text-sm text-white/60">Terminal</h2>
-          </section>
-          <section
-            aria-label="Projects"
-            className="flex flex-1 rounded-xl border border-white/20 bg-white/10 p-4 backdrop-blur-md"
-          >
-            <h2 className="text-sm text-white/60">Projects</h2>
-          </section>
-        </div>
+            {HUD_SECTIONS.map((s) => (
+              <button
+                key={s.id}
+                onClick={() => setSelectedSection(s.id)}
+                className="rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-sm text-white transition-colors hover:bg-white/20"
+                aria-label={s.label}
+              >
+                {s.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Overlay panel */}
+          {selectedSection && (
+            <OverlayPanel section={selectedSection} onClose={() => setSelectedSection(null)} />
+          )}
+        </>
       )}
     </div>
   );
