@@ -21,3 +21,38 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* Cyberpunk thin scrollbar */
+.scrollbar-cyber::-webkit-scrollbar {
+  width: 4px;
+}
+
+.scrollbar-cyber::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-cyber::-webkit-scrollbar-thumb {
+  background: rgba(0, 240, 255, 0.2);
+  border-radius: 2px;
+}
+
+.scrollbar-cyber::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 240, 255, 0.4);
+}
+
+.scrollbar-cyber {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 240, 255, 0.2) transparent;
+}
+
+/* CRT scanline overlay */
+.scanline-overlay {
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.03) 0px,
+    rgba(0, 0, 0, 0.03) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+}
