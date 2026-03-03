@@ -1,31 +1,10 @@
-# Auto-Sprint Queue — Garage World + Interactables (Wave 2)
-# ========================================================
+# Auto-Sprint Queue — Wave 4: Content & Polish
+# ==============================================
 #
-# Dependency graph:
+# Specs 12-13 handled separately (complex, multi-file).
+# Specs 14-15 queued for auto-sprint (well-defined, scoped changes).
 #
-#   Batch C (independent — can run against current main):
-#     07-skip-intro-persistence    (touches HomeScene.tsx + e2e only)
-#     08-canvas-suspense-fallback  (touches SceneSkeleton.tsx only)
-#     09-garage-environment        (new GarageEnvironment + SceneSkeleton lights)
-#
-#   Batch D (sequential — each needs previous specs merged):
-#     10-interactables-system      (needs 09 merged for garage context)
-#     11-overlay-panels            (needs 07 + 10 merged for store + Escape logic)
-#
-# INSTRUCTIONS:
-#   1. Run batch C first:        ./scripts/auto-sprint.sh --pr
-#   2. Review + merge the 3 PRs from batch C
-#   3. Comment out batch C lines below (add # prefix)
-#   4. Run batch D:              ./scripts/auto-sprint.sh --pr
-#   5. Review + merge PRs from batch D in order (10 -> 11)
-#
-# To preview without executing:  ./scripts/auto-sprint.sh --list
+# Run: ./scripts/auto-sprint.sh --pr --timeout 60
 
-# --- Batch C (independent) ---
-specs/07-skip-intro-persistence.md
-specs/08-canvas-suspense-fallback.md
-specs/09-garage-environment.md
-
-# --- Batch D (sequential — uncomment after Batch C is merged) ---
-# specs/10-interactables-system.md
-# specs/11-overlay-panels.md
+specs/14-seo-meta-tags.md
+specs/15-mobile-responsive.md
