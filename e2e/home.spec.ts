@@ -57,7 +57,7 @@ test('clicking Projects in HUD opens overlay panel', async ({ page }) => {
   await expect(page.getByTestId('overlay-panel')).toBeVisible();
   await expect(page.getByRole('heading', { name: /projects/i })).toBeVisible();
 
-  // Close panel — GSAP exit animation (0.3s) must complete before onClose unmounts
+  // Close panel
   await page.getByTestId('close-panel').click();
-  await expect(page.getByTestId('overlay-panel')).not.toBeVisible({ timeout: 10000 });
+  await expect(page.getByTestId('overlay-panel')).not.toBeVisible();
 });
