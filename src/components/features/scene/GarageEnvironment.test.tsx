@@ -13,6 +13,8 @@ vi.mock('@react-three/drei', () => ({
   ContactShadows: (props: Record<string, unknown>) => (
     <div data-testid="contact-shadows" data-opacity={props.opacity} />
   ),
+  MeshReflectorMaterial: () => null,
+  Sparkles: () => null,
 }));
 
 describe('GarageEnvironment', () => {
