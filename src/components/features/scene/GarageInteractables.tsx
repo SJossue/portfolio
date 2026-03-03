@@ -1,7 +1,10 @@
 'use client';
 
+import { InfoPanelInteractable } from './InfoPanelInteractable';
 import { Interactable } from './Interactable';
+import { MonitorInteractable } from './MonitorInteractable';
 import { useSceneState } from './useSceneState';
+import { WorkstationInteractable } from './WorkstationInteractable';
 
 const INTERACTABLES = [
   {
@@ -27,6 +30,12 @@ const INTERACTABLES = [
   },
 ] as const;
 
+const CHILDREN_MAP: Record<string, (hovered: boolean) => React.ReactNode> = {
+  workbench: (hovered) => <WorkstationInteractable hovered={hovered} />,
+  monitor: (hovered) => <MonitorInteractable hovered={hovered} />,
+  toolboard: (hovered) => <InfoPanelInteractable hovered={hovered} />,
+};
+
 export function GarageInteractables() {
   const introState = useSceneState((s) => s.introState);
 
@@ -42,7 +51,9 @@ export function GarageInteractables() {
           section={item.section}
           position={[...item.position]}
           color={item.color}
-        />
+        >
+          {CHILDREN_MAP[item.id]}
+        </Interactable>
       ))}
     </group>
   );
