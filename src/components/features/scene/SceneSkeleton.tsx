@@ -29,7 +29,7 @@ function SceneLoader() {
         Initializing
       </div>
       <div className="h-[2px] w-48 overflow-hidden rounded-full bg-white/10">
-        <div className="h-full w-1/3 animate-pulse rounded-full bg-gradient-to-r from-cyan-500 to-fuchsia-500" />
+        <div className="animate-slide-lr h-full w-1/3 rounded-full bg-gradient-to-r from-cyan-500 to-fuchsia-500 motion-reduce:animate-none" />
       </div>
       <div className="font-mono text-xs tracking-wider text-white/30">
         Loading 3D environment...
