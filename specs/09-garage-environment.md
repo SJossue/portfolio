@@ -62,6 +62,7 @@ Currently the 3D scene is a black void with a single ambient light and point lig
 ```tsx
 'use client';
 
+import * as THREE from 'three';
 import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Plane } from '@react-three/drei';
