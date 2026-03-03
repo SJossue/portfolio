@@ -1,7 +1,9 @@
-# Auto-Sprint Queue — Wave 4b
-# ============================
+# Auto-Sprint Queue — Wave 4c (whole-file format)
+# ================================================
 #
-# Run: ./scripts/auto-sprint.sh --pr --timeout 60
+# Run: ./scripts/aider-sprint.sh
 
-specs/16-seo-meta-tags-v2.md
-specs/17-cyberpunk-hud-styling.md
+specs/18-site-config-seo.md
+specs/19-layout-metadata.md
+specs/20-hud-cyberpunk-buttons.md
+specs/21-overlay-panel-styling.md
