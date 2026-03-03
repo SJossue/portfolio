@@ -263,7 +263,7 @@ EOF
 
   log "--- Aider start (timeout: ${TASK_TIMEOUT_MIN}m) ---"
   set +e
-  timeout "${TASK_TIMEOUT_MIN}m" aider --yes --no-stream --no-show-model-warnings --auto-commits --edit-format udiff --message "$AIDER_PROMPT" 2>&1 | tee -a "$LOG_FILE"
+  timeout "${TASK_TIMEOUT_MIN}m" aider --yes --no-stream --no-show-model-warnings --auto-commits --edit-format udiff --test-cmd "npm run validate" --auto-test --message "$AIDER_PROMPT" 2>&1 | tee -a "$LOG_FILE"
   AIDER_EXIT=${PIPESTATUS[0]}
   set -e
 
