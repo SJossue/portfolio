@@ -126,7 +126,7 @@ export function OverlayPanel({ section, onClose }: OverlayPanelProps) {
   return (
     <div
       ref={panelRef}
-      className="absolute right-0 top-0 z-20 flex h-full w-full flex-col border-l border-white/10 bg-black/80 p-8 backdrop-blur-lg md:w-1/2"
+      className="absolute right-0 top-0 z-20 flex h-full w-full flex-col border-l border-cyan-400/10 bg-black/85 p-4 backdrop-blur-lg sm:p-8 md:w-1/2"
       style={{ transform: 'translateX(100%)', opacity: 0 }}
       role="dialog"
       aria-modal="true"
@@ -134,18 +134,22 @@ export function OverlayPanel({ section, onClose }: OverlayPanelProps) {
       data-testid="overlay-panel"
     >
       <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-white">{content.heading}</h2>
+        <h2 className="font-mono text-xl font-bold uppercase tracking-wider text-cyan-300">
+          {content.heading}
+        </h2>
         <button
           ref={closeButtonRef}
           onClick={handleClose}
-          className="rounded-lg bg-white/10 px-3 py-1 text-sm text-white/60 transition-colors hover:bg-white/20 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+          className="min-h-[44px] min-w-[44px] rounded-lg border border-white/10 bg-white/5 px-3 py-2 font-mono text-xs uppercase tracking-wider text-white/50 transition-all hover:border-fuchsia-400/40 hover:bg-fuchsia-500/10 hover:text-fuchsia-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-400/80"
           aria-label="Close panel"
           data-testid="close-panel"
         >
           Close
         </button>
       </div>
-      <p className="text-white/60">{content.description}</p>
+      <div className="flex-1 overflow-y-auto">
+        <p className="text-white/60">{content.description}</p>
+      </div>
     </div>
   );
 }
