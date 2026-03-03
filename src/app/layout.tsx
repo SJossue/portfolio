@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { JetBrains_Mono } from 'next/font/google';
 import '@/styles/globals.css';
+import { JsonLd } from '@/components/features/JsonLd';
 import { siteConfig } from '@/lib/site';
 
 const jetbrainsMono = JetBrains_Mono({
@@ -48,7 +49,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={jetbrainsMono.variable}>
-      <body className="flex min-h-screen flex-col font-mono antialiased">{children}</body>
+      <body className="flex min-h-screen flex-col font-mono antialiased">
+        <JsonLd />
+        {children}
+      </body>
     </html>
   );
 }
