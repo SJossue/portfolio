@@ -28,7 +28,7 @@ The vision calls for the garage to BE the interface — instead of navbar links,
    - `setSelectedSection: (section: string | null) => void`
 2. `setSelectedSection` MUST only work when `interactionLocked` is `false` (i.e., `introState === 'garage'`)
 3. The system MUST create `src/components/features/scene/Interactable.tsx` — a reusable R3F component for a single clickable 3D object
-4. `Interactable` MUST accept props: `id: string`, `label: string`, `section: string`, `position: [number, number, number]`, `color: string`
+4. `Interactable` MUST accept props: `id: string`, `label: string`, `section: string`, `position: [number, number, number]`, `color: string`. The `label` prop MUST be consumed (e.g., via `userData={{ label }}` on the Box) for accessibility and metadata.
 5. `Interactable` MUST render a `<Box>` with the given color and position
 6. `Interactable` MUST show a hover effect: on `onPointerOver`, increase emissive intensity; on `onPointerOut`, reset it
 7. `Interactable` MUST change the cursor to `pointer` on hover and back to `default` on pointer out
@@ -46,7 +46,7 @@ The vision calls for the garage to BE the interface — instead of navbar links,
 ### Non-Functional Requirements
 
 - **Performance**: 3 additional Box meshes — negligible
-- **Accessibility**: 3D objects are not keyboard-navigable (this is acceptable; keyboard users will have alternative DOM-based navigation added in a future spec)
+- **Accessibility**: All new interactive 3D elements MUST provide an equivalent keyboard-accessible path (e.g., HUD buttons in `HomeScene.tsx`) and appropriate ARIA support. Components under `src/components/features/**/*.tsx` MUST NOT be considered feature-complete until keyboard navigation and ARIA attributes are implemented. Reviewers MUST block merge until these requirements are met.
 
 ## Design
 

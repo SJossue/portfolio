@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import { CameraRig } from './CameraRig';
@@ -41,8 +41,15 @@ function WebGLFallback() {
 
 export function SceneSkeleton() {
   const introState = useSceneState((s) => s.introState);
+  const [hasWebGL2, setHasWebGL2] = useState(false);
 
-  if (!isWebGL2Available()) {
+  useEffect(() => {
+    if (isWebGL2Available()) {
+      setHasWebGL2(true);
+    }
+  }, []);
+
+  if (!hasWebGL2) {
     return <WebGLFallback />;
   }
 

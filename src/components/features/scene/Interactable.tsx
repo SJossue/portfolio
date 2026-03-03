@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Box } from '@react-three/drei';
 import type { Mesh } from 'three';
 import { useSceneState } from './useSceneState';
@@ -18,6 +18,14 @@ export function Interactable({ id, label, section, position, color }: Interactab
   const [hovered, setHovered] = useState(false);
   const setSelectedSection = useSceneState((s) => s.setSelectedSection);
 
+  useEffect(() => {
+    return () => {
+      if (hovered) {
+        document.body.style.cursor = 'default';
+      }
+    };
+  }, [hovered]);
+
   return (
     <Box
       ref={meshRef}
@@ -33,6 +41,7 @@ export function Interactable({ id, label, section, position, color }: Interactab
         setHovered(false);
         document.body.style.cursor = 'default';
       }}
+      userData={{ label }}
     >
       <meshStandardMaterial color={color} emissive={color} emissiveIntensity={hovered ? 0.4 : 0} />
     </Box>

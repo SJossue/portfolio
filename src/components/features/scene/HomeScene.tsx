@@ -73,7 +73,7 @@ export function HomeScene() {
           <button
             data-testid="air-out"
             onClick={() => setIntroState('airingOut')}
-            className="rounded-lg bg-white/20 px-6 py-3 text-white backdrop-blur-sm transition-colors hover:bg-white/30"
+            className="rounded-lg bg-white/20 px-6 py-3 text-white backdrop-blur-sm transition-colors hover:bg-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
             aria-label="AIR OUT"
           >
             AIR OUT
@@ -86,7 +86,7 @@ export function HomeScene() {
           <button
             data-testid="skip-intro"
             onClick={() => setIntroState('garage')}
-            className="rounded-lg bg-black/20 px-4 py-2 text-sm text-white backdrop-blur-sm transition-colors hover:bg-black/30"
+            className="rounded-lg bg-black/20 px-4 py-2 text-sm text-white backdrop-blur-sm transition-colors hover:bg-black/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
             aria-label="Skip Intro"
           >
             Skip Intro
@@ -105,7 +105,7 @@ export function HomeScene() {
               <button
                 key={s.id}
                 onClick={() => setSelectedSection(s.id)}
-                className="rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-sm text-white transition-colors hover:bg-white/20"
+                className="rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-sm text-white transition-colors hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
                 aria-label={s.label}
               >
                 {s.label}

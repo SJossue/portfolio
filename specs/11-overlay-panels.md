@@ -31,7 +31,7 @@ Currently `HomeScene.tsx` renders a static garage-shell with two placeholder sec
    - `'projects'`: heading "Projects", placeholder text "A curated selection of engineering work."
    - `'contact'`: heading "Contact", placeholder text "Get in touch for collaboration or opportunities."
    - `'about'`: heading "About", placeholder text "Engineer, builder, systems thinker."
-   - Unknown section: heading with the section name in title case
+   - Unknown section: heading with the section name in proper title case (capitalize principal words, lower-case small conjunctions/articles like "a", "the", "and", "of")
 6. The system MUST update `HomeScene.tsx`:
    - Remove the old static garage-shell `<div>` (the one with `data-testid="garage-shell"`)
    - When `introState === 'garage'`, render a minimal HUD bar at the bottom with `data-testid="garage-shell"` (preserving the testid for existing E2E tests) containing three buttons: "Projects", "Contact", "About" — each sets `selectedSection` on click
@@ -342,8 +342,8 @@ export { OverlayPanel } from './OverlayPanel';
 
 ## Testing Strategy
 
-- **Unit tests**: `OverlayPanel.test.tsx` — heading render, description render, close button callback, dialog role
-- **E2E tests**: New test for HUD → panel → close flow
+- **Unit tests**: `OverlayPanel.test.tsx` — heading render, description render, close button callback, dialog role with `aria-modal`, Escape key triggers `onClose`, focus management (close button receives focus on mount)
+- **E2E tests**: New test for HUD → panel → close flow; keyboard-only open/close scenario asserting ARIA presence
 - **Manual**: Verify panel slide-in visual, responsive behavior on mobile viewport
 
 ## Performance Budgets

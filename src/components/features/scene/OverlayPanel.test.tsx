@@ -20,8 +20,22 @@ describe('OverlayPanel', () => {
     expect(onClose).toHaveBeenCalledOnce();
   });
 
-  it('has dialog role and aria-label', () => {
+  it('has dialog role with aria-modal', () => {
     render(<OverlayPanel section="projects" onClose={vi.fn()} />);
-    expect(screen.getByRole('dialog', { name: /projects/i })).toBeInTheDocument();
+    const dialog = screen.getByRole('dialog', { name: /projects/i });
+    expect(dialog).toBeInTheDocument();
+    expect(dialog).toHaveAttribute('aria-modal', 'true');
+  });
+
+  it('calls onClose when Escape is pressed', async () => {
+    const onClose = vi.fn();
+    render(<OverlayPanel section="projects" onClose={onClose} />);
+    await userEvent.keyboard('{Escape}');
+    expect(onClose).toHaveBeenCalledOnce();
+  });
+
+  it('focuses close button on mount', () => {
+    render(<OverlayPanel section="projects" onClose={vi.fn()} />);
+    expect(screen.getByTestId('close-panel')).toHaveFocus();
   });
 });

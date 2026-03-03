@@ -20,7 +20,7 @@ export const useSceneState = create<SceneState>((set, get) => ({
       interactionLocked: introState !== 'garage',
     }),
   setSelectedSection: (section) => {
-    if (get().interactionLocked) return;
+    if (get().interactionLocked && section !== null) return;
     set({ selectedSection: section });
   },
 }));

@@ -1,5 +1,5 @@
-import { render, screen } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { render, screen, act } from '@testing-library/react';
+import { describe, it, expect, vi, afterEach } from 'vitest';
 import { SceneSkeleton } from './SceneSkeleton';
 
 vi.mock('@react-three/fiber', () => ({
@@ -30,8 +30,12 @@ vi.mock('./useSceneState', () => ({
     selector({ introState: 'idle' }),
 }));
 
+afterEach(() => {
+  vi.restoreAllMocks();
+});
+
 describe('SceneSkeleton', () => {
-  it('renders canvas when WebGL 2 is available', () => {
+  it('renders canvas when WebGL 2 is available', async () => {
     const originalCreateElement = document.createElement.bind(document);
     vi.spyOn(document, 'createElement').mockImplementation((tag: string) => {
       const el = originalCreateElement(tag);
@@ -41,10 +45,11 @@ describe('SceneSkeleton', () => {
       return el;
     });
 
-    render(<SceneSkeleton />);
-    expect(screen.getByTestId('canvas')).toBeInTheDocument();
+    await act(async () => {
+      render(<SceneSkeleton />);
+    });
 
-    vi.restoreAllMocks();
+    expect(screen.getByTestId('canvas')).toBeInTheDocument();
   });
 
   it('renders fallback when WebGL 2 is unavailable', () => {
