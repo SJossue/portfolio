@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { useCallback, useEffect, useRef } from 'react';
 
 interface OverlayPanelProps {
   section: string;
@@ -54,13 +55,42 @@ function toTitleCase(str: string): string {
 }
 
 export function OverlayPanel({ section, onClose }: OverlayPanelProps) {
+  const panelRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const previousFocusRef = useRef<Element | null>(null);
+  const isAnimatingRef = useRef(false);
 
-  // Capture previously focused element and focus close button on mount
+  const handleClose = useCallback(() => {
+    if (isAnimatingRef.current) return;
+    isAnimatingRef.current = true;
+    gsap.to(panelRef.current, {
+      x: '100%',
+      opacity: 0,
+      duration: 0.3,
+      ease: 'power3.in',
+      onComplete: () => {
+        isAnimatingRef.current = false;
+        onClose();
+      },
+    });
+  }, [onClose]);
+
+  // Capture previously focused element and animate in on mount
   useEffect(() => {
     previousFocusRef.current = document.activeElement;
-    closeButtonRef.current?.focus();
+    gsap.fromTo(
+      panelRef.current,
+      { x: '100%', opacity: 0 },
+      {
+        x: '0%',
+        opacity: 1,
+        duration: 0.4,
+        ease: 'power3.out',
+        onComplete: () => {
+          closeButtonRef.current?.focus();
+        },
+      },
+    );
 
     return () => {
       if (previousFocusRef.current instanceof HTMLElement) {
@@ -73,13 +103,13 @@ export function OverlayPanel({ section, onClose }: OverlayPanelProps) {
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === 'Escape') {
-        onClose();
+        handleClose();
       }
     }
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onClose]);
+  }, [handleClose]);
 
   const content = SECTION_CONTENT[section] ?? {
     heading: toTitleCase(section),
@@ -88,7 +118,9 @@ export function OverlayPanel({ section, onClose }: OverlayPanelProps) {
 
   return (
     <div
+      ref={panelRef}
       className="absolute right-0 top-0 z-20 flex h-full w-full flex-col border-l border-white/10 bg-black/80 p-8 backdrop-blur-lg md:w-1/2"
+      style={{ transform: 'translateX(100%)', opacity: 0 }}
       role="dialog"
       aria-modal="true"
       aria-label={content.heading}
@@ -98,7 +130,7 @@ export function OverlayPanel({ section, onClose }: OverlayPanelProps) {
         <h2 className="text-2xl font-bold text-white">{content.heading}</h2>
         <button
           ref={closeButtonRef}
-          onClick={onClose}
+          onClick={handleClose}
           className="rounded-lg bg-white/10 px-3 py-1 text-sm text-white/60 transition-colors hover:bg-white/20 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
           aria-label="Close panel"
           data-testid="close-panel"
