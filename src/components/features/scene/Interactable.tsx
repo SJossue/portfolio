@@ -2,7 +2,7 @@
 
 import type { ReactNode } from 'react';
 import { useEffect, useRef, useState } from 'react';
-import { Box } from '@react-three/drei';
+import { Box, Html } from '@react-three/drei';
 import type { Mesh } from 'three';
 import { useSceneState } from './useSceneState';
 
@@ -56,6 +56,13 @@ export function Interactable({ id, label, section, position, color, children }: 
       {hasChildren && (
         <group>{typeof children === 'function' ? children(hovered) : children}</group>
       )}
+      <Html position={[0, 1.4, 0]} center distanceFactor={8} style={{ pointerEvents: 'none' }}>
+        <div
+          className={`whitespace-nowrap rounded-sm px-2 py-0.5 font-mono text-xs tracking-wider transition-all duration-300 ${hovered ? 'bg-cyan-500/20 text-cyan-300 shadow-[0_0_8px_rgba(0,240,255,0.4)]' : 'bg-black/40 text-white/60'}`}
+        >
+          {label}
+        </div>
+      </Html>
     </group>
   );
 }
