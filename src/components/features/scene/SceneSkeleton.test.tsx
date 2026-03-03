@@ -21,6 +21,10 @@ vi.mock('./CarRig', () => ({
   CarRig: () => <div>CarRig</div>,
 }));
 
+vi.mock('./GarageEnvironment', () => ({
+  GarageEnvironment: () => null,
+}));
+
 vi.mock('./GarageInteractables', () => ({
   GarageInteractables: () => null,
 }));

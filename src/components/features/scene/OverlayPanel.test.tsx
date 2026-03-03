@@ -2,6 +2,16 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { OverlayPanel } from './OverlayPanel';
 
+vi.mock('gsap', () => {
+  const fromTo = (_target: unknown, _from: unknown, to: { onComplete?: () => void }) => {
+    to.onComplete?.();
+  };
+  const to = (_target: unknown, vars: { onComplete?: () => void }) => {
+    vars.onComplete?.();
+  };
+  return { default: { fromTo, to } };
+});
+
 describe('OverlayPanel', () => {
   it('renders section heading', () => {
     render(<OverlayPanel section="projects" onClose={vi.fn()} />);
