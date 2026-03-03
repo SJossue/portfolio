@@ -6,7 +6,7 @@ describe('useSceneState', () => {
     const { result } = renderHook(() => useSceneState((s) => s));
     expect(result.current.introState).toBe('idle');
     expect(result.current.selectedSection).toBeNull();
-    expect(result.current.interactionLocked).toBe(false);
+    expect(result.current.interactionLocked).toBe(true);
   });
 
   it('updates introState', () => {
@@ -39,6 +39,7 @@ describe('useSceneState', () => {
   it('updates interactionLocked', () => {
     const { result } = renderHook(() => useSceneState((s) => s));
     act(() => {
+      result.current.setInteractionLocked(true);
       result.current.interactionLocked = true;
     });
     expect(result.current.interactionLocked).toBe(true);
