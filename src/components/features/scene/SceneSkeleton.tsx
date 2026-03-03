@@ -50,6 +50,8 @@ export function SceneSkeleton() {
     }
   }, []);
 
+  const isGarageReady = introState === 'garage';
+
   if (!hasWebGL2) {
     return <WebGLFallback />;
   }
@@ -58,12 +60,18 @@ export function SceneSkeleton() {
     <Suspense fallback={<SceneLoader />}>
       <Canvas camera={{ position: [1.5, 0.8, 3], fov: 50 }}>
         <color attach="background" args={['#0a0a0a']} />
-        <fog attach="fog" args={['#0a0a0a', 10, 35]} />
-        <ambientLight intensity={0.15} />
-        <pointLight position={[-3, 5, 0]} intensity={1} color="#e8e4df" />
-        <pointLight position={[3, 5, 0]} intensity={1} color="#e8e4df" />
-        <directionalLight position={[0, 3, 8]} intensity={0.4} />
-        {(introState === 'revealing' || introState === 'garage') && <GarageEnvironment />}
+        <ambientLight intensity={isGarageReady ? 0.15 : 0.5} />
+        {isGarageReady ? (
+          <>
+            <fog attach="fog" args={['#0a0a0a', 10, 35]} />
+            <pointLight position={[-3, 5, 0]} intensity={1} color="#e8e4df" />
+            <pointLight position={[3, 5, 0]} intensity={1} color="#e8e4df" />
+            <directionalLight position={[0, 3, 8]} intensity={0.4} />
+            <GarageEnvironment />
+          </>
+        ) : (
+          <pointLight position={[10, 10, 10]} />
+        )}
         <CameraRig />
         <CarRig />
         <GarageInteractables />
