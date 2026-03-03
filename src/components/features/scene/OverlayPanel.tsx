@@ -63,12 +63,19 @@ export function OverlayPanel({ section, onClose }: OverlayPanelProps) {
   const handleClose = useCallback(() => {
     if (isAnimatingRef.current) return;
     isAnimatingRef.current = true;
+    // Safety fallback: if GSAP ticker stalls (e.g. no-WebGL CI),
+    // ensure onClose fires regardless.
+    const fallback = window.setTimeout(() => {
+      isAnimatingRef.current = false;
+      onClose();
+    }, 500);
     gsap.to(panelRef.current, {
       x: '100%',
       opacity: 0,
       duration: 0.3,
       ease: 'power3.in',
       onComplete: () => {
+        window.clearTimeout(fallback);
         isAnimatingRef.current = false;
         onClose();
       },
