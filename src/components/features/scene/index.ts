@@ -3,6 +3,7 @@ export { CarRig } from './CarRig';
 export { GarageEnvironment } from './GarageEnvironment';
 export { GarageInteractables } from './GarageInteractables';
 export { Interactable } from './Interactable';
+export { NeonTube } from './NeonTube';
 export { OverlayPanel } from './OverlayPanel';
 export { SceneSkeleton } from './SceneSkeleton';
 export { useSceneState } from './useSceneState';
