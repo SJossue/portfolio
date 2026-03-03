@@ -1,13 +1,24 @@
-# Auto-Sprint Queue — Wave 6
+# Auto-Sprint Queue — Wave 7
 # ===========================
 #
 # Run: ./scripts/auto-sprint.sh --pr
 #
-# Order matters: spec 30 depends on spec 26's changes
+# Strategy: Specs are ordered with simplest/isolated tasks first
+# (new files only) to maximize success with whole edit format.
+# Specs that modify existing files come later.
 
-specs/26-reduced-motion-fallback.md
-specs/27-overlay-panel-scrollbar.md
-specs/28-focus-trap-overlay.md
-specs/29-e2e-panel-navigation.md
-specs/30-loading-screen-css-animation.md
-specs/31-scanline-overlay-effect.md
+# --- Pure new-file specs (highest success probability) ---
+specs/32-projects-panel-tests.md
+specs/33-about-panel-tests.md
+specs/34-contact-panel-tests.md
+specs/41-content-data-tests.md
+specs/43-scene-state-tests.md
+specs/40-expanded-utils-tests.md
+specs/38-custom-404-page.md
+specs/39-scene-error-boundary.md
+specs/37-aria-live-announcer.md
+specs/42-neon-glow-pulse.md
+
+# --- Specs that modify existing files (lower success probability) ---
+specs/35-json-ld-structured-data.md
+specs/36-skip-to-content.md
