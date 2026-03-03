@@ -1,33 +1,31 @@
-# Auto-Sprint Queue — Garage Intro Cinematic (Batch 1)
-# ====================================================
+# Auto-Sprint Queue — Garage World + Interactables (Wave 2)
+# ========================================================
 #
 # Dependency graph:
 #
-#   Batch A (independent — can run against current main):
-#     01-intro-state-machine
-#     02-thin-page-fullscreen-scene
-#     03-install-gsap
+#   Batch C (independent — can run against current main):
+#     07-skip-intro-persistence    (touches HomeScene.tsx + e2e only)
+#     08-canvas-suspense-fallback  (touches SceneSkeleton.tsx only)
+#     09-garage-environment        (new GarageEnvironment + SceneSkeleton lights)
 #
-#   Batch B (sequential — each needs previous specs merged):
-#     04-extract-car-rig       (needs 01 merged)
-#     05-camera-rig            (needs 01 + 04 merged)
-#     06-air-out-reveal        (needs 01 + 03 + 04 + 05 merged)
+#   Batch D (sequential — each needs previous specs merged):
+#     10-interactables-system      (needs 09 merged for garage context)
+#     11-overlay-panels            (needs 07 + 10 merged for store + Escape logic)
 #
 # INSTRUCTIONS:
-#   1. Run batch A first:        ./scripts/auto-sprint.sh --pr
-#   2. Review + merge the 3 PRs from batch A
-#   3. Comment out batch A lines below (add # prefix)
-#   4. Run batch B:              ./scripts/auto-sprint.sh --pr
-#   5. Review + merge PRs from batch B in order (04 -> 05 -> 06)
+#   1. Run batch C first:        ./scripts/auto-sprint.sh --pr
+#   2. Review + merge the 3 PRs from batch C
+#   3. Comment out batch C lines below (add # prefix)
+#   4. Run batch D:              ./scripts/auto-sprint.sh --pr
+#   5. Review + merge PRs from batch D in order (10 -> 11)
 #
 # To preview without executing:  ./scripts/auto-sprint.sh --list
 
-# --- Batch A (independent) ---
-specs/01-intro-state-machine.md
-specs/02-thin-page-fullscreen-scene.md
-specs/03-install-gsap.md
+# --- Batch C (independent) ---
+specs/07-skip-intro-persistence.md
+specs/08-canvas-suspense-fallback.md
+specs/09-garage-environment.md
 
-# --- Batch B (sequential — uncomment after Batch A is merged) ---
-# specs/04-extract-car-rig.md
-# specs/05-camera-rig.md
-# specs/06-air-out-reveal.md
+# --- Batch D (sequential — uncomment after Batch C is merged) ---
+# specs/10-interactables-system.md
+# specs/11-overlay-panels.md
