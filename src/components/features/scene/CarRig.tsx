@@ -47,22 +47,28 @@ export function CarRig() {
       {/* Chassis — GSAP animates this group's Y position */}
       <group ref={chassisRef}>
         <Box args={[2, 1, 4]} position={[0, 0, 0]}>
-          <meshStandardMaterial color="lightblue" />
+          <meshStandardMaterial
+            color="#0d0d14"
+            roughness={0.2}
+            metalness={0.9}
+            emissive="#00f0ff"
+            emissiveIntensity={0.05}
+          />
         </Box>
       </group>
 
       {/* Wheels — stay at fixed height */}
       <Cylinder args={[0.5, 0.5, 0.2]} position={[-1, 0.5, 1.5]} rotation={[Math.PI / 2, 0, 0]}>
-        <meshStandardMaterial color="black" />
+        <meshStandardMaterial color="black" metalness={0.3} roughness={0.5} />
       </Cylinder>
       <Cylinder args={[0.5, 0.5, 0.2]} position={[1, 0.5, 1.5]} rotation={[Math.PI / 2, 0, 0]}>
-        <meshStandardMaterial color="black" />
+        <meshStandardMaterial color="black" metalness={0.3} roughness={0.5} />
       </Cylinder>
       <Cylinder args={[0.5, 0.5, 0.2]} position={[-1, 0.5, -1.5]} rotation={[Math.PI / 2, 0, 0]}>
-        <meshStandardMaterial color="black" />
+        <meshStandardMaterial color="black" metalness={0.3} roughness={0.5} />
       </Cylinder>
       <Cylinder args={[0.5, 0.5, 0.2]} position={[1, 0.5, -1.5]} rotation={[Math.PI / 2, 0, 0]}>
-        <meshStandardMaterial color="black" />
+        <meshStandardMaterial color="black" metalness={0.3} roughness={0.5} />
       </Cylinder>
     </group>
   );
