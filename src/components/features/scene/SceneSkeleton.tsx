@@ -59,14 +59,53 @@ export function SceneSkeleton() {
   return (
     <Suspense fallback={<SceneLoader />}>
       <Canvas camera={{ position: [1.5, 0.8, 3], fov: 50 }}>
-        <color attach="background" args={['#0a0a0a']} />
-        <ambientLight intensity={isGarageReady ? 0.15 : 0.5} />
+        <color attach="background" args={[isGarageReady ? '#050510' : '#0a0a0a']} />
+        <ambientLight intensity={isGarageReady ? 0.05 : 0.5} />
         {isGarageReady ? (
           <>
-            <fog attach="fog" args={['#0a0a0a', 10, 35]} />
-            <pointLight position={[-3, 5, 0]} intensity={1} color="#e8e4df" />
-            <pointLight position={[3, 5, 0]} intensity={1} color="#e8e4df" />
-            <directionalLight position={[0, 3, 8]} intensity={0.4} />
+            <fog attach="fog" args={['#050510', 8, 30]} />
+            {/* Ceiling fill */}
+            <pointLight position={[0, 5.5, 0]} color="#1a2040" intensity={0.3} />
+            {/* Left wall cyan */}
+            <pointLight
+              position={[-14, 2.5, 0]}
+              color="#00f0ff"
+              intensity={1.5}
+              distance={12}
+              decay={2}
+            />
+            {/* Right wall magenta */}
+            <pointLight
+              position={[14, 2.5, 0]}
+              color="#ff00cc"
+              intensity={1.5}
+              distance={12}
+              decay={2}
+            />
+            {/* Back wall glow */}
+            <pointLight
+              position={[0, 3, -14]}
+              color="#00f0ff"
+              intensity={1.0}
+              distance={10}
+              decay={2}
+            />
+            {/* Workstation area */}
+            <pointLight
+              position={[-4, 2, -3]}
+              color="#ff6600"
+              intensity={0.8}
+              distance={6}
+              decay={2}
+            />
+            {/* Monitor area */}
+            <pointLight
+              position={[4, 3, -7]}
+              color="#0066ff"
+              intensity={0.8}
+              distance={6}
+              decay={2}
+            />
             <GarageEnvironment />
           </>
         ) : (
