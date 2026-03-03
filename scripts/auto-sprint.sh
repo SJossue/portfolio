@@ -187,7 +187,9 @@ heartbeat "init" "started"
 # ---------- baseline ----------
 log "== Baseline sync/install =="
 git checkout main 2>&1 | tee -a "$LOG_FILE"
-git pull --rebase 2>&1 | tee -a "$LOG_FILE"
+if ! git pull --rebase 2>&1 | tee -a "$LOG_FILE"; then
+  log "WARNING: git pull failed (remote may be down). Continuing with local state."
+fi
 npm ci 2>&1 | tee -a "$LOG_FILE"
 
 log "== Baseline validate (must pass before sprint) =="
@@ -233,7 +235,7 @@ while IFS= read -r SPEC || [[ -n "$SPEC" ]]; do
 
   # Always start from a clean main state per task
   git checkout main 2>&1 | tee -a "$LOG_FILE"
-  git pull --rebase 2>&1 | tee -a "$LOG_FILE"
+  git pull --rebase 2>&1 | tee -a "$LOG_FILE" || log "WARNING: git pull failed, using local main"
 
   # Create branch
   git checkout -b "$BRANCH" 2>&1 | tee -a "$LOG_FILE"
