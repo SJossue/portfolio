@@ -98,14 +98,14 @@ export function HomeScene() {
         <>
           {/* Bottom HUD bar */}
           <div
-            className="absolute bottom-0 left-0 right-0 z-10 flex items-center justify-center gap-4 bg-black/60 p-4 backdrop-blur-sm"
+            className="absolute bottom-0 left-0 right-0 z-10 flex flex-col items-center justify-center gap-2 bg-black/60 p-3 backdrop-blur-sm sm:flex-row sm:gap-4 sm:p-4"
             data-testid="garage-shell"
           >
             {HUD_SECTIONS.map((s) => (
               <button
                 key={s.id}
                 onClick={() => setSelectedSection(s.id)}
-                className="rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-sm text-white transition-colors hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+                className="min-h-[44px] min-w-[44px] rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-sm text-white transition-colors hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
                 aria-label={s.label}
               >
                 {s.label}
