@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { KeyboardShortcuts } from './KeyboardShortcuts';
+import { Minimap } from './Minimap';
 import { OverlayPanel } from './OverlayPanel';
 import { SceneSkeleton } from './SceneSkeleton';
 import { StatusBar } from './StatusBar';
@@ -104,6 +105,7 @@ export function HomeScene() {
       {introState === 'garage' && (
         <>
           <StatusBar />
+          <Minimap />
           <KeyboardShortcuts />
 
           {/* Bottom HUD bar */}
