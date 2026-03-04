@@ -76,27 +76,19 @@ export function SceneSkeleton() {
         {isGarageReady ? (
           <>
             <fog attach="fog" args={['#050510', 8, 30]} />
-            {/* Workstation area */}
+            {/* Warm workshop light */}
             <pointLight
-              position={[-4, 2, -3]}
+              position={[-2, 3, 0]}
               color="#ff6600"
-              intensity={0.8}
-              distance={6}
+              intensity={1}
+              distance={12}
               decay={2}
             />
-            {/* Monitor area */}
+            {/* Cool monitor glow */}
             <pointLight
               position={[4, 3, -7]}
               color="#0066ff"
               intensity={0.8}
-              distance={6}
-              decay={2}
-            />
-            {/* Car bay light */}
-            <pointLight
-              position={[-9, 4, 8]}
-              color="#00f0ff"
-              intensity={0.6}
               distance={8}
               decay={2}
             />
@@ -111,7 +103,7 @@ export function SceneSkeleton() {
         <OrbitControls enableZoom={false} enablePan={false} enabled={introState === 'garage'} />
         {isGarageReady && (
           <EffectComposer>
-            <Bloom intensity={0.8} luminanceThreshold={0.6} luminanceSmoothing={0.9} mipmapBlur />
+            <Bloom intensity={0.5} luminanceThreshold={0.7} luminanceSmoothing={0.9} mipmapBlur />
           </EffectComposer>
         )}
       </Canvas>

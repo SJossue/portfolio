@@ -1,18 +1,17 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useCallback } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { DARK_METAL } from './garage-materials';
 
 const NEON_GREEN_COLOR = '#00ff88';
 
-/* Simplified block-letter segments for O, P, E, N */
 const LETTER_SEGMENTS: Record<string, number[]> = {
   O: [0, 1, 2, 4, 5, 6],
   P: [0, 1, 2, 3, 4],
   E: [0, 1, 3, 4, 6],
-  N: [1, 2, 4, 5], // verticals only for N
+  N: [1, 2, 4, 5],
 };
 
 const CHAR_H = 0.5;
@@ -42,15 +41,31 @@ function getSegPos(seg: number): { pos: [number, number, number]; size: [number,
   }
 }
 
-function OpenLetter({ char, position }: { char: string; position: [number, number, number] }) {
+function OpenLetter({
+  char,
+  position,
+  registerMaterial,
+}: {
+  char: string;
+  position: [number, number, number];
+  registerMaterial: (mat: THREE.MeshStandardMaterial) => void;
+}) {
   const segs = LETTER_SEGMENTS[char] ?? [];
-  // N gets diagonal bar
+  const matRef = useCallback(
+    (node: THREE.Mesh | null) => {
+      if (node?.material instanceof THREE.MeshStandardMaterial) {
+        registerMaterial(node.material);
+      }
+    },
+    [registerMaterial],
+  );
+
   return (
     <group position={position}>
       {segs.map((seg) => {
         const { pos, size } = getSegPos(seg);
         return (
-          <mesh key={seg} position={pos}>
+          <mesh key={seg} position={pos} ref={matRef}>
             <boxGeometry args={size} />
             <meshStandardMaterial
               emissive={NEON_GREEN_COLOR}
@@ -62,7 +77,7 @@ function OpenLetter({ char, position }: { char: string; position: [number, numbe
         );
       })}
       {char === 'N' && (
-        <mesh position={[0, 0, 0]} rotation={[0, 0, 0.6]}>
+        <mesh position={[0, 0, 0]} rotation={[0, 0, 0.6]} ref={matRef}>
           <boxGeometry args={[SEG_T, CHAR_H * 0.9, SEG_T]} />
           <meshStandardMaterial
             emissive={NEON_GREEN_COLOR}
@@ -77,20 +92,21 @@ function OpenLetter({ char, position }: { char: string; position: [number, numbe
 }
 
 export function NeonOpenSign() {
-  const groupRef = useRef<THREE.Group>(null);
+  const materialsRef = useRef<THREE.MeshStandardMaterial[]>([]);
+
+  const registerMaterial = useCallback((mat: THREE.MeshStandardMaterial) => {
+    if (!materialsRef.current.includes(mat)) {
+      materialsRef.current.push(mat);
+    }
+  }, []);
 
   useFrame(({ clock }) => {
-    if (!groupRef.current) return;
     const t = clock.getElapsedTime();
-    // Slow strobe fade: intensity oscillates between 0.5 and 3
     const intensity = 0.5 + (Math.sin(t * 1.2) * 0.5 + 0.5) * 2.5;
-    groupRef.current.traverse((obj) => {
-      if (obj instanceof THREE.Mesh && obj.material instanceof THREE.MeshStandardMaterial) {
-        if (obj.material.toneMapped === false) {
-          obj.material.emissiveIntensity = intensity;
-        }
-      }
-    });
+    const mats = materialsRef.current;
+    for (let i = 0; i < mats.length; i++) {
+      mats[i].emissiveIntensity = intensity;
+    }
   });
 
   const spacing = 0.45;
@@ -103,8 +119,7 @@ export function NeonOpenSign() {
         <meshStandardMaterial {...DARK_METAL} />
       </mesh>
 
-      {/* Magenta border */}
-      {/* Top */}
+      {/* Magenta border — Top */}
       <mesh position={[0, 0.55, 0]}>
         <boxGeometry args={[2.2, 0.04, 0.04]} />
         <meshStandardMaterial
@@ -146,9 +161,14 @@ export function NeonOpenSign() {
       </mesh>
 
       {/* Letters */}
-      <group ref={groupRef} position={[-spacing * 1.5, 0.1, 0]}>
+      <group position={[-spacing * 1.5, 0.1, 0]}>
         {'OPEN'.split('').map((ch, i) => (
-          <OpenLetter key={i} char={ch} position={[i * spacing, 0, 0]} />
+          <OpenLetter
+            key={i}
+            char={ch}
+            position={[i * spacing, 0, 0]}
+            registerMaterial={registerMaterial}
+          />
         ))}
       </group>
 
@@ -182,8 +202,6 @@ export function NeonOpenSign() {
           />
         </mesh>
       </group>
-
-      <pointLight color={NEON_GREEN_COLOR} intensity={0.8} distance={6} decay={2} />
     </group>
   );
 }

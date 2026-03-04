@@ -85,7 +85,6 @@ export function VendingMachine() {
         rotation={[Math.PI / 2, 0, 0]}
         length={1}
         color="#ff00cc"
-        distance={4}
       />
     </group>
   );

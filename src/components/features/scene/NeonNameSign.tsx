@@ -1,20 +1,10 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useCallback } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { DARK_METAL } from './garage-materials';
 
-/* 7-segment display layout for each character.
- * Segments are indexed 0–6:
- *    0
- *   ---
- * 1|   |2
- *   ---  3
- * 4|   |5
- *   ---
- *    6
- */
 const SEGMENT_MAP: Record<string, number[]> = {
   J: [0, 4, 5, 6],
   O: [0, 1, 2, 4, 5, 6],
@@ -26,13 +16,6 @@ const SEGMENT_MAP: Record<string, number[]> = {
   A: [0, 1, 2, 3, 4, 5],
   R: [0, 1, 2, 3, 4],
 };
-
-interface SegmentCharProps {
-  char: string;
-  position: [number, number, number];
-  color: string;
-  charIndex: number;
-}
 
 const CHAR_H = 0.7;
 const CHAR_W = 0.4;
@@ -64,11 +47,27 @@ function getSegmentTransform(seg: number): {
   }
 }
 
-function SegmentChar({ char, position, color, charIndex }: SegmentCharProps) {
+interface SegmentCharProps {
+  char: string;
+  position: [number, number, number];
+  color: string;
+  registerMaterial: (mat: THREE.MeshStandardMaterial) => void;
+}
+
+function SegmentChar({ char, position, color, registerMaterial }: SegmentCharProps) {
   const segments = SEGMENT_MAP[char] ?? [];
+  const matRef = useCallback(
+    (node: THREE.Mesh | null) => {
+      if (node?.material instanceof THREE.MeshStandardMaterial) {
+        registerMaterial(node.material);
+      }
+    },
+    [registerMaterial],
+  );
+
   if (char === "'") {
     return (
-      <mesh position={position}>
+      <mesh position={position} ref={matRef}>
         <boxGeometry args={[SEG_THICK, 0.12, SEG_THICK]} />
         <meshStandardMaterial
           emissive={color}
@@ -84,7 +83,7 @@ function SegmentChar({ char, position, color, charIndex }: SegmentCharProps) {
       {segments.map((seg) => {
         const { pos, size } = getSegmentTransform(seg);
         return (
-          <mesh key={seg} position={pos}>
+          <mesh key={seg} position={pos} ref={matRef}>
             <boxGeometry args={size} />
             <meshStandardMaterial
               emissive={color}
@@ -100,26 +99,24 @@ function SegmentChar({ char, position, color, charIndex }: SegmentCharProps) {
 }
 
 export function NeonNameSign() {
-  const groupRef = useRef<THREE.Group>(null);
+  const materialsRef = useRef<THREE.MeshStandardMaterial[]>([]);
   const timeRef = useRef(0);
+
+  const registerMaterial = useCallback((mat: THREE.MeshStandardMaterial) => {
+    if (!materialsRef.current.includes(mat)) {
+      materialsRef.current.push(mat);
+    }
+  }, []);
 
   useFrame((_, delta) => {
     timeRef.current += delta;
-    if (!groupRef.current) return;
     const t = timeRef.current;
-    // Slow intensity pulse
     const pulse = 0.85 + Math.sin(t * 1.5) * 0.15;
-    groupRef.current.children.forEach((child) => {
-      child.traverse((obj) => {
-        if (obj instanceof THREE.Mesh && obj.material instanceof THREE.MeshStandardMaterial) {
-          if (obj.material.emissiveIntensity > 0) {
-            // Random segment flicker
-            const flicker = Math.random() > 0.995 ? 0.3 : 1;
-            obj.material.emissiveIntensity = 3 * pulse * flicker;
-          }
-        }
-      });
-    });
+    const mats = materialsRef.current;
+    for (let i = 0; i < mats.length; i++) {
+      const flicker = Math.random() > 0.995 ? 0.3 : 1;
+      mats[i].emissiveIntensity = 3 * pulse * flicker;
+    }
   });
 
   const word1 = "JOSSUE'S";
@@ -134,7 +131,7 @@ export function NeonNameSign() {
         <meshStandardMaterial {...DARK_METAL} />
       </mesh>
 
-      <group ref={groupRef}>
+      <group>
         {/* "JOSSUE'S" in cyan */}
         <group position={[-(word1.length * spacing) / 2 + spacing / 2, 0.45, 0]}>
           {word1.split('').map((ch, i) => (
@@ -143,7 +140,7 @@ export function NeonNameSign() {
               char={ch}
               position={[i * spacing, 0, 0]}
               color="#00f0ff"
-              charIndex={i}
+              registerMaterial={registerMaterial}
             />
           ))}
         </group>
@@ -156,13 +153,12 @@ export function NeonNameSign() {
               char={ch}
               position={[i * spacing, 0, 0]}
               color="#ff00cc"
-              charIndex={i}
+              registerMaterial={registerMaterial}
             />
           ))}
         </group>
       </group>
 
-      {/* Shared point lights per word */}
       <pointLight
         position={[0, 0.45, 0.3]}
         color="#00f0ff"

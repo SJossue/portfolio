@@ -91,10 +91,8 @@ export function GarageStructure() {
       </mesh>
 
       {/* Structural I-beams across ceiling */}
-      <IBeam position={[0, 5.7, -7]} />
-      <IBeam position={[0, 5.7, -2]} />
-      <IBeam position={[0, 5.7, 3]} />
-      <IBeam position={[0, 5.7, 8]} />
+      <IBeam position={[0, 5.7, -5]} />
+      <IBeam position={[0, 5.7, 5]} />
     </group>
   );
 }

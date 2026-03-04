@@ -12,8 +12,12 @@ export function FlickeringLight({
 }) {
   const tubeRef = useRef<THREE.Mesh>(null);
   const lightRef = useRef<THREE.PointLight>(null);
+  const frameCount = useRef(0);
 
   useFrame(() => {
+    frameCount.current++;
+    if (frameCount.current % 3 !== 0) return;
+
     const on = Math.random() > 0.06;
     const intensity = on ? 2.5 + Math.random() * 0.5 : 0;
     if (tubeRef.current) {

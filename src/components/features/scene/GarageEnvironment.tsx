@@ -1,5 +1,3 @@
-import { MeshReflectorMaterial } from '@react-three/drei';
-
 import { CeilingFan } from './CeilingFan';
 import { CyberpunkPoster } from './CyberpunkPoster';
 import { FireExtinguisher } from './FireExtinguisher';
@@ -29,19 +27,10 @@ import { WorkbenchVise } from './WorkbenchVise';
 export function GarageEnvironment() {
   return (
     <group>
-      {/* Reflective floor */}
+      {/* Dark garage floor */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]}>
         <planeGeometry args={[30, 30]} />
-        <MeshReflectorMaterial
-          blur={[300, 100]}
-          resolution={512}
-          mixBlur={0.8}
-          mixStrength={1.2}
-          roughness={0.9}
-          color="#050505"
-          metalness={0.3}
-          mirror={0.5}
-        />
+        <meshStandardMaterial color="#050505" roughness={0.85} metalness={0.4} />
       </mesh>
 
       <GarageStructure />
@@ -76,14 +65,12 @@ export function GarageEnvironment() {
         rotation={[0, 0, Math.PI / 2]}
         length={8}
         color="#00f0ff"
-        distance={8}
       />
       <NeonTube
         position={[5, 2.5, -14.8]}
         rotation={[0, 0, Math.PI / 2]}
         length={8}
         color="#00f0ff"
-        distance={8}
       />
       <NeonTube
         position={[0, 0.2, -14.8]}
@@ -91,13 +78,12 @@ export function GarageEnvironment() {
         length={20}
         color="#ff00cc"
         intensity={1.5}
-        distance={6}
       />
 
       {/* Neon tubes — left wall */}
-      <NeonTube position={[-14.8, 2, -5]} length={3} color="#ff00cc" distance={5} />
-      <NeonTube position={[-14.8, 2, 3]} length={3} color="#ff00cc" distance={5} />
-      <NeonTube position={[-14.8, 2, -10]} length={3} color="#ff00cc" distance={5} />
+      <NeonTube position={[-14.8, 2, -5]} length={3} color="#ff00cc" />
+      <NeonTube position={[-14.8, 2, 3]} length={3} color="#ff00cc" />
+      <NeonTube position={[-14.8, 2, -10]} length={3} color="#ff00cc" />
 
       {/* Neon tube — right wall */}
       <NeonTube
@@ -105,16 +91,15 @@ export function GarageEnvironment() {
         rotation={[0, 0, Math.PI / 2]}
         length={10}
         color="#00f0ff"
-        distance={8}
       />
 
       {/* Left wall near car bay — cyan vertical tubes */}
-      <NeonTube position={[-14.8, 2, 8]} length={3} color="#00f0ff" distance={5} />
-      <NeonTube position={[-14.8, 2, 12]} length={3} color="#00f0ff" distance={5} />
+      <NeonTube position={[-14.8, 2, 8]} length={3} color="#00f0ff" />
+      <NeonTube position={[-14.8, 2, 12]} length={3} color="#00f0ff" />
 
       {/* Right wall — magenta vertical tubes */}
-      <NeonTube position={[14.8, 2, 2]} length={3} color="#ff00cc" distance={5} />
-      <NeonTube position={[14.8, 2, 8]} length={3} color="#ff00cc" distance={5} />
+      <NeonTube position={[14.8, 2, 2]} length={3} color="#ff00cc" />
+      <NeonTube position={[14.8, 2, 8]} length={3} color="#ff00cc" />
 
       {/* Floor accent strip along back wall */}
       <NeonTube
@@ -123,7 +108,6 @@ export function GarageEnvironment() {
         length={20}
         color="#ff00cc"
         intensity={1}
-        distance={4}
       />
     </group>
   );

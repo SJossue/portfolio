@@ -4,7 +4,6 @@ interface NeonTubeProps {
   length: number;
   color: string;
   intensity?: number;
-  distance?: number;
 }
 
 export function NeonTube({
@@ -13,12 +12,11 @@ export function NeonTube({
   length,
   color,
   intensity = 3,
-  distance = 6,
 }: NeonTubeProps) {
   return (
     <group position={position} rotation={rotation}>
       <mesh>
-        <cylinderGeometry args={[0.03, 0.03, length, 8]} />
+        <cylinderGeometry args={[0.03, 0.03, length, 12]} />
         <meshStandardMaterial
           emissive={color}
           emissiveIntensity={intensity}
@@ -28,7 +26,7 @@ export function NeonTube({
       </mesh>
       {/* Outer glow cylinder */}
       <mesh>
-        <cylinderGeometry args={[0.06, 0.06, length, 8]} />
+        <cylinderGeometry args={[0.06, 0.06, length, 12]} />
         <meshStandardMaterial
           emissive={color}
           emissiveIntensity={intensity * 0.4}
@@ -38,7 +36,6 @@ export function NeonTube({
           toneMapped={false}
         />
       </mesh>
-      <pointLight color={color} intensity={0.8} distance={distance} decay={2} />
     </group>
   );
 }
