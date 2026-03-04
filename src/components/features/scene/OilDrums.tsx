@@ -7,7 +7,7 @@ function Drum({
 }: {
   position: [number, number, number];
   rotation?: [number, number, number];
-  color?: typeof RUST_METAL;
+  color?: Record<string, unknown>;
 }) {
   return (
     <group position={position} rotation={rotation}>
