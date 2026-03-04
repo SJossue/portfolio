@@ -2,6 +2,94 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Corner bracket decorations */
+.corner-brackets {
+  position: relative;
+}
+
+.corner-brackets::before,
+.corner-brackets::after {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  pointer-events: none;
+}
+
+.corner-brackets::before {
+  top: -1px;
+  left: -1px;
+  border-top: 1px solid rgba(0, 240, 255, 0.4);
+  border-left: 1px solid rgba(0, 240, 255, 0.4);
+}
+
+.corner-brackets::after {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 1px solid rgba(0, 240, 255, 0.4);
+  border-right: 1px solid rgba(0, 240, 255, 0.4);
+}
+
+/* Typing / terminal text animation */
+@keyframes typing-cursor {
+  0%,
+  100% {
+    border-color: rgba(0, 240, 255, 0.8);
+  }
+  50% {
+    border-color: transparent;
+  }
+}
+
+.animate-typing-cursor {
+  border-right: 2px solid rgba(0, 240, 255, 0.8);
+  animation: typing-cursor 1s step-end infinite;
+}
+
+/* Glitch text effect */
+@keyframes glitch {
+  0%,
+  100% {
+    transform: translate(0);
+    opacity: 1;
+  }
+  20% {
+    transform: translate(-2px, 1px);
+  }
+  40% {
+    transform: translate(2px, -1px);
+    opacity: 0.8;
+  }
+  60% {
+    transform: translate(-1px, -1px);
+  }
+  80% {
+    transform: translate(1px, 1px);
+    opacity: 0.9;
+  }
+}
+
+@keyframes glitch-skew {
+  0%,
+  100% {
+    transform: skew(0deg);
+  }
+  25% {
+    transform: skew(-0.5deg);
+  }
+  75% {
+    transform: skew(0.5deg);
+  }
+}
+
+.animate-glitch {
+  animation: glitch 3s ease-in-out infinite;
+}
+
+.animate-glitch-skew {
+  animation: glitch-skew 4s ease-in-out infinite;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
