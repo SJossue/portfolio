@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { KeyboardShortcuts } from './KeyboardShortcuts';
 import { Minimap } from './Minimap';
+import { MobileHud } from './MobileHud';
 import { OverlayPanel } from './OverlayPanel';
 import { SceneSkeleton } from './SceneSkeleton';
 import { StatusBar } from './StatusBar';
@@ -111,6 +112,7 @@ export function HomeScene() {
         <>
           <StatusBar />
           <Minimap />
+          <MobileHud />
           <KeyboardShortcuts />
 
           {/* Bottom HUD bar */}
