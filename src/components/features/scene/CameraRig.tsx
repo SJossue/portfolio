@@ -28,6 +28,10 @@ const SHOT_SECTIONS: Record<string, { position: THREE.Vector3; lookAt: THREE.Vec
     position: new THREE.Vector3(-7, 3, 0),
     lookAt: new THREE.Vector3(-9, 2.5, -2),
   },
+  experience: {
+    position: new THREE.Vector3(7, 1.5, -1),
+    lookAt: new THREE.Vector3(9, 0.7, -3),
+  },
 };
 
 const LERP_FACTOR = 0.02;

@@ -3,7 +3,7 @@
 import gsap from 'gsap';
 import type { ReactNode } from 'react';
 import { useCallback, useEffect, useRef } from 'react';
-import { AboutPanel, ContactPanel, ProjectsPanel } from './panels';
+import { AboutPanel, ContactPanel, ExperiencePanel, ProjectsPanel } from './panels';
 
 interface OverlayPanelProps {
   section: string;
@@ -14,12 +14,14 @@ const SECTION_HEADINGS: Record<string, string> = {
   projects: 'Projects',
   contact: 'Contact',
   about: 'About',
+  experience: 'Experience',
 };
 
 const SECTION_PANELS: Record<string, ReactNode> = {
   projects: <ProjectsPanel />,
   contact: <ContactPanel />,
   about: <AboutPanel />,
+  experience: <ExperiencePanel />,
 };
 
 function toTitleCase(str: string): string {
@@ -155,7 +157,7 @@ export function OverlayPanel({ section, onClose }: OverlayPanelProps) {
   return (
     <div
       ref={panelRef}
-      className="absolute right-0 top-0 z-20 flex h-full w-full flex-col border-l border-cyan-400/10 bg-black/85 p-4 backdrop-blur-lg sm:p-8 md:w-1/2"
+      className="corner-brackets absolute right-0 top-0 z-20 flex h-full w-full flex-col border-l border-cyan-400/10 bg-black/85 p-4 backdrop-blur-lg sm:p-8 md:w-1/2"
       style={{ transform: 'translateX(100%)', opacity: 0 }}
       role="dialog"
       aria-modal="true"
@@ -163,7 +165,7 @@ export function OverlayPanel({ section, onClose }: OverlayPanelProps) {
       data-testid="overlay-panel"
     >
       <div className="mb-6 flex items-center justify-between">
-        <h2 className="font-mono text-xl font-bold uppercase tracking-wider text-cyan-300">
+        <h2 className="animate-glitch-skew font-mono text-xl font-bold uppercase tracking-wider text-cyan-300">
           {heading}
         </h2>
         <button

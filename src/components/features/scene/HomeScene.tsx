@@ -13,6 +13,7 @@ function getPrefersReducedMotion(): boolean {
 
 const HUD_SECTIONS = [
   { id: 'projects', label: 'Projects' },
+  { id: 'experience', label: 'Experience' },
   { id: 'contact', label: 'Contact' },
   { id: 'about', label: 'About' },
 ];
