@@ -3,6 +3,7 @@
 import { Suspense, useEffect, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
+import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import { CameraRig } from './CameraRig';
 import { CarRig } from './CarRig';
 import { GarageEnvironment } from './GarageEnvironment';
@@ -29,7 +30,7 @@ function SceneLoader() {
         Initializing
       </div>
       <div className="h-[2px] w-48 overflow-hidden rounded-full bg-white/10">
-        <div className="animate-slide-lr h-full w-1/3 rounded-full bg-gradient-to-r from-cyan-500 to-fuchsia-500 motion-reduce:animate-none" />
+        <div className="h-full w-1/3 animate-slide-lr rounded-full bg-gradient-to-r from-cyan-500 to-fuchsia-500 motion-reduce:animate-none" />
       </div>
       <div className="font-mono text-xs tracking-wider text-white/30">
         Loading 3D environment...
@@ -75,32 +76,6 @@ export function SceneSkeleton() {
         {isGarageReady ? (
           <>
             <fog attach="fog" args={['#050510', 8, 30]} />
-            {/* Ceiling fill */}
-            <pointLight position={[0, 5.5, 0]} color="#1a2040" intensity={0.3} />
-            {/* Left wall cyan */}
-            <pointLight
-              position={[-14, 2.5, 0]}
-              color="#00f0ff"
-              intensity={1.5}
-              distance={12}
-              decay={2}
-            />
-            {/* Right wall magenta */}
-            <pointLight
-              position={[14, 2.5, 0]}
-              color="#ff00cc"
-              intensity={1.5}
-              distance={12}
-              decay={2}
-            />
-            {/* Back wall glow */}
-            <pointLight
-              position={[0, 3, -14]}
-              color="#00f0ff"
-              intensity={1.0}
-              distance={10}
-              decay={2}
-            />
             {/* Workstation area */}
             <pointLight
               position={[-4, 2, -3]}
@@ -126,6 +101,11 @@ export function SceneSkeleton() {
         <CarRig />
         <GarageInteractables />
         <OrbitControls enableZoom={false} enablePan={false} enabled={introState === 'garage'} />
+        {isGarageReady && (
+          <EffectComposer>
+            <Bloom intensity={0.8} luminanceThreshold={0.6} luminanceSmoothing={0.9} mipmapBlur />
+          </EffectComposer>
+        )}
       </Canvas>
     </Suspense>
   );

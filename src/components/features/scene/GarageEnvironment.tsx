@@ -1,4 +1,10 @@
-import { ContactShadows, MeshReflectorMaterial, Sparkles } from '@react-three/drei';
+import { MeshReflectorMaterial } from '@react-three/drei';
+
+import { GarageAtmosphere } from './GarageAtmosphere';
+import { GarageLightFixtures } from './GarageLightFixtures';
+import { GaragePipes } from './GaragePipes';
+import { GarageShelving } from './GarageShelving';
+import { GarageStructure } from './GarageStructure';
 import { NeonTube } from './NeonTube';
 
 export function GarageEnvironment() {
@@ -19,23 +25,11 @@ export function GarageEnvironment() {
         />
       </mesh>
 
-      {/* Back wall */}
-      <mesh position={[0, 3, -15]}>
-        <boxGeometry args={[30, 6, 0.2]} />
-        <meshStandardMaterial color="#111111" metalness={0.7} roughness={0.6} />
-      </mesh>
-
-      {/* Left wall */}
-      <mesh position={[-15, 3, 0]} rotation={[0, Math.PI / 2, 0]}>
-        <boxGeometry args={[30, 6, 0.2]} />
-        <meshStandardMaterial color="#111111" metalness={0.7} roughness={0.6} />
-      </mesh>
-
-      {/* Right wall */}
-      <mesh position={[15, 3, 0]} rotation={[0, Math.PI / 2, 0]}>
-        <boxGeometry args={[30, 6, 0.2]} />
-        <meshStandardMaterial color="#111111" metalness={0.7} roughness={0.6} />
-      </mesh>
+      <GarageStructure />
+      <GaragePipes />
+      <GarageShelving />
+      <GarageLightFixtures />
+      <GarageAtmosphere />
 
       {/* Neon tubes — back wall */}
       <NeonTube
@@ -73,28 +67,6 @@ export function GarageEnvironment() {
         length={10}
         color="#00f0ff"
         distance={8}
-      />
-
-      {/* Industrial pipes — back wall ceiling */}
-      <mesh position={[-6, 5.5, -14.5]} rotation={[0, 0, Math.PI / 2]}>
-        <cylinderGeometry args={[0.08, 0.08, 28, 8]} />
-        <meshStandardMaterial color="#0a0a0a" metalness={0.8} roughness={0.4} />
-      </mesh>
-      <mesh position={[0, 5.8, -14.5]} rotation={[0, 0, Math.PI / 2]}>
-        <cylinderGeometry args={[0.06, 0.06, 28, 8]} />
-        <meshStandardMaterial color="#0a0a0a" metalness={0.8} roughness={0.4} />
-      </mesh>
-
-      {/* Atmospheric particles */}
-      <Sparkles count={40} scale={[20, 5, 20]} color="#00f0ff" opacity={0.15} speed={0.2} />
-
-      <ContactShadows
-        position={[0, 0, 0]}
-        resolution={256}
-        blur={2}
-        opacity={0.6}
-        far={10}
-        frames={1}
       />
     </group>
   );

@@ -1,7 +1,12 @@
 export { CameraRig } from './CameraRig';
 export { CarRig } from './CarRig';
+export { GarageAtmosphere } from './GarageAtmosphere';
 export { GarageEnvironment } from './GarageEnvironment';
 export { GarageInteractables } from './GarageInteractables';
+export { GarageLightFixtures } from './GarageLightFixtures';
+export { GaragePipes } from './GaragePipes';
+export { GarageShelving } from './GarageShelving';
+export { GarageStructure } from './GarageStructure';
 export { Interactable } from './Interactable';
 export { NeonTube } from './NeonTube';
 export { OverlayPanel } from './OverlayPanel';
