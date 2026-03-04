@@ -1,8 +1,7 @@
-44-garage-materials
-45-garage-structure
-46-garage-pipes
-47-garage-shelving
-48-garage-light-fixtures
-49-garage-atmosphere
-50-neon-glow-enhancement
-51-postprocessing-bloom
+52-tool-board-details
+53-garage-decals
+54-ceiling-fan
+55-oil-drums
+56-tire-rack
+57-welding-sparks
+58-floor-drain
