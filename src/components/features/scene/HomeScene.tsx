@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import { KeyboardShortcuts } from './KeyboardShortcuts';
 import { OverlayPanel } from './OverlayPanel';
 import { SceneSkeleton } from './SceneSkeleton';
 import { StatusBar } from './StatusBar';
@@ -13,10 +14,10 @@ function getPrefersReducedMotion(): boolean {
 }
 
 const HUD_SECTIONS = [
-  { id: 'projects', label: 'Projects' },
-  { id: 'experience', label: 'Experience' },
-  { id: 'contact', label: 'Contact' },
-  { id: 'about', label: 'About' },
+  { id: 'projects', label: 'Projects', key: '1' },
+  { id: 'experience', label: 'Experience', key: '2' },
+  { id: 'contact', label: 'Contact', key: '3' },
+  { id: 'about', label: 'About', key: '4' },
 ];
 
 export function HomeScene() {
@@ -103,6 +104,7 @@ export function HomeScene() {
       {introState === 'garage' && (
         <>
           <StatusBar />
+          <KeyboardShortcuts />
 
           {/* Bottom HUD bar */}
           <div
@@ -130,6 +132,7 @@ export function HomeScene() {
                 className="min-h-[44px] rounded-lg border border-white/10 bg-white/5 px-5 py-2 font-mono text-xs uppercase tracking-wider text-white/70 transition-all hover:border-cyan-400/40 hover:bg-cyan-500/10 hover:text-cyan-300 hover:shadow-[0_0_12px_rgba(0,240,255,0.1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/80"
                 aria-label={s.label}
               >
+                <span className="mr-1.5 hidden text-white/30 sm:inline">[{s.key}]</span>
                 {s.label}
               </button>
             ))}
