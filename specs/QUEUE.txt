@@ -1,7 +1,5 @@
-specs/52-tool-board-details.md
-specs/53-garage-decals.md
-specs/54-ceiling-fan.md
-specs/55-oil-drums.md
-specs/56-tire-rack.md
-specs/57-welding-sparks.md
-specs/58-floor-drain.md
+specs/59-flickering-fluorescent.md
+specs/60-swinging-chain.md
+specs/61-hologram-display.md
+specs/62-fire-extinguisher.md
+specs/63-workbench-vise.md
