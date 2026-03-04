@@ -1,23 +1,8 @@
-# Auto-Sprint Queue — Wave 7
-# ===========================
-#
-# Run: ./scripts/auto-sprint.sh --pr
-#
-# Strategy: Specs are ordered with simplest/isolated tasks first
-# (new files only) to maximize success with whole edit format.
-# Specs that modify existing files come later.
-
-# --- Pure new-file specs (highest success probability) ---
-specs/33-about-panel-tests.md
-specs/34-contact-panel-tests.md
-specs/41-content-data-tests.md
-specs/43-scene-state-tests.md
-specs/40-expanded-utils-tests.md
-specs/38-custom-404-page.md
-specs/39-scene-error-boundary.md
-specs/37-aria-live-announcer.md
-specs/42-neon-glow-pulse.md
-
-# --- Specs that modify existing files (lower success probability) ---
-specs/35-json-ld-structured-data.md
-specs/36-skip-to-content.md
+44-garage-materials
+45-garage-structure
+46-garage-pipes
+47-garage-shelving
+48-garage-light-fixtures
+49-garage-atmosphere
+50-neon-glow-enhancement
+51-postprocessing-bloom

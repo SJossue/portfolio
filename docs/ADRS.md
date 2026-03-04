@@ -6,3 +6,4 @@ ADRs capture decisions that change architecture, tooling, performance posture, o
 
 - [0001: Stack and Repository Structure](./adr/0001-stack-and-structure.md)
 - [0002: GSAP for Animation Orchestration](./adr/0002-gsap-animation.md)
+- [0003: Post-Processing Bloom](./adr/0003-postprocessing-bloom.md)

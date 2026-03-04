@@ -13,6 +13,13 @@ vi.mock('@react-three/drei', () => ({
   OrbitControls: () => <div>OrbitControls</div>,
 }));
 
+vi.mock('@react-three/postprocessing', () => ({
+  EffectComposer: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="effect-composer">{children}</div>
+  ),
+  Bloom: () => <div data-testid="bloom" />,
+}));
+
 vi.mock('./CameraRig', () => ({
   CameraRig: () => null,
 }));
