@@ -1,11 +1,12 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { KeyboardShortcuts } from './KeyboardShortcuts';
 import { Minimap } from './Minimap';
 import { OverlayPanel } from './OverlayPanel';
 import { SceneSkeleton } from './SceneSkeleton';
 import { StatusBar } from './StatusBar';
+import { TerminalBoot } from './TerminalBoot';
 import { useSceneState } from './useSceneState';
 
 function getPrefersReducedMotion(): boolean {
@@ -23,6 +24,8 @@ const HUD_SECTIONS = [
 
 export function HomeScene() {
   const { introState, setIntroState, selectedSection, setSelectedSection } = useSceneState();
+  const [bootDone, setBootDone] = useState(false);
+  const handleBootComplete = useCallback(() => setBootDone(true), []);
 
   // Check localStorage for skip preference on mount
   useEffect(() => {
@@ -76,7 +79,9 @@ export function HomeScene() {
         aria-hidden="true"
       />
 
-      {introState === 'idle' && (
+      {introState === 'idle' && !bootDone && <TerminalBoot onComplete={handleBootComplete} />}
+
+      {introState === 'idle' && bootDone && (
         <div className="absolute inset-0 flex items-center justify-center">
           <button
             data-testid="air-out"
