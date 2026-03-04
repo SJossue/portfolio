@@ -1,5 +1,6 @@
 'use client';
 
+import { ExperienceInteractable } from './ExperienceInteractable';
 import { InfoPanelInteractable } from './InfoPanelInteractable';
 import { Interactable } from './Interactable';
 import { MonitorInteractable } from './MonitorInteractable';
@@ -28,12 +29,20 @@ const INTERACTABLES = [
     position: [-9, 2.5, -2] as [number, number, number],
     color: '#444444',
   },
+  {
+    id: 'filecabinet',
+    label: 'File Cabinet',
+    section: 'experience',
+    position: [9, 0.7, -3] as [number, number, number],
+    color: '#333333',
+  },
 ] as const;
 
 const CHILDREN_MAP: Record<string, (hovered: boolean) => React.ReactNode> = {
   workbench: (hovered) => <WorkstationInteractable hovered={hovered} />,
   monitor: (hovered) => <MonitorInteractable hovered={hovered} />,
   toolboard: (hovered) => <InfoPanelInteractable hovered={hovered} />,
+  filecabinet: (hovered) => <ExperienceInteractable hovered={hovered} />,
 };
 
 export function GarageInteractables() {

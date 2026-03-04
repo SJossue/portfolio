@@ -1,11 +1,23 @@
 import { MeshReflectorMaterial } from '@react-three/drei';
 
+import { CeilingFan } from './CeilingFan';
+import { FireExtinguisher } from './FireExtinguisher';
+import { FlickeringLight } from './FlickeringLight';
+import { FloorDrain } from './FloorDrain';
 import { GarageAtmosphere } from './GarageAtmosphere';
+import { GarageDecals } from './GarageDecals';
 import { GarageLightFixtures } from './GarageLightFixtures';
 import { GaragePipes } from './GaragePipes';
 import { GarageShelving } from './GarageShelving';
 import { GarageStructure } from './GarageStructure';
+import { HologramDisplay } from './HologramDisplay';
 import { NeonTube } from './NeonTube';
+import { OilDrums } from './OilDrums';
+import { SwingingChain } from './SwingingChain';
+import { TireRack } from './TireRack';
+import { ToolBoardDetails } from './ToolBoardDetails';
+import { WeldingSparks } from './WeldingSparks';
+import { WorkbenchVise } from './WorkbenchVise';
 
 export function GarageEnvironment() {
   return (
@@ -30,6 +42,18 @@ export function GarageEnvironment() {
       <GarageShelving />
       <GarageLightFixtures />
       <GarageAtmosphere />
+      <GarageDecals />
+      <ToolBoardDetails />
+      <OilDrums />
+      <TireRack />
+      <FloorDrain />
+      <FireExtinguisher />
+      <WorkbenchVise />
+      <HologramDisplay />
+      <CeilingFan />
+      <FlickeringLight />
+      <SwingingChain />
+      <WeldingSparks />
 
       {/* Neon tubes — back wall */}
       <NeonTube

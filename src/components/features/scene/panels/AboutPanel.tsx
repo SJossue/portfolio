@@ -1,10 +1,14 @@
 import { aboutData } from '@/content';
+import { ResumeButton } from './ResumeButton';
 
 export function AboutPanel() {
   return (
     <div className="flex flex-col gap-6">
       {/* Bio */}
       <p className="text-sm leading-relaxed text-white/70">{aboutData.bio}</p>
+
+      {/* Resume download */}
+      <ResumeButton />
 
       {/* Highlights */}
       <div className="flex gap-4">

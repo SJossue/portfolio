@@ -31,9 +31,9 @@ describe('GarageInteractables', () => {
     expect(container).toBeTruthy();
   });
 
-  it('renders three interactable items when in garage state', () => {
+  it('renders four interactable items when in garage state', () => {
     const { getAllByTestId } = render(<GarageInteractables />);
-    expect(getAllByTestId('box')).toHaveLength(3);
+    expect(getAllByTestId('box')).toHaveLength(4);
   });
 
   it('renders nothing when introState is not garage', () => {
