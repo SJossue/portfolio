@@ -1,4 +1,4 @@
-import { MeshReflectorMaterial } from '@react-three/drei';
+import * as THREE from 'three';
 
 import { CeilingFan } from './CeilingFan';
 import { CyberpunkPoster } from './CyberpunkPoster';
@@ -32,16 +32,7 @@ export function GarageEnvironment() {
       {/* Reflective floor */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]}>
         <planeGeometry args={[30, 30]} />
-        <MeshReflectorMaterial
-          blur={[300, 100]}
-          resolution={512}
-          mixBlur={0.8}
-          mixStrength={1.2}
-          roughness={0.9}
-          color="#050505"
-          metalness={0.3}
-          mirror={0.5}
-        />
+        <meshStandardMaterial color="#050505" roughness={0.85} metalness={0.4} />
       </mesh>
 
       <GarageStructure />
