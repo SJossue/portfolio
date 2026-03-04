@@ -15,9 +15,9 @@ export function MonitorInteractable({ hovered }: MonitorInteractableProps) {
       <mesh position={[0, 0, 0.05]}>
         <boxGeometry args={[1.5, 0.9, 0.01]} />
         <meshStandardMaterial
-          emissive="#0066ff"
-          emissiveIntensity={hovered ? 6 : 3}
-          color="#000a1a"
+          emissive="#003366"
+          emissiveIntensity={hovered ? 4 : 2}
+          color="#001122"
           toneMapped={false}
         />
       </mesh>
