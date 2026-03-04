@@ -49,3 +49,42 @@ export const FLOOR_STAIN = {
   transparent: true,
   opacity: 0.4,
 } as const;
+
+export const WORN_RUBBER = {
+  color: '#0d0d0d',
+  metalness: 0.0,
+  roughness: 0.95,
+} as const;
+
+export const CHROME = {
+  color: '#cccccc',
+  metalness: 0.95,
+  roughness: 0.1,
+} as const;
+
+export const FROSTED_GLASS = {
+  color: '#1a2a3a',
+  metalness: 0.1,
+  roughness: 0.3,
+  transparent: true,
+  opacity: 0.6,
+} as const;
+
+export const SCREEN_GLOW = {
+  emissive: '#003344',
+  emissiveIntensity: 1.5,
+  color: '#001122',
+  toneMapped: false,
+} as const;
+
+export const HAZARD_YELLOW = {
+  color: '#cc8800',
+  metalness: 0.2,
+  roughness: 0.7,
+} as const;
+
+export const CONCRETE_LIGHT = {
+  color: '#1a1a1a',
+  metalness: 0.05,
+  roughness: 0.95,
+} as const;
