@@ -1,6 +1,7 @@
 import { MeshReflectorMaterial } from '@react-three/drei';
 
 import { CeilingFan } from './CeilingFan';
+import { CyberpunkPoster } from './CyberpunkPoster';
 import { FireExtinguisher } from './FireExtinguisher';
 import { FlickeringLight } from './FlickeringLight';
 import { FloorDrain } from './FloorDrain';
@@ -11,11 +12,17 @@ import { GaragePipes } from './GaragePipes';
 import { GarageShelving } from './GarageShelving';
 import { GarageStructure } from './GarageStructure';
 import { HologramDisplay } from './HologramDisplay';
+import { HydraulicLift } from './HydraulicLift';
+import { NeonNameSign } from './NeonNameSign';
+import { NeonOpenSign } from './NeonOpenSign';
 import { NeonTube } from './NeonTube';
 import { OilDrums } from './OilDrums';
+import { RollingToolCart } from './RollingToolCart';
+import { SecurityCamera } from './SecurityCamera';
 import { SwingingChain } from './SwingingChain';
 import { TireRack } from './TireRack';
 import { ToolBoardDetails } from './ToolBoardDetails';
+import { VendingMachine } from './VendingMachine';
 import { WeldingSparks } from './WeldingSparks';
 import { WorkbenchVise } from './WorkbenchVise';
 
@@ -54,6 +61,14 @@ export function GarageEnvironment() {
       <FlickeringLight />
       <SwingingChain />
       <WeldingSparks />
+      <HydraulicLift />
+      <VendingMachine />
+      <SecurityCamera />
+      <RollingToolCart />
+      <NeonNameSign />
+      <NeonOpenSign />
+      <CyberpunkPoster position={[-7, 3, -14.75]} accentColor="#00f0ff" headerColor="#ff6600" />
+      <CyberpunkPoster position={[7, 3, -14.75]} accentColor="#ff00cc" headerColor="#00f0ff" />
 
       {/* Neon tubes — back wall */}
       <NeonTube
@@ -91,6 +106,24 @@ export function GarageEnvironment() {
         length={10}
         color="#00f0ff"
         distance={8}
+      />
+
+      {/* Left wall near car bay — cyan vertical tubes */}
+      <NeonTube position={[-14.8, 2, 8]} length={3} color="#00f0ff" distance={5} />
+      <NeonTube position={[-14.8, 2, 12]} length={3} color="#00f0ff" distance={5} />
+
+      {/* Right wall — magenta vertical tubes */}
+      <NeonTube position={[14.8, 2, 2]} length={3} color="#ff00cc" distance={5} />
+      <NeonTube position={[14.8, 2, 8]} length={3} color="#ff00cc" distance={5} />
+
+      {/* Floor accent strip along back wall */}
+      <NeonTube
+        position={[0, 0.05, -14.5]}
+        rotation={[0, 0, Math.PI / 2]}
+        length={20}
+        color="#ff00cc"
+        intensity={1}
+        distance={4}
       />
     </group>
   );

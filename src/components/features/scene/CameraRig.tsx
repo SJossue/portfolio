@@ -32,6 +32,26 @@ const SHOT_SECTIONS: Record<string, { position: THREE.Vector3; lookAt: THREE.Vec
     position: new THREE.Vector3(7, 1.5, -1),
     lookAt: new THREE.Vector3(9, 0.7, -3),
   },
+  car: {
+    position: new THREE.Vector3(-5, 2, 10),
+    lookAt: new THREE.Vector3(-9, 0.5, 7),
+  },
+  hydraulicLift: {
+    position: new THREE.Vector3(-6, 1.5, 9),
+    lookAt: new THREE.Vector3(-9, 0, 7),
+  },
+  vendingMachine: {
+    position: new THREE.Vector3(-11, 2, 4),
+    lookAt: new THREE.Vector3(-14, 1.25, 2),
+  },
+  toolCart: {
+    position: new THREE.Vector3(-2, 1.5, 1),
+    lookAt: new THREE.Vector3(-5, 0.5, -1),
+  },
+  securityCamera: {
+    position: new THREE.Vector3(-11, 4, -11),
+    lookAt: new THREE.Vector3(-14.5, 5.2, -14),
+  },
 };
 
 const LERP_FACTOR = 0.02;

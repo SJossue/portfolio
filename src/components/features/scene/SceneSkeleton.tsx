@@ -92,6 +92,14 @@ export function SceneSkeleton() {
               distance={6}
               decay={2}
             />
+            {/* Car bay light */}
+            <pointLight
+              position={[-9, 4, 8]}
+              color="#00f0ff"
+              intensity={0.6}
+              distance={8}
+              decay={2}
+            />
             <GarageEnvironment />
           </>
         ) : (

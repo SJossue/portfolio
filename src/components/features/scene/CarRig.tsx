@@ -43,7 +43,7 @@ export function CarRig() {
   }, []);
 
   return (
-    <group position={[0, 0.5, 0]}>
+    <group position={[-9, 0.5, 7]} rotation={[0, Math.PI * 0.15, 0]}>
       {/* Chassis — GSAP animates this group's Y position */}
       <group ref={chassisRef}>
         <Box args={[2, 1, 4]} position={[0, 0, 0]}>
