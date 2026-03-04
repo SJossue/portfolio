@@ -37,6 +37,13 @@ export const NEON_ORANGE = {
   toneMapped: false,
 } as const;
 
+export const NEON_GREEN = {
+  emissive: '#00ff88',
+  emissiveIntensity: 3,
+  color: '#00ff88',
+  toneMapped: false,
+} as const;
+
 export const FLOOR_STAIN = {
   color: '#080808',
   transparent: true,
