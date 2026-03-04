@@ -10,7 +10,8 @@ test('homepage loads fullscreen scene', async ({ page }) => {
 test('home loads and shows intro controls', async ({ page }) => {
   await page.goto('/');
 
-  await expect(page.getByRole('button', { name: /air out/i })).toBeVisible();
+  // Terminal boot sequence plays before the AIR OUT button appears (~5s)
+  await expect(page.getByRole('button', { name: /air out/i })).toBeVisible({ timeout: 15000 });
 
   await expect(page.getByRole('button', { name: /skip intro/i })).toBeVisible();
 });
@@ -26,6 +27,8 @@ test('skip intro shows garage UI shell', async ({ page }) => {
 test('air out triggers animation and shows garage shell', async ({ page }) => {
   await page.goto('/');
 
+  // Wait for terminal boot sequence to finish before clicking
+  await expect(page.getByRole('button', { name: /air out/i })).toBeVisible({ timeout: 15000 });
   await page.getByRole('button', { name: /air out/i }).click();
 
   // Garage shell should appear after animation completes
@@ -36,7 +39,8 @@ test('air out triggers animation and shows garage shell', async ({ page }) => {
 test('escape key skips intro', async ({ page }) => {
   await page.goto('/');
 
-  await expect(page.getByRole('button', { name: /air out/i })).toBeVisible();
+  // Wait for terminal boot to finish
+  await expect(page.getByRole('button', { name: /air out/i })).toBeVisible({ timeout: 15000 });
 
   await page.keyboard.press('Escape');
 
