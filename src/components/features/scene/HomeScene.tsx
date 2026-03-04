@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { OverlayPanel } from './OverlayPanel';
 import { SceneSkeleton } from './SceneSkeleton';
+import { StatusBar } from './StatusBar';
 import { useSceneState } from './useSceneState';
 
 function getPrefersReducedMotion(): boolean {
@@ -101,6 +102,8 @@ export function HomeScene() {
 
       {introState === 'garage' && (
         <>
+          <StatusBar />
+
           {/* Bottom HUD bar */}
           <div
             className="absolute bottom-0 left-0 right-0 z-10 flex items-center justify-center gap-4 border-t border-cyan-400/10 bg-black/70 p-4 backdrop-blur-md"
