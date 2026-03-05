@@ -98,12 +98,12 @@ export function SceneSkeleton() {
           enableZoom={true}
           enablePan={false}
           minDistance={2}
-          maxDistance={14}
+          maxDistance={10.5}
           minPolarAngle={Math.PI / 2.2}
-          maxPolarAngle={Math.PI / 1.9}
-          minAzimuthAngle={-Math.PI / 2.5}
+          maxPolarAngle={Math.PI / 2.2}
+          minAzimuthAngle={-Math.PI / 4}
           maxAzimuthAngle={Math.PI / 4}
-          target={[0, 0.5, 0]}
+          target={[0, 0.8, 0]}
         />
       </Canvas>
     </Suspense>

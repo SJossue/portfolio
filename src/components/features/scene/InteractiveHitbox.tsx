@@ -14,12 +14,17 @@ export function InteractiveHitbox({ section, position, args, rotation }: Interac
   const setSelectedSection = useSceneState((s) => s.setSelectedSection);
   const setHoveredSection = useSceneState((s) => s.setHoveredSection);
   const interactionLocked = useSceneState((s) => s.interactionLocked);
+  const selectedSection = useSceneState((s) => s.selectedSection);
 
   function handleClick(e: ThreeEvent<MouseEvent>) {
     e.stopPropagation();
-    if (!interactionLocked) {
+    if (!interactionLocked && !selectedSection) {
       setSelectedSection(section);
     }
+  }
+
+  function handleDoubleClick(e: ThreeEvent<MouseEvent>) {
+    e.stopPropagation();
   }
 
   function handlePointerOver(e: ThreeEvent<PointerEvent>) {
@@ -31,8 +36,10 @@ export function InteractiveHitbox({ section, position, args, rotation }: Interac
   }
 
   function handlePointerOut() {
-    setHoveredSection(null);
-    document.body.style.cursor = 'default';
+    if (useSceneState.getState().hoveredSection === section) {
+      setHoveredSection(null);
+      document.body.style.cursor = 'default';
+    }
   }
 
   return (
@@ -40,6 +47,7 @@ export function InteractiveHitbox({ section, position, args, rotation }: Interac
       position={position}
       rotation={rotation}
       onClick={handleClick}
+      onDoubleClick={handleDoubleClick}
       onPointerOver={handlePointerOver}
       onPointerOut={handlePointerOut}
       data-testid={`hitbox-${section}`}

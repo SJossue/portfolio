@@ -9,3 +9,4 @@ export { InteractiveHitbox } from './InteractiveHitbox';
 export { SceneHitboxes } from './SceneHitboxes';
 export { useEmissiveGlow } from './useEmissiveGlow';
 export { useSceneState } from './useSceneState';
+export { TopNav } from './TopNav';

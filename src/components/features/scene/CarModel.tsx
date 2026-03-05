@@ -37,8 +37,7 @@ export function CarModel(props: GroupProps) {
     return group;
   }, [scene]);
 
-  // Car glows green on about hover
-  useEmissiveGlow(groupRef, 'about', '#00ff88', 1.5);
+  useEmissiveGlow(groupRef, 'about', '#ffffff', 0.4);
 
   return (
     <group ref={groupRef} {...props}>

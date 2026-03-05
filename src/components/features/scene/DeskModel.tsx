@@ -37,8 +37,7 @@ export function DeskModel(props: GroupProps) {
     return group;
   }, [scene]);
 
-  // Desk glows cyan on contact hover
-  useEmissiveGlow(groupRef, 'contact', '#00f0ff', 1.5);
+  useEmissiveGlow(groupRef, 'contact', '#ffffff', 0.4);
 
   return (
     <group ref={groupRef} {...props}>

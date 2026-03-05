@@ -46,14 +46,25 @@ const LERP_FACTOR = 0.045;
 export function CameraRig() {
   const selectedSection = useSceneState((s) => s.selectedSection);
   const setCameraArrived = useSceneState((s) => s.setCameraArrived);
+
   const targetLookAt = useRef(new THREE.Vector3(0, 0.5, 0));
   const isReturning = useRef(false);
   const arrivedRef = useRef(false);
+
+  // Save the user's manual orbit position and target right before a transition
+  const savedOrbitPosition = useRef(new THREE.Vector3(-2, 3.5, 10));
+  const savedOrbitTarget = useRef(new THREE.Vector3(0, 0.5, 0));
+
   const controls = useThree((state) => state.controls as OrbitControlsImpl | null);
 
   useEffect(() => {
     arrivedRef.current = false;
-  }, [selectedSection]);
+    // When selectedSection clears, instantly flag that we've left the state
+    // so the UI unmounts immediately to prevent rendering conflicts.
+    if (!selectedSection) {
+      setCameraArrived(false);
+    }
+  }, [selectedSection, setCameraArrived]);
 
   useFrame(({ camera }) => {
     let target;
@@ -64,36 +75,37 @@ export function CameraRig() {
       isReturning.current = true;
       if (controls) controls.enabled = false;
     } else if (isReturning.current) {
-      // Flying back to initial wide shot
-      target = SHOT_WIDE;
+      // Flying back to user's saved orbit
+      target = { position: savedOrbitPosition.current, lookAt: savedOrbitTarget.current };
       if (controls) controls.enabled = false;
 
       const dist = camera.position.distanceTo(target.position);
-      if (dist < 0.15) {
-        // Arrived at wide shot, give control back to OrbitControls
+      if (dist < 0.05) {
+        // Arrived back at free-look state
         isReturning.current = false;
         if (controls) {
-          // Snap camera to exact position before re-enabling controls
-          camera.position.copy(SHOT_WIDE.position);
-          targetLookAt.current.copy(SHOT_WIDE.lookAt);
-          camera.lookAt(SHOT_WIDE.lookAt);
-          controls.target.copy(SHOT_WIDE.lookAt);
+          // Sync target look to OrbitControls
+          targetLookAt.current.copy(savedOrbitTarget.current);
+          controls.target.copy(savedOrbitTarget.current);
           controls.update();
           controls.enabled = true;
         }
         return;
       }
     } else {
-      // Free orbit mode: just keep the targetLookAt synced to the OrbitControls target
-      // so that if the user clicks a section while orbiting, the transition is smooth
+      // Free orbit mode: constantly track where the user is looking
+      // so if they click a section, we remember exactly where they were
       if (controls) {
         targetLookAt.current.copy(controls.target);
+        savedOrbitTarget.current.copy(controls.target);
+        savedOrbitPosition.current.copy(camera.position);
       }
       return;
     }
 
     if (!target) return;
 
+    // Smoothly interolate camera transform
     camera.position.lerp(target.position, LERP_FACTOR);
     targetLookAt.current.lerp(target.lookAt, LERP_FACTOR);
     camera.lookAt(targetLookAt.current);

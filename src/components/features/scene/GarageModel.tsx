@@ -16,11 +16,15 @@ export function GarageModel(props: GroupProps) {
 
   const cloned = useMemo(() => scene.clone(true), [scene]);
 
-  // Garage maps to two sections with different glow colors
-  useEmissiveGlow(groupRef, 'projects', '#ff6600', 1.5, (name) =>
-    /^Scene setting_(019|020|024|027|039)/.test(name),
+  useEmissiveGlow(groupRef, 'projects', '#ffffff', 0.4, (name) =>
+    /^Scene[_ ]setting_0(19|20|24|27)/.test(name),
   );
-  useEmissiveGlow(groupRef, 'tools', '#ff00cc', 1.5);
+  useEmissiveGlow(groupRef, 'tools', '#ffffff', 0.4, (name) =>
+    /^(Scene[_ ]setting_0(11|13|54|55)|Tools_)/.test(name),
+  );
+  useEmissiveGlow(groupRef, 'experience', '#ffffff', 0.4, (name) =>
+    /^Scene[_ ]setting_091/.test(name),
+  );
 
   return (
     <group ref={groupRef} {...props}>

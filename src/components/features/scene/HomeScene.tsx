@@ -1,8 +1,7 @@
 'use client';
 
 import { useEffect, useCallback, useRef } from 'react';
-import { OverlayPanel } from './OverlayPanel';
-import { SceneSkeleton } from './SceneSkeleton';
+import { OverlayPanel, SceneSkeleton, TopNav } from '.';
 import { TerminalBoot } from './TerminalBoot';
 import { useSceneState } from './useSceneState';
 
@@ -47,6 +46,7 @@ export function HomeScene() {
   return (
     <div className="relative h-screen w-full">
       <SceneSkeleton />
+      <TopNav />
 
       {introState !== 'garage' && (
         <div

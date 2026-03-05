@@ -16,8 +16,15 @@ vi.mock('./useSceneState', () => ({
       introState: string;
       selectedSection: string | null;
       setIntroState: () => void;
+      setCameraArrived: () => void;
     }) => unknown,
-  ) => selector({ introState: 'idle', selectedSection: null, setIntroState: vi.fn() }),
+  ) =>
+    selector({
+      introState: 'idle',
+      selectedSection: null,
+      setIntroState: vi.fn(),
+      setCameraArrived: vi.fn(),
+    }),
 }));
 
 import { CameraRig } from './CameraRig';
