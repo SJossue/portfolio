@@ -3,11 +3,7 @@
 import { Suspense, useEffect, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
-import { EffectComposer, Bloom } from '@react-three/postprocessing';
-import { CameraRig } from './CameraRig';
-import { CarRig } from './CarRig';
-import { GarageEnvironment } from './GarageEnvironment';
-import { GarageInteractables } from './GarageInteractables';
+import { SceneContent } from './SceneContent';
 import { useSceneState } from './useSceneState';
 
 function isWebGL2Available(): boolean {
@@ -23,14 +19,12 @@ function isWebGL2Available(): boolean {
 function SceneLoader() {
   return (
     <div
-      className="flex h-full w-full flex-col items-center justify-center gap-6 bg-[#050510]"
+      className="flex h-full w-full flex-col items-center justify-center gap-6 bg-[#0a0908]"
       role="status"
     >
-      <div className="font-mono text-2xl uppercase tracking-[0.3em] text-cyan-400">
-        Initializing
-      </div>
+      <div className="font-mono text-2xl uppercase tracking-[0.3em] text-white/80">Loading</div>
       <div className="h-[2px] w-48 overflow-hidden rounded-full bg-white/10">
-        <div className="h-full w-1/3 animate-slide-lr rounded-full bg-gradient-to-r from-cyan-500 to-fuchsia-500 motion-reduce:animate-none" />
+        <div className="h-full w-1/3 animate-slide-lr rounded-full bg-gradient-to-r from-amber-400 to-orange-500 motion-reduce:animate-none" />
       </div>
       <div className="font-mono text-xs tracking-wider text-white/30">
         Loading 3D environment...
@@ -62,50 +56,26 @@ export function SceneSkeleton() {
     }
   }, []);
 
-  const isGarageReady = introState === 'garage';
-
   if (!hasWebGL2) {
     return <WebGLFallback />;
   }
 
   return (
     <Suspense fallback={<SceneLoader />}>
-      <Canvas camera={{ position: [1.5, 0.8, 3], fov: 50 }} gl={{ alpha: true, antialias: true }}>
-        <color attach="background" args={[isGarageReady ? '#050510' : '#0a0a0a']} />
-        <ambientLight intensity={isGarageReady ? 0.05 : 0.5} />
-        {isGarageReady ? (
-          <>
-            <fog attach="fog" args={['#050510', 8, 30]} />
-            {/* Warm workshop light */}
-            <pointLight
-              position={[-2, 3, 0]}
-              color="#ff6600"
-              intensity={1}
-              distance={12}
-              decay={2}
-            />
-            {/* Cool monitor glow */}
-            <pointLight
-              position={[4, 3, -7]}
-              color="#0066ff"
-              intensity={0.8}
-              distance={8}
-              decay={2}
-            />
-            <GarageEnvironment />
-          </>
-        ) : (
-          <pointLight position={[10, 10, 10]} />
-        )}
-        <CameraRig />
-        <CarRig />
-        <GarageInteractables />
-        <OrbitControls enableZoom={false} enablePan={false} enabled={introState === 'garage'} />
-        {isGarageReady && (
-          <EffectComposer disableNormalPass multisampling={0}>
-            <Bloom intensity={0.5} luminanceThreshold={0.7} luminanceSmoothing={0.9} mipmapBlur />
-          </EffectComposer>
-        )}
+      <Canvas camera={{ position: [0, 2, 2.5], fov: 50 }} gl={{ alpha: true, antialias: true }}>
+        <color attach="background" args={['#0a0908']} />
+        <fog attach="fog" args={['#0a0908', 8, 15]} />
+        <SceneContent />
+        <OrbitControls
+          enableZoom={true}
+          enablePan={false}
+          minDistance={2}
+          maxDistance={5.5}
+          maxPolarAngle={Math.PI / 2}
+          minAzimuthAngle={-Math.PI / 3}
+          maxAzimuthAngle={Math.PI / 3}
+          target={[0, 1, -1.5]}
+        />
       </Canvas>
     </Suspense>
   );

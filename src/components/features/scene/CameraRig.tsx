@@ -25,8 +25,8 @@ const SHOT_SECTIONS: Record<string, { position: THREE.Vector3; lookAt: THREE.Vec
     lookAt: new THREE.Vector3(4, 2, -7),
   },
   about: {
-    position: new THREE.Vector3(-7, 3, 0),
-    lookAt: new THREE.Vector3(-9, 2.5, -2),
+    position: new THREE.Vector3(-5, 1.5, 11),
+    lookAt: new THREE.Vector3(-9, 0.5, 7),
   },
   experience: {
     position: new THREE.Vector3(7, 1.5, -1),

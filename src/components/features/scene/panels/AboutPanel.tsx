@@ -13,9 +13,13 @@ export function AboutPanel() {
       {/* Highlights */}
       <div className="flex gap-4">
         {aboutData.highlights.map((h) => (
-          <div key={h.label} className="flex-1 rounded-lg border border-white/10 bg-white/5 p-3">
-            <div className="text-xs text-fuchsia-400">{h.label}</div>
-            <div className="mt-1 text-sm font-medium text-white">{h.value}</div>
+          <div key={h.label} className="flex-1 border-l-2 border-white/40 bg-white/5 p-3">
+            <div className="font-mono text-xs uppercase tracking-widest text-white/50">
+              {h.label}
+            </div>
+            <div className="mt-1 font-mono text-lg text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]">
+              {h.value}
+            </div>
           </div>
         ))}
       </div>
@@ -24,7 +28,7 @@ export function AboutPanel() {
       <div className="grid grid-cols-2 gap-4">
         {aboutData.skills.map((group) => (
           <div key={group.category}>
-            <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-cyan-400">
+            <h3 className="mb-2 border-b border-white/20 pb-2 font-mono text-xs font-bold uppercase tracking-widest text-white">
               {group.category}
             </h3>
             <ul className="space-y-1">

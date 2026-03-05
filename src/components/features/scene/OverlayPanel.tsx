@@ -71,8 +71,8 @@ export function OverlayPanel({ section, onClose }: OverlayPanelProps) {
       onClose();
     }, 500);
     gsap.to(panelRef.current, {
-      x: '100%',
       opacity: 0,
+      scale: 1.02,
       duration: 0.3,
       ease: 'power3.in',
       onComplete: () => {
@@ -88,10 +88,10 @@ export function OverlayPanel({ section, onClose }: OverlayPanelProps) {
     previousFocusRef.current = document.activeElement;
     gsap.fromTo(
       panelRef.current,
-      { x: '100%', opacity: 0 },
+      { opacity: 0, scale: 0.98 },
       {
-        x: '0%',
         opacity: 1,
+        scale: 1,
         duration: 0.4,
         ease: 'power3.out',
         onComplete: () => {
@@ -157,29 +157,51 @@ export function OverlayPanel({ section, onClose }: OverlayPanelProps) {
   return (
     <div
       ref={panelRef}
-      className="corner-brackets absolute right-0 top-0 z-20 flex h-full w-full flex-col border-l border-cyan-400/10 bg-black/85 p-4 backdrop-blur-lg sm:p-8 md:w-1/2"
-      style={{ transform: 'translateX(100%)', opacity: 0 }}
+      className="pointer-events-none absolute inset-0 z-40 flex h-full w-full justify-between p-6 md:p-12"
+      style={{ opacity: 0 }}
       role="dialog"
       aria-modal="true"
       aria-label={heading}
       data-testid="overlay-panel"
     >
-      <div className="mb-6 flex items-center justify-between">
-        <h2 className="animate-glitch-skew font-mono text-xl font-bold uppercase tracking-wider text-cyan-300">
+      {/* LEFT COLUMN - Sub-navigation */}
+      <div className="corner-brackets pointer-events-auto flex h-full w-full max-w-[300px] flex-col border border-white/20 bg-white/5 p-6 shadow-[0_0_30px_rgba(255,255,255,0.05)] backdrop-blur-md">
+        <h2 className="animate-glitch-skew mb-8 font-mono text-3xl font-bold uppercase tracking-widest text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.8)]">
           {heading}
         </h2>
-        <button
-          ref={closeButtonRef}
-          onClick={handleClose}
-          className="min-h-[44px] min-w-[44px] rounded-lg border border-white/10 bg-white/5 px-3 py-2 font-mono text-xs uppercase tracking-wider text-white/50 transition-all hover:border-fuchsia-400/40 hover:bg-fuchsia-500/10 hover:text-fuchsia-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-400/80"
-          aria-label="Close panel"
-          data-testid="close-panel"
-        >
-          Close
-        </button>
+        <div className="flex flex-col gap-4">
+          {/* Loadout categories for visual flair */}
+          {['OVERVIEW', 'DETAILS', 'LOGS'].map((item, i) => (
+            <button
+              key={item}
+              className={`group relative flex items-center gap-4 border p-4 text-left font-mono text-sm uppercase tracking-widest ${i === 0 ? 'border-white bg-white text-black shadow-[0_0_15px_rgba(255,255,255,0.3)]' : 'border-white/20 bg-transparent text-white/70 hover:border-white hover:text-white'} transition-all`}
+            >
+              <span
+                className={`block h-1.5 w-1.5 ${i === 0 ? 'bg-black' : 'bg-white/50 group-hover:bg-white'}`}
+              />
+              {item}
+            </button>
+          ))}
+        </div>
       </div>
-      <div className="scrollbar-cyber flex-1 overflow-y-auto">
-        {SECTION_PANELS[section] ?? null}
+
+      {/* RIGHT COLUMN - Stats and Details Container */}
+      <div className="corner-brackets pointer-events-auto flex h-full w-full max-w-[420px] flex-col border border-white/20 bg-white/5 p-6 shadow-[0_0_30px_rgba(255,255,255,0.05)] backdrop-blur-md">
+        <div className="mb-6 flex justify-end">
+          <button
+            ref={closeButtonRef}
+            onClick={handleClose}
+            className="flex min-h-[44px] items-center gap-2 border border-white/20 bg-black/40 px-5 py-2 font-mono text-xs uppercase tracking-widest text-white transition-all hover:bg-white hover:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            aria-label="Close panel"
+            data-testid="close-panel"
+          >
+            <span>[ ESC ]</span> BACK
+          </button>
+        </div>
+
+        <div className="scrollbar-cyber flex-1 overflow-y-auto pr-4 text-white/90">
+          {SECTION_PANELS[section] ?? null}
+        </div>
       </div>
     </div>
   );

@@ -7,12 +7,12 @@ import type { JSX } from 'react';
 
 type GroupProps = JSX.IntrinsicElements['group'];
 
-const MODEL_PATH = '/models/accord-transformed.glb';
+const MODEL_PATH = '/models/desk-transformed.glb';
 
-/** Target size of the car along its longest axis (in scene units). */
-const TARGET_SIZE = 3;
+/** Target size of the desk along its longest axis (in scene units). */
+const TARGET_SIZE = 2;
 
-export function CarModel(props: GroupProps) {
+export function DeskModel(props: GroupProps) {
   const { scene } = useGLTF(MODEL_PATH);
 
   const cloned = useMemo(() => {
@@ -25,6 +25,9 @@ export function CarModel(props: GroupProps) {
     box.getSize(size);
     box.getCenter(center);
 
+    console.log('[DeskModel] bounding box size:', size);
+    console.log('[DeskModel] bounding box center:', center);
+
     const maxDim = Math.max(size.x, size.y, size.z);
     const scale = maxDim > 0 ? TARGET_SIZE / maxDim : 1;
 
@@ -32,7 +35,7 @@ export function CarModel(props: GroupProps) {
     const pivot = new THREE.Group();
     pivot.add(clone);
 
-    // Center the model, keeping the bottom at y=0
+    // Center XZ, sit on floor (y=0)
     clone.position.set(-center.x, -box.min.y, -center.z);
     pivot.scale.setScalar(scale);
 
