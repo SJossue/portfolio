@@ -62,19 +62,25 @@ export function SceneSkeleton() {
 
   return (
     <Suspense fallback={<SceneLoader />}>
-      <Canvas camera={{ position: [0, 2, 2.5], fov: 50 }} gl={{ alpha: true, antialias: true }}>
+      <Canvas
+        camera={{ position: [0, 0.8, 10.5], fov: 50 }}
+        gl={{ alpha: true, antialias: false, powerPreference: 'high-performance' }}
+        dpr={[1, 1.5]}
+        performance={{ min: 0.5 }}
+      >
         <color attach="background" args={['#0a0908']} />
-        <fog attach="fog" args={['#0a0908', 8, 15]} />
+        <fog attach="fog" args={['#0a0908', 12, 20]} />
         <SceneContent />
         <OrbitControls
           enableZoom={true}
           enablePan={false}
           minDistance={2}
-          maxDistance={5.5}
-          maxPolarAngle={Math.PI / 2}
-          minAzimuthAngle={-Math.PI / 3}
-          maxAzimuthAngle={Math.PI / 3}
-          target={[0, 1, -1.5]}
+          maxDistance={10.5}
+          minPolarAngle={Math.PI / 2.2}
+          maxPolarAngle={Math.PI / 1.9}
+          minAzimuthAngle={-Math.PI / 4}
+          maxAzimuthAngle={Math.PI / 4}
+          target={[0, 1, 0]}
         />
       </Canvas>
     </Suspense>

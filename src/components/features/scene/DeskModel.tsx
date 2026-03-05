@@ -10,41 +10,37 @@ type GroupProps = JSX.IntrinsicElements['group'];
 const MODEL_PATH = '/models/desk-transformed.glb';
 
 /** Target size of the desk along its longest axis (in scene units). */
-const TARGET_SIZE = 2;
+const TARGET_SIZE = 3.5;
 
 export function DeskModel(props: GroupProps) {
   const { scene } = useGLTF(MODEL_PATH);
 
-  const cloned = useMemo(() => {
+  // Clone is required: React Strict Mode (dev) unmounts/remounts, which
+  // detaches the original scene. clone(true) shares geometry & materials
+  // by reference so VRAM cost is negligible.
+  const pivot = useMemo(() => {
     const clone = scene.clone(true);
 
-    // Compute bounding box to auto-center and auto-scale
     const box = new THREE.Box3().setFromObject(clone);
     const size = new THREE.Vector3();
     const center = new THREE.Vector3();
     box.getSize(size);
     box.getCenter(center);
 
-    console.log('[DeskModel] bounding box size:', size);
-    console.log('[DeskModel] bounding box center:', center);
-
     const maxDim = Math.max(size.x, size.y, size.z);
     const scale = maxDim > 0 ? TARGET_SIZE / maxDim : 1;
 
-    // Wrap in a pivot group that normalises transforms
-    const pivot = new THREE.Group();
-    pivot.add(clone);
-
-    // Center XZ, sit on floor (y=0)
+    const group = new THREE.Group();
+    group.add(clone);
     clone.position.set(-center.x, -box.min.y, -center.z);
-    pivot.scale.setScalar(scale);
+    group.scale.setScalar(scale);
 
-    return pivot;
+    return group;
   }, [scene]);
 
   return (
     <group {...props}>
-      <primitive object={cloned} />
+      <primitive object={pivot} />
     </group>
   );
 }

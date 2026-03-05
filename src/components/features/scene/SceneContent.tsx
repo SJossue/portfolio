@@ -19,10 +19,10 @@ export function SceneContent() {
       <GarageModel />
 
       {/* Desk — front center, facing the camera's initial position */}
-      <DeskModel position={[3, 0, -1]} />
+      <DeskModel position={[0, 0, 8]} />
 
       {/* Car — center of the garage */}
-      <CarModel position={[0, 0, -2]} />
+      <CarModel position={[1, -0.6, 1]} rotation={[0, -Math.PI / 8, 0]} />
 
       {/* Lighting to complement the GLB baked materials */}
       <ambientLight intensity={0.3} />
