@@ -1,9 +1,10 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 import type { JSX } from 'react';
+import { useEmissiveGlow } from './useEmissiveGlow';
 
 type GroupProps = JSX.IntrinsicElements['group'];
 
@@ -14,10 +15,8 @@ const TARGET_SIZE = 6;
 
 export function CarModel(props: GroupProps) {
   const { scene } = useGLTF(MODEL_PATH);
+  const groupRef = useRef<THREE.Group>(null);
 
-  // Clone is required: React Strict Mode (dev) unmounts/remounts, which
-  // detaches the original scene. clone(true) shares geometry & materials
-  // by reference so VRAM cost is negligible.
   const pivot = useMemo(() => {
     const clone = scene.clone(true);
 
@@ -38,11 +37,12 @@ export function CarModel(props: GroupProps) {
     return group;
   }, [scene]);
 
+  // Car glows green on about hover
+  useEmissiveGlow(groupRef, 'about', '#00ff88', 1.5);
+
   return (
-    <group {...props}>
+    <group ref={groupRef} {...props}>
       <primitive object={pivot} />
     </group>
   );
 }
-
-useGLTF.preload(MODEL_PATH);

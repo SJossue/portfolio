@@ -3,7 +3,7 @@
 import gsap from 'gsap';
 import type { ReactNode } from 'react';
 import { useCallback, useEffect, useRef } from 'react';
-import { AboutPanel, ContactPanel, ExperiencePanel, ProjectsPanel } from './panels';
+import { AboutPanel, ContactPanel, ExperiencePanel, ProjectsPanel, ToolsPanel } from './panels';
 
 interface OverlayPanelProps {
   section: string;
@@ -15,6 +15,7 @@ const SECTION_HEADINGS: Record<string, string> = {
   contact: 'Contact',
   about: 'About',
   experience: 'Experience',
+  tools: 'Tools & Software',
 };
 
 const SECTION_PANELS: Record<string, ReactNode> = {
@@ -22,6 +23,7 @@ const SECTION_PANELS: Record<string, ReactNode> = {
   contact: <ContactPanel />,
   about: <AboutPanel />,
   experience: <ExperiencePanel />,
+  tools: <ToolsPanel />,
 };
 
 function toTitleCase(str: string): string {

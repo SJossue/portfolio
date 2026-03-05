@@ -1,8 +1,9 @@
 'use client';
 
-import { Suspense, useEffect, useState } from 'react';
-import { Canvas } from '@react-three/fiber';
+import { Suspense, useEffect, useState, useRef } from 'react';
+import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
+import { CameraRig } from './CameraRig';
 import { SceneContent } from './SceneContent';
 import { useSceneState } from './useSceneState';
 
@@ -46,8 +47,23 @@ function WebGLFallback() {
   );
 }
 
+function ModelsReadySignal() {
+  const setModelsReady = useSceneState((s) => s.setModelsReady);
+  const signaled = useRef(false);
+
+  useFrame(() => {
+    if (!signaled.current) {
+      signaled.current = true;
+      setModelsReady();
+    }
+  });
+
+  return null;
+}
+
 export function SceneSkeleton() {
   const introState = useSceneState((s) => s.introState);
+  const selectedSection = useSceneState((s) => s.selectedSection);
   const [hasWebGL2, setHasWebGL2] = useState(false);
 
   useEffect(() => {
@@ -63,7 +79,7 @@ export function SceneSkeleton() {
   return (
     <Suspense fallback={<SceneLoader />}>
       <Canvas
-        camera={{ position: [0, 0.8, 10.5], fov: 50 }}
+        camera={{ position: [0, 2.5, 10.5], fov: 50 }}
         gl={{ alpha: true, antialias: false, powerPreference: 'high-performance' }}
         dpr={[1, 1.5]}
         performance={{ min: 0.5 }}
@@ -71,7 +87,10 @@ export function SceneSkeleton() {
         <color attach="background" args={['#0a0908']} />
         <fog attach="fog" args={['#0a0908', 12, 20]} />
         <SceneContent />
+        <ModelsReadySignal />
+        <CameraRig />
         <OrbitControls
+          makeDefault
           enableZoom={true}
           enablePan={false}
           minDistance={2}
@@ -80,7 +99,7 @@ export function SceneSkeleton() {
           maxPolarAngle={Math.PI / 1.9}
           minAzimuthAngle={-Math.PI / 4}
           maxAzimuthAngle={Math.PI / 4}
-          target={[0, 1, 0]}
+          target={[0, 0.5, 0]}
         />
       </Canvas>
     </Suspense>

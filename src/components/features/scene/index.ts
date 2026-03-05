@@ -5,4 +5,7 @@ export { HomeScene } from './HomeScene';
 export { OverlayPanel } from './OverlayPanel';
 export { SceneContent } from './SceneContent';
 export { SceneSkeleton } from './SceneSkeleton';
+export { InteractiveHitbox } from './InteractiveHitbox';
+export { SceneHitboxes } from './SceneHitboxes';
+export { useEmissiveGlow } from './useEmissiveGlow';
 export { useSceneState } from './useSceneState';

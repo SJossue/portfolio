@@ -18,14 +18,14 @@ export function TerminalBoot({ onComplete }: { onComplete: () => void }) {
   const [currentLine, setCurrentLine] = useState('');
   const [lineIndex, setLineIndex] = useState(0);
   const [charIndex, setCharIndex] = useState(0);
-  const [done, setDone] = useState(false);
+  const [waitingForInput, setWaitingForInput] = useState(false);
 
   useEffect(() => {
-    if (done) return;
+    if (waitingForInput) return;
+
     if (lineIndex >= BOOT_LINES.length) {
-      setDone(true);
-      const timer = setTimeout(onComplete, 600);
-      return () => clearTimeout(timer);
+      setWaitingForInput(true);
+      return;
     }
 
     const fullLine = BOOT_LINES[lineIndex];
@@ -46,20 +46,42 @@ export function TerminalBoot({ onComplete }: { onComplete: () => void }) {
       setCharIndex(0);
     }, LINE_DELAY);
     return () => clearTimeout(timer);
-  }, [lineIndex, charIndex, done, onComplete]);
+  }, [lineIndex, charIndex, waitingForInput]);
+
+  // Handle actual operator input to proceed
+  useEffect(() => {
+    if (!waitingForInput) return;
+
+    function handleInput() {
+      onComplete();
+    }
+
+    window.addEventListener('keydown', handleInput);
+    window.addEventListener('click', handleInput);
+
+    return () => {
+      window.removeEventListener('keydown', handleInput);
+      window.removeEventListener('click', handleInput);
+    };
+  }, [waitingForInput, onComplete]);
 
   return (
-    <div className="pointer-events-none absolute inset-x-0 top-1/4 flex flex-col items-center">
+    <div className="pointer-events-auto absolute inset-0 z-50 flex h-full w-full flex-col items-center justify-center bg-[#0a0908]">
       <div className="w-full max-w-md space-y-1 rounded-lg border border-cyan-400/10 bg-black/60 p-4 font-mono text-xs backdrop-blur-sm">
         {lines.map((line, i) => (
           <div key={i} className="text-cyan-400/60">
             {line}
           </div>
         ))}
-        {!done && (
+        {!waitingForInput && (
           <div className="text-cyan-300">
             {currentLine}
             <span className="animate-typing-cursor ml-0.5">&nbsp;</span>
+          </div>
+        )}
+        {waitingForInput && (
+          <div className="mt-4 animate-pulse text-center text-cyan-400">
+            [ CLICK OR PRESS ANY KEY TO INITIALIZE ]
           </div>
         )}
       </div>
