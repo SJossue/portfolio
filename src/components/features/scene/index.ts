@@ -1,4 +1,5 @@
 export { CameraRig } from './CameraRig';
+export { CarModel } from './CarModel';
 export { CarRig } from './CarRig';
 export { GarageAtmosphere } from './GarageAtmosphere';
 export { GarageEnvironment } from './GarageEnvironment';

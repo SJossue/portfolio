@@ -70,7 +70,7 @@ export function SceneSkeleton() {
 
   return (
     <Suspense fallback={<SceneLoader />}>
-      <Canvas camera={{ position: [1.5, 0.8, 3], fov: 50 }}>
+      <Canvas camera={{ position: [1.5, 0.8, 3], fov: 50 }} gl={{ alpha: true, antialias: true }}>
         <color attach="background" args={[isGarageReady ? '#050510' : '#0a0a0a']} />
         <ambientLight intensity={isGarageReady ? 0.05 : 0.5} />
         {isGarageReady ? (
@@ -102,7 +102,7 @@ export function SceneSkeleton() {
         <GarageInteractables />
         <OrbitControls enableZoom={false} enablePan={false} enabled={introState === 'garage'} />
         {isGarageReady && (
-          <EffectComposer>
+          <EffectComposer disableNormalPass multisampling={0}>
             <Bloom intensity={0.5} luminanceThreshold={0.7} luminanceSmoothing={0.9} mipmapBlur />
           </EffectComposer>
         )}
