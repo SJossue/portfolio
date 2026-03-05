@@ -97,7 +97,7 @@ export function SceneContent() {
       {stage >= 1 && <GarageModel />}
 
       {/* Stage 2: Desk (3.4MB) */}
-      {stage >= 2 && <DeskModel position={[0, 0, 6]} />}
+      {stage >= 2 && <DeskModel position={[2, 0, 5]} rotation={[0, -Math.PI / 3, 0]} />}
 
       {/* Stage 3: Car + Environment map (1.3MB + env) */}
       {stage >= 3 && (

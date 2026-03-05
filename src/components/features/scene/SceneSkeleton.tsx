@@ -64,6 +64,7 @@ function ModelsReadySignal() {
 export function SceneSkeleton() {
   const introState = useSceneState((s) => s.introState);
   const selectedSection = useSceneState((s) => s.selectedSection);
+  const setSelectedSection = useSceneState((s) => s.setSelectedSection);
   const [hasWebGL2, setHasWebGL2] = useState(false);
 
   useEffect(() => {
@@ -79,10 +80,13 @@ export function SceneSkeleton() {
   return (
     <Suspense fallback={<SceneLoader />}>
       <Canvas
-        camera={{ position: [0, 2.5, 10.5], fov: 50 }}
+        camera={{ position: [-5, 3.5, 10], fov: 50 }}
         gl={{ alpha: true, antialias: false, powerPreference: 'high-performance' }}
         dpr={[1, 1.5]}
         performance={{ min: 0.5 }}
+        onPointerMissed={() => {
+          if (selectedSection) setSelectedSection(null);
+        }}
       >
         <color attach="background" args={['#0a0908']} />
         <fog attach="fog" args={['#0a0908', 12, 20]} />
@@ -94,10 +98,10 @@ export function SceneSkeleton() {
           enableZoom={true}
           enablePan={false}
           minDistance={2}
-          maxDistance={10.5}
+          maxDistance={14}
           minPolarAngle={Math.PI / 2.2}
           maxPolarAngle={Math.PI / 1.9}
-          minAzimuthAngle={-Math.PI / 4}
+          minAzimuthAngle={-Math.PI / 2.5}
           maxAzimuthAngle={Math.PI / 4}
           target={[0, 0.5, 0]}
         />

@@ -7,7 +7,7 @@ import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import { useSceneState } from './useSceneState';
 
 const SHOT_WIDE = {
-  position: new THREE.Vector3(0, 2.5, 10.5),
+  position: new THREE.Vector3(-2, 3.5, 10),
   lookAt: new THREE.Vector3(0, 0.5, 0),
 };
 
@@ -24,20 +24,20 @@ const SHOT_SECTIONS: Record<string, { position: THREE.Vector3; lookAt: THREE.Vec
     lookAt: new THREE.Vector3(4.4, 1.3, -0.5),
   },
   contact: {
-    position: new THREE.Vector3(1, 2, 8),
-    lookAt: new THREE.Vector3(0, 1.5, 6),
+    position: new THREE.Vector3(0, 2, 8),
+    lookAt: new THREE.Vector3(5, 0.3, 3),
   },
   tools: {
-    position: new THREE.Vector3(1, 2, -2),
-    lookAt: new THREE.Vector3(0, 1.5, -4),
+    position: new THREE.Vector3(-2, 2, -4),
+    lookAt: new THREE.Vector3(3, 0.5, -8),
   },
   about: {
-    position: new THREE.Vector3(2, 1.2, 1),
-    lookAt: new THREE.Vector3(0.5, 0.4, -1),
+    position: new THREE.Vector3(-0.3, 1.5, 5),
+    lookAt: new THREE.Vector3(0.3, 0.5, -1),
   },
   experience: {
-    position: new THREE.Vector3(7, 1.5, -1),
-    lookAt: new THREE.Vector3(9, 0.7, -3),
+    position: new THREE.Vector3(-6, 1.5, 4),
+    lookAt: new THREE.Vector3(0, 1.2, -1),
   },
 };
 
@@ -69,13 +69,17 @@ export function CameraRig() {
       if (controls) controls.enabled = false;
 
       const dist = camera.position.distanceTo(target.position);
-      if (dist < 0.1) {
+      if (dist < 0.15) {
         // Arrived at wide shot, give control back to OrbitControls
         isReturning.current = false;
         if (controls) {
+          // Snap camera to exact position before re-enabling controls
+          camera.position.copy(SHOT_WIDE.position);
+          targetLookAt.current.copy(SHOT_WIDE.lookAt);
+          camera.lookAt(SHOT_WIDE.lookAt);
           controls.target.copy(SHOT_WIDE.lookAt);
-          controls.enabled = true;
           controls.update();
+          controls.enabled = true;
         }
         return;
       }
@@ -93,6 +97,10 @@ export function CameraRig() {
     camera.position.lerp(target.position, LERP_FACTOR);
     targetLookAt.current.lerp(target.lookAt, LERP_FACTOR);
     camera.lookAt(targetLookAt.current);
+
+    if (controls) {
+      controls.target.copy(targetLookAt.current);
+    }
 
     if (
       selectedSection &&

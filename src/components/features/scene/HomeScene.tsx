@@ -22,6 +22,16 @@ export function HomeScene() {
     setBootComplete();
   }, [setBootComplete]);
 
+  // Global Escape key: deselect during camera flight (before OverlayPanel mounts)
+  useEffect(() => {
+    if (!selectedSection) return;
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') setSelectedSection(null);
+    }
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedSection, setSelectedSection]);
+
   const transitioning = useRef(false);
 
   // Transition: both boot + models ready → fade out → garage
