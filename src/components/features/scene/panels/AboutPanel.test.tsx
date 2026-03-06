@@ -4,31 +4,31 @@ import { AboutPanel } from './AboutPanel';
 describe('AboutPanel', () => {
   it('renders the bio text', () => {
     render(<AboutPanel />);
-    expect(screen.getByText(/software engineer focused/i)).toBeInTheDocument();
+    expect(screen.getByText(/I build things — physical and digital/i)).toBeInTheDocument();
   });
 
   it('renders all highlight labels and values', () => {
     render(<AboutPanel />);
-    expect(screen.getByText('Focus')).toBeInTheDocument();
-    expect(screen.getByText('Full-Stack Web')).toBeInTheDocument();
-    expect(screen.getByText('Experience')).toBeInTheDocument();
-    expect(screen.getByText('Production Systems')).toBeInTheDocument();
-    expect(screen.getByText('Approach')).toBeInTheDocument();
-    expect(screen.getByText('Ship & Iterate')).toBeInTheDocument();
+    expect(screen.getByText('Identity')).toBeInTheDocument();
+    expect(screen.getByText('Product-Oriented Systems Engineer')).toBeInTheDocument();
+    expect(screen.getByText('Philosophy')).toBeInTheDocument();
+    expect(screen.getByText('Learn by Building')).toBeInTheDocument();
+    expect(screen.getByText('Pillars')).toBeInTheDocument();
+    expect(screen.getByText('Hardware, Software, UX')).toBeInTheDocument();
   });
 
   it('renders all skill categories', () => {
     render(<AboutPanel />);
-    expect(screen.getByText('Frontend')).toBeInTheDocument();
-    expect(screen.getByText('Backend')).toBeInTheDocument();
-    expect(screen.getByText('DevOps')).toBeInTheDocument();
-    expect(screen.getByText('Practices')).toBeInTheDocument();
+    expect(screen.getByText('Mechanical Eng')).toBeInTheDocument();
+    expect(screen.getByText('Software & Product')).toBeInTheDocument();
+    expect(screen.getByText('Systems & AI')).toBeInTheDocument();
+    expect(screen.getByText('Leadership')).toBeInTheDocument();
   });
 
   it('renders specific skills', () => {
     render(<AboutPanel />);
+    expect(screen.getByText('SolidWorks')).toBeInTheDocument();
     expect(screen.getByText('React')).toBeInTheDocument();
-    expect(screen.getByText('Docker')).toBeInTheDocument();
-    expect(screen.getByText('TDD')).toBeInTheDocument();
+    expect(screen.getByText('Automation')).toBeInTheDocument();
   });
 });

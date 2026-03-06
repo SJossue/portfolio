@@ -29,16 +29,6 @@ export function GarageModel(props: GroupProps) {
             (child.material as THREE.MeshStandardMaterial).roughness = 0.9; // less reflective
           }
         }
-
-        // Lamp Emissive Materials
-        if (/^(Chandelier001_1|Light_tube005_1|Light_tube006|Light_tube014)/.test(child.name)) {
-          const mat = child.material;
-          if (mat instanceof THREE.MeshStandardMaterial) {
-            child.material = mat.clone();
-            (child.material as THREE.MeshStandardMaterial).emissive = new THREE.Color('#ffcc88');
-            (child.material as THREE.MeshStandardMaterial).emissiveIntensity = 4.0;
-          }
-        }
       }
     });
   }, [cloned]);

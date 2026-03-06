@@ -15,13 +15,13 @@ export const contactLinks: ContactLink[] = [
   {
     id: 'linkedin',
     label: 'LinkedIn',
-    href: 'https://linkedin.com/in/',
+    href: 'https://linkedin.com/in/jossuesarango',
     icon: 'in',
   },
   {
     id: 'email',
     label: 'Email',
-    href: 'mailto:hello@example.com',
+    href: 'mailto:jossue.sarango@example.com',
     icon: '@',
   },
 ];

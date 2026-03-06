@@ -79,36 +79,6 @@ export function SceneContent() {
         decay={2}
       />
 
-      {/* Physical Room Lamps (Coordinates match the GLTF emissive meshes) */}
-      <pointLight
-        position={[-1.76, 2.5, -4.0]}
-        color="#ffcc88"
-        intensity={1}
-        distance={10}
-        decay={2}
-      />
-      <pointLight
-        position={[3.76, 1.4, -5.9]}
-        color="#ffcc88"
-        intensity={0.8}
-        distance={8}
-        decay={2}
-      />
-      <pointLight
-        position={[-5.8, 2.8, -0.78]}
-        color="#ffcc88"
-        intensity={1}
-        distance={10}
-        decay={2}
-      />
-      <pointLight
-        position={[2.97, 3.5, 3.1]}
-        color="#ffcc88"
-        intensity={1}
-        distance={10}
-        decay={2}
-      />
-
       {/* Stage 1: Garage environment (largest model — 9.5MB) */}
       {stage >= 1 && <GarageModel />}
 

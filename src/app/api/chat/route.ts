@@ -143,11 +143,25 @@ export async function POST(req: Request) {
     }
   }
 
+  // --- Normalize messages: convert parts-based format to content string ---
+  const normalized = (messages as ChatMessage[]).map((msg) => {
+    let text = '';
+    if (typeof msg.content === 'string') {
+      text = msg.content;
+    } else if (Array.isArray(msg.parts)) {
+      text = msg.parts
+        .filter((p) => p.type === 'text' && typeof p.text === 'string')
+        .map((p) => p.text ?? '')
+        .join('');
+    }
+    return { role: msg.role as 'user' | 'assistant', content: text };
+  });
+
   // --- Stream response ---
   const result = streamText({
     model: anthropic('claude-haiku-4-5'),
     system: systemPrompt,
-    messages: messages as { role: 'user' | 'assistant'; content: string }[],
+    messages: normalized,
     maxOutputTokens: 300,
   });
 

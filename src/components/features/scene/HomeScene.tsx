@@ -33,13 +33,18 @@ export function HomeScene() {
 
   const transitioning = useRef(false);
 
-  // Transition: both boot + models ready → fade out → garage
+  // Transition: both boot + models ready → pause → fade out → garage
   useEffect(() => {
     if (bootComplete && modelsReady && !transitioning.current) {
       transitioning.current = true;
-      setIntroState('airingOut');
-      const timer = setTimeout(() => setIntroState('garage'), 500);
-      return () => clearTimeout(timer);
+      const delayTimer = setTimeout(() => {
+        setIntroState('airingOut');
+      }, 1500);
+      const garageTimer = setTimeout(() => setIntroState('garage'), 2000);
+      return () => {
+        clearTimeout(delayTimer);
+        clearTimeout(garageTimer);
+      };
     }
   }, [bootComplete, modelsReady, setIntroState]);
 

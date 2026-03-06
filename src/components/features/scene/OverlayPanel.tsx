@@ -166,7 +166,7 @@ export function OverlayPanel({ section, onClose }: OverlayPanelProps) {
   return (
     <div
       ref={panelRef}
-      className="pointer-events-none absolute inset-0 z-40 flex h-full w-full justify-between p-6 md:p-12"
+      className="pointer-events-none absolute inset-0 z-40 flex h-full w-full justify-between py-6 md:py-12"
       style={{ opacity: 0 }}
       role="dialog"
       aria-modal="true"
@@ -174,7 +174,7 @@ export function OverlayPanel({ section, onClose }: OverlayPanelProps) {
       data-testid="overlay-panel"
     >
       {/* LEFT COLUMN - Sub-navigation */}
-      <div className="corner-brackets pointer-events-auto flex h-full w-full max-w-[300px] flex-col border border-white/20 bg-white/5 p-6 shadow-[0_0_30px_rgba(255,255,255,0.05)] backdrop-blur-md">
+      <div className="corner-brackets pointer-events-auto my-auto flex h-[80vh] w-full max-w-[300px] flex-col border border-l-0 border-white/20 bg-white/5 p-6 shadow-[0_0_30px_rgba(255,255,255,0.05)] backdrop-blur-md">
         <h2 className="animate-glitch-skew mb-8 font-mono text-3xl font-bold uppercase tracking-widest text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.8)]">
           {heading}
         </h2>
@@ -194,20 +194,21 @@ export function OverlayPanel({ section, onClose }: OverlayPanelProps) {
         </div>
       </div>
 
-      {/* RIGHT COLUMN - Stats and Details Container */}
-      <div className="corner-brackets pointer-events-auto flex h-full w-full max-w-[420px] flex-col border border-white/20 bg-white/5 p-6 shadow-[0_0_30px_rgba(255,255,255,0.05)] backdrop-blur-md">
-        <div className="mb-6 flex justify-end">
-          <button
-            ref={closeButtonRef}
-            onClick={handleClose}
-            className="flex min-h-[44px] items-center gap-2 border border-white/20 bg-black/40 px-5 py-2 font-mono text-xs uppercase tracking-widest text-white transition-all hover:bg-white hover:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
-            aria-label="Close panel"
-            data-testid="close-panel"
-          >
-            <span>[ ESC ]</span> BACK
-          </button>
-        </div>
+      {/* CENTER - ESC Back Button */}
+      <div className="btn-back pointer-events-auto absolute bottom-4 left-1/2 z-50 -translate-x-1/2 md:bottom-8">
+        <button
+          ref={closeButtonRef}
+          onClick={handleClose}
+          className="flex min-h-[44px] items-center gap-2 border border-white/20 bg-black/40 px-5 py-2 font-mono text-xs uppercase tracking-widest text-white transition-all hover:bg-white hover:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+          aria-label="Close panel"
+          data-testid="close-panel"
+        >
+          <span>[ ESC ]</span> BACK
+        </button>
+      </div>
 
+      {/* RIGHT COLUMN - Stats and Details Container */}
+      <div className="corner-brackets pointer-events-auto my-auto flex h-[80vh] w-full max-w-[500px] flex-col border border-r-0 border-white/20 bg-white/5 p-6 shadow-[0_0_30px_rgba(255,255,255,0.05)] backdrop-blur-md">
         <div className="scrollbar-cyber flex-1 overflow-y-auto pr-4 text-white/90">
           {SECTION_PANELS[section] ?? null}
         </div>

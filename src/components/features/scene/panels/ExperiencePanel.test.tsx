@@ -10,12 +10,12 @@ describe('ExperiencePanel', () => {
 
   it('renders experience entries', () => {
     render(<ExperiencePanel />);
-    expect(screen.getByText('Full-Stack Engineer')).toBeInTheDocument();
-    expect(screen.getByText('2024 — Present')).toBeInTheDocument();
+    expect(screen.getByText('Tech Prep Fellow')).toBeInTheDocument();
+    expect(screen.getByText('Dec 2025 — Present')).toBeInTheDocument();
   });
 
   it('renders tech stack tags', () => {
     render(<ExperiencePanel />);
-    expect(screen.getByText('Three.js')).toBeInTheDocument();
+    expect(screen.getAllByText('Leadership').length).toBeGreaterThan(0);
   });
 });
