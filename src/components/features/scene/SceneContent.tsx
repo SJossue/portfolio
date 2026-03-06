@@ -45,37 +45,69 @@ export function SceneContent() {
 
   return (
     <group>
-      {/* Stage 0+: Clean Tech Showroom lighting */}
-      <ambientLight intensity={0.4} color="#e6f2ff" />
+      {/* Stage 0+: Golden Hour / Sunset lighting */}
+      {/* Soft blue/purple ambient fill representing the twilight sky overhead */}
+      <ambientLight intensity={0.15} color="#4b5d78" />
 
-      {/* Main overarching fill light (cool white) */}
-      <pointLight position={[0, 8, 2]} color="#ffffff" intensity={2} distance={25} decay={2} />
-
-      {/* Dramatic Spot on the car */}
-      <spotLight
-        position={[0, 6, 2]}
-        angle={Math.PI / 3}
-        penumbra={0.3}
-        intensity={100}
-        color="#ffffff"
-        distance={20}
-        decay={2}
+      {/* Main warm sunlight — deeper orange, lower intensity for late sunset */}
+      <directionalLight
+        position={[-5, 4, 8]}
+        color="#ff7f3f"
+        intensity={1.2}
         castShadow
+        shadow-mapSize={[1024, 1024]}
+        shadow-camera-left={-8}
+        shadow-camera-right={8}
+        shadow-camera-top={8}
+        shadow-camera-bottom={-8}
       />
 
-      {/* Focused Spot on the desk area */}
+      {/* Soft warm fill to soften the darkest shadows under the car/desk */}
+      <pointLight position={[3, 2, 4]} color="#cc9666" intensity={0.5} distance={15} decay={2} />
+
+      {/* Dramatic rim light catching the edge of the car from behind */}
+      <pointLight position={[1, 3, -6]} color="#ff5500" intensity={1} distance={20} decay={2} />
+
+      {/* Warm desk lamp glow over the tools/work area — slightly dimmer */}
       <spotLight
-        position={[2, 5, 5]}
+        position={[2, 4, 4]}
         angle={Math.PI / 4}
-        penumbra={0.5}
-        intensity={60}
-        color="#f4faff"
-        distance={15}
+        penumbra={0.6}
+        intensity={20}
+        color="#ffcc99"
+        distance={12}
         decay={2}
       />
 
-      {/* Soft rim light behind the car to separate it from the background */}
-      <pointLight position={[-3, 2, -6]} color="#b0d4ff" intensity={1.5} distance={15} decay={2} />
+      {/* Physical Room Lamps (Coordinates match the GLTF emissive meshes) */}
+      <pointLight
+        position={[-1.76, 2.5, -4.0]}
+        color="#ffcc88"
+        intensity={1}
+        distance={10}
+        decay={2}
+      />
+      <pointLight
+        position={[3.76, 1.4, -5.9]}
+        color="#ffcc88"
+        intensity={0.8}
+        distance={8}
+        decay={2}
+      />
+      <pointLight
+        position={[-5.8, 2.8, -0.78]}
+        color="#ffcc88"
+        intensity={1}
+        distance={10}
+        decay={2}
+      />
+      <pointLight
+        position={[2.97, 3.5, 3.1]}
+        color="#ffcc88"
+        intensity={1}
+        distance={10}
+        decay={2}
+      />
 
       {/* Stage 1: Garage environment (largest model — 9.5MB) */}
       {stage >= 1 && <GarageModel />}
@@ -87,7 +119,7 @@ export function SceneContent() {
       {stage >= 3 && (
         <>
           <CarModel position={[0.5, -0.6, -1]} rotation={[0, -Math.PI / 8, 0]} />
-          <Environment preset="studio" environmentIntensity={0.8} background={false} />
+          <Environment preset="sunset" environmentIntensity={0.25} background={false} />
         </>
       )}
 

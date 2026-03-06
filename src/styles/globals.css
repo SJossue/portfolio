@@ -36,6 +36,7 @@
   100% {
     border-color: rgba(0, 240, 255, 0.8);
   }
+
   50% {
     border-color: transparent;
   }
@@ -53,16 +54,20 @@
     transform: translate(0);
     opacity: 1;
   }
+
   20% {
     transform: translate(-2px, 1px);
   }
+
   40% {
     transform: translate(2px, -1px);
     opacity: 0.8;
   }
+
   60% {
     transform: translate(-1px, -1px);
   }
+
   80% {
     transform: translate(1px, 1px);
     opacity: 0.9;
@@ -74,9 +79,11 @@
   100% {
     transform: skew(0deg);
   }
+
   25% {
     transform: skew(-0.5deg);
   }
+
   75% {
     transform: skew(0.5deg);
   }
@@ -156,20 +163,4 @@ body {
 /* Subtle vignette overlay */
 .vignette {
   background: radial-gradient(ellipse at center, transparent 50%, rgba(0, 0, 0, 0.4) 100%);
-}
-
-/* Premium Glassmorphism utility classes */
-.glass-panel {
-  @apply border border-white/10 bg-black/30 shadow-[0_8px_32px_rgba(0,0,0,0.3)] backdrop-blur-xl;
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-.glass-panel-hover:hover,
-.glass-panel:hover.glass-interactive {
-  @apply border-white/20 bg-white/10 shadow-[0_8px_32px_rgba(0,240,255,0.15)];
-}
-
-.glass-pill {
-  @apply rounded-full border border-white/10 bg-black/30 shadow-[0_4px_16px_rgba(0,0,0,0.2)] backdrop-blur-lg;
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }

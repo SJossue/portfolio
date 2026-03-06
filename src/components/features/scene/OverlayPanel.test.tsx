@@ -9,11 +9,7 @@ vi.mock('gsap', () => {
   const to = (_target: unknown, vars: { onComplete?: () => void }) => {
     vars.onComplete?.();
   };
-  const timeline = (opts?: { onComplete?: () => void }) => {
-    opts?.onComplete?.();
-    return { fromTo, to };
-  };
-  return { default: { fromTo, to, timeline } };
+  return { default: { fromTo, to } };
 });
 
 describe('OverlayPanel', () => {

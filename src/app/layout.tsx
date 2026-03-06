@@ -1,14 +1,8 @@
 import type { Metadata } from 'next';
-import { JetBrains_Mono, Inter } from 'next/font/google';
+import { JetBrains_Mono } from 'next/font/google';
 import '@/styles/globals.css';
 import { JsonLd } from '@/components/features/JsonLd';
 import { siteConfig } from '@/lib/site';
-
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-sans',
-  display: 'swap',
-});
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin'],
@@ -54,8 +48,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${jetbrainsMono.variable} ${inter.variable}`}>
-      <body className="flex min-h-screen flex-col font-sans text-white antialiased selection:bg-cyan-500/30">
+    <html lang="en" className={jetbrainsMono.variable}>
+      <body className="flex min-h-screen flex-col font-mono antialiased">
         <JsonLd />
         {children}
       </body>

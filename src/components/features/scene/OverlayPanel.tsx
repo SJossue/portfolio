@@ -78,21 +78,12 @@ export function OverlayPanel({ section, onClose }: OverlayPanelProps) {
     const fallback = window.setTimeout(() => {
       isAnimatingRef.current = false;
       onClose();
-    }, 600);
-
-    const panel = panelRef.current;
-    if (!panel) return;
-    const leftP = panel.querySelector('.panel-left');
-    const rightP = panel.querySelector('.panel-right');
-    const backBtn = panel.querySelector('.btn-back');
-
-    gsap.to(leftP, { x: '-100%', opacity: 0, duration: 0.4, ease: 'power3.in' });
-    gsap.to(rightP, { x: '100%', opacity: 0, duration: 0.4, ease: 'power3.in' });
-    gsap.to(backBtn, { y: 50, opacity: 0, duration: 0.3, ease: 'power3.in' });
-    gsap.to(panel, {
+    }, 500);
+    gsap.to(panelRef.current, {
       opacity: 0,
-      duration: 0.2,
-      delay: 0.3,
+      scale: 1.02,
+      duration: 0.3,
+      ease: 'power3.in',
       onComplete: () => {
         window.clearTimeout(fallback);
         isAnimatingRef.current = false;
@@ -104,47 +95,19 @@ export function OverlayPanel({ section, onClose }: OverlayPanelProps) {
   // Capture previously focused element and animate in on mount
   useEffect(() => {
     previousFocusRef.current = document.activeElement;
-
-    const panel = panelRef.current;
-    if (!panel) return;
-    const leftP = panel.querySelector('.panel-left');
-    const rightP = panel.querySelector('.panel-right');
-    const backBtn = panel.querySelector('.btn-back');
-
-    // In testing environments (jsdom), GSAP may not be fully initialized or stubbed
-    if (typeof gsap.fromTo === 'function' && typeof gsap.set === 'function') {
-      // Make parent visible immediately, we will animate children
-      gsap.set(panel, { opacity: 1 });
-
-      gsap.fromTo(
-        leftP,
-        { x: '-100%', opacity: 0 },
-        { x: '0%', opacity: 1, duration: 0.5, ease: 'power3.out' },
-      );
-      gsap.fromTo(
-        rightP,
-        { x: '100%', opacity: 0 },
-        { x: '0%', opacity: 1, duration: 0.5, ease: 'power3.out' },
-      );
-      gsap.fromTo(
-        backBtn,
-        { y: 50, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.4,
-          delay: 0.2,
-          ease: 'power3.out',
-          onComplete: () => {
-            closeButtonRef.current?.focus();
-          },
+    gsap.fromTo(
+      panelRef.current,
+      { opacity: 0, scale: 0.98 },
+      {
+        opacity: 1,
+        scale: 1,
+        duration: 0.4,
+        ease: 'power3.out',
+        onComplete: () => {
+          closeButtonRef.current?.focus();
         },
-      );
-    } else {
-      // Fallback for tests
-      if (panel) panel.style.opacity = '1';
-      closeButtonRef.current?.focus();
-    }
+      },
+    );
 
     return () => {
       if (previousFocusRef.current instanceof HTMLElement) {
@@ -203,7 +166,7 @@ export function OverlayPanel({ section, onClose }: OverlayPanelProps) {
   return (
     <div
       ref={panelRef}
-      className="pointer-events-none absolute inset-0 z-40 flex h-full w-full flex-col justify-between overflow-hidden p-4 pt-24 md:flex-row md:p-0 md:pt-0"
+      className="pointer-events-none absolute inset-0 z-40 flex h-full w-full justify-between p-6 md:p-12"
       style={{ opacity: 0 }}
       role="dialog"
       aria-modal="true"
@@ -211,22 +174,19 @@ export function OverlayPanel({ section, onClose }: OverlayPanelProps) {
       data-testid="overlay-panel"
     >
       {/* LEFT COLUMN - Sub-navigation */}
-      <div className="panel-left glass-panel pointer-events-auto flex w-full flex-col rounded-2xl p-5 md:h-[100vh] md:w-[320px] md:max-w-[320px] md:rounded-none md:rounded-r-3xl md:border-y-0 md:border-l-0 md:p-8 md:pt-28 lg:max-w-[400px]">
-        <h2 className="mb-4 font-mono text-2xl font-bold uppercase tracking-widest text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.6)] md:mb-8 md:text-3xl">
+      <div className="corner-brackets pointer-events-auto flex h-full w-full max-w-[300px] flex-col border border-white/20 bg-white/5 p-6 shadow-[0_0_30px_rgba(255,255,255,0.05)] backdrop-blur-md">
+        <h2 className="animate-glitch-skew mb-8 font-mono text-3xl font-bold uppercase tracking-widest text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.8)]">
           {heading}
         </h2>
-        <div
-          className="flex flex-row gap-3 overflow-x-auto pb-2 md:flex-col md:pb-0"
-          style={{ scrollbarWidth: 'none' }}
-        >
+        <div className="flex flex-col gap-4">
           {/* Loadout categories for visual flair */}
           {['OVERVIEW', 'DETAILS', 'LOGS'].map((item, i) => (
             <button
               key={item}
-              className={`group relative flex flex-shrink-0 items-center gap-3 rounded-xl px-4 py-3 text-left font-mono text-xs uppercase tracking-widest md:flex-shrink ${i === 0 ? 'bg-white text-black shadow-[0_0_15px_rgba(255,255,255,0.3)]' : 'glass-panel-hover text-white/70'} transition-all`}
+              className={`group relative flex items-center gap-4 border p-4 text-left font-mono text-sm uppercase tracking-widest ${i === 0 ? 'border-white bg-white text-black shadow-[0_0_15px_rgba(255,255,255,0.3)]' : 'border-white/20 bg-transparent text-white/70 hover:border-white hover:text-white'} transition-all`}
             >
               <span
-                className={`block h-1.5 w-1.5 rounded-full ${i === 0 ? 'bg-black' : 'bg-white/50 group-hover:bg-white'}`}
+                className={`block h-1.5 w-1.5 ${i === 0 ? 'bg-black' : 'bg-white/50 group-hover:bg-white'}`}
               />
               {item}
             </button>
@@ -234,22 +194,21 @@ export function OverlayPanel({ section, onClose }: OverlayPanelProps) {
         </div>
       </div>
 
-      {/* CENTER - ESC Back Button */}
-      <div className="btn-back pointer-events-auto absolute bottom-4 left-1/2 z-50 -translate-x-1/2 md:bottom-8">
-        <button
-          ref={closeButtonRef}
-          onClick={handleClose}
-          className="glass-panel glass-panel-hover flex min-h-[44px] items-center gap-2 rounded-full px-6 py-2 font-mono text-xs uppercase tracking-widest text-white/90 transition-all hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
-          aria-label="Close panel"
-          data-testid="close-panel"
-        >
-          <span>[ ESC ]</span> BACK
-        </button>
-      </div>
-
       {/* RIGHT COLUMN - Stats and Details Container */}
-      <div className="panel-right glass-panel pointer-events-auto flex w-full flex-1 flex-col overflow-hidden rounded-2xl p-5 md:h-[100vh] md:w-[480px] md:max-w-[480px] md:flex-none md:rounded-none md:rounded-l-3xl md:border-y-0 md:border-r-0 md:p-8 md:pt-28 lg:max-w-[600px]">
-        <div className="scrollbar-cyber flex-1 overflow-y-auto pr-2 font-sans text-[15px] leading-relaxed text-white/90 md:pr-4">
+      <div className="corner-brackets pointer-events-auto flex h-full w-full max-w-[420px] flex-col border border-white/20 bg-white/5 p-6 shadow-[0_0_30px_rgba(255,255,255,0.05)] backdrop-blur-md">
+        <div className="mb-6 flex justify-end">
+          <button
+            ref={closeButtonRef}
+            onClick={handleClose}
+            className="flex min-h-[44px] items-center gap-2 border border-white/20 bg-black/40 px-5 py-2 font-mono text-xs uppercase tracking-widest text-white transition-all hover:bg-white hover:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            aria-label="Close panel"
+            data-testid="close-panel"
+          >
+            <span>[ ESC ]</span> BACK
+          </button>
+        </div>
+
+        <div className="scrollbar-cyber flex-1 overflow-y-auto pr-4 text-white/90">
           {SECTION_PANELS[section] ?? null}
         </div>
       </div>
