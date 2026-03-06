@@ -45,53 +45,37 @@ export function SceneContent() {
 
   return (
     <group>
-      {/* Stage 0+: Cyberpunk lighting (cheap, sets the scene) */}
-      <ambientLight intensity={0.15} color="#1a0a2e" />
+      {/* Stage 0+: Clean Tech Showroom lighting */}
+      <ambientLight intensity={0.4} color="#e6f2ff" />
 
-      {/* Neon magenta key light — left side */}
-      <pointLight position={[-4, 3, 2]} color="#ff00ff" intensity={2.5} distance={18} decay={2} />
+      {/* Main overarching fill light (cool white) */}
+      <pointLight position={[0, 8, 2]} color="#ffffff" intensity={2} distance={25} decay={2} />
 
-      {/* Neon cyan fill light — right side */}
-      <pointLight position={[5, 3, 3]} color="#00ffff" intensity={2} distance={18} decay={2} />
-
-      {/* Purple overhead glow */}
-      <pointLight position={[0, 5, 0]} color="#8b00ff" intensity={1.5} distance={20} decay={2} />
-
-      {/* Hot pink back rim light */}
-      <pointLight position={[-3, 3, -5]} color="#ff1493" intensity={1} distance={14} decay={2} />
-
-      {/* Spot on the car — angled from the user's perspective toward origin */}
+      {/* Dramatic Spot on the car */}
       <spotLight
-        position={[0, 5, 4]}
-        angle={Math.PI / 4}
-        penumbra={0.2}
-        intensity={80}
-        color="#ffffeeff"
+        position={[0, 6, 2]}
+        angle={Math.PI / 3}
+        penumbra={0.3}
+        intensity={100}
+        color="#ffffff"
         distance={20}
         decay={2}
+        castShadow
       />
 
-      {/* Subtle spot on the shelf — right of the car */}
+      {/* Focused Spot on the desk area */}
       <spotLight
-        position={[5, 5, -1]}
-        angle={Math.PI / 3}
-        penumbra={0.4}
-        intensity={40}
-        color="#e5ff00ff"
-        distance={12}
+        position={[2, 5, 5]}
+        angle={Math.PI / 4}
+        penumbra={0.5}
+        intensity={60}
+        color="#f4faff"
+        distance={15}
         decay={2}
       />
 
-      {/* Subtle spot on the workbench — behind the car */}
-      <spotLight
-        position={[0, 5, -5]}
-        angle={Math.PI / 5}
-        penumbra={0.6}
-        intensity={40}
-        color="#ff00ff"
-        distance={12}
-        decay={2}
-      />
+      {/* Soft rim light behind the car to separate it from the background */}
+      <pointLight position={[-3, 2, -6]} color="#b0d4ff" intensity={1.5} distance={15} decay={2} />
 
       {/* Stage 1: Garage environment (largest model — 9.5MB) */}
       {stage >= 1 && <GarageModel />}
@@ -103,7 +87,7 @@ export function SceneContent() {
       {stage >= 3 && (
         <>
           <CarModel position={[0.5, -0.6, -1]} rotation={[0, -Math.PI / 8, 0]} />
-          <Environment preset="night" environmentIntensity={0.2} background={false} />
+          <Environment preset="studio" environmentIntensity={0.8} background={false} />
         </>
       )}
 

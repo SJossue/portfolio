@@ -1,4 +1,5 @@
 export { AboutPanel } from './AboutPanel';
+export { ChatPanel } from './ChatPanel';
 export { ContactPanel } from './ContactPanel';
 export { ExperiencePanel } from './ExperiencePanel';
 export { ProjectsPanel } from './ProjectsPanel';

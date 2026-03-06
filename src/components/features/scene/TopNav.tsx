@@ -25,11 +25,11 @@ export function TopNav() {
       <header className="pointer-events-none absolute inset-x-0 top-0 z-50 flex items-center justify-between p-6 md:p-8">
         {/* Brand / Logo Area */}
         <div className="pointer-events-auto flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center overflow-hidden border border-cyan-400/30 bg-black/40 backdrop-blur-md">
+          <div className="glass-pill flex h-11 w-11 items-center justify-center overflow-hidden">
             <img
               src="/jossue/headshot.jpg"
               alt="Jossue Sarango"
-              className="h-full w-full object-cover"
+              className="h-full w-full scale-110 object-cover"
             />
           </div>
           <div className="hidden flex-col md:flex">
@@ -48,18 +48,14 @@ export function TopNav() {
                 key={item.id}
                 disabled={interactionLocked || isActive}
                 onClick={() => setSelectedSection(item.id)}
-                className={`group relative overflow-hidden border px-3 py-1.5 font-mono text-xs uppercase tracking-widest transition-all duration-300 sm:px-4 sm:py-2 ${
+                className={`group relative overflow-hidden rounded-full px-4 py-2 font-mono text-[11px] uppercase tracking-widest transition-all duration-300 ${
                   isActive
-                    ? 'border-cyan-400 bg-cyan-400/20 text-cyan-400 shadow-[0_0_15px_rgba(0,240,255,0.2)]'
-                    : 'border-white/10 bg-black/40 text-white/60 hover:border-white/40 hover:bg-white/10 hover:text-white'
+                    ? 'border border-cyan-400/40 bg-cyan-400/10 text-cyan-400 shadow-[0_0_20px_rgba(0,240,255,0.2)]'
+                    : 'glass-panel glass-interactive text-white/70 hover:text-white'
                 } ${interactionLocked && !isActive ? 'cursor-not-allowed opacity-50' : ''} `}
                 aria-current={isActive ? 'page' : undefined}
               >
                 <span className="relative z-10">{item.label}</span>
-                {/* Hover effect background fill */}
-                {!isActive && (
-                  <div className="absolute inset-0 z-0 -translate-x-full bg-white/5 transition-transform duration-300 group-hover:translate-x-0" />
-                )}
               </button>
             );
           })}
