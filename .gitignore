@@ -15,6 +15,7 @@ docs/worklog/
 # tests
 coverage/
 playwright-report/
+playwright-transform-cache*/
 test-results/
 
 # misc
