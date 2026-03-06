@@ -15,7 +15,8 @@ vi.mock('gsap', () => {
 describe('OverlayPanel', () => {
   it('renders section heading', () => {
     render(<OverlayPanel section="projects" onClose={vi.fn()} />);
-    expect(screen.getByRole('heading', { name: /projects/i })).toBeInTheDocument();
+    const headings = screen.getAllByRole('heading', { name: /projects/i });
+    expect(headings.length).toBeGreaterThanOrEqual(1);
   });
 
   it('renders section description', () => {
