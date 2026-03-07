@@ -49,13 +49,13 @@ export function HomeScene() {
   }, [bootComplete, modelsReady, setIntroState]);
 
   return (
-    <div className="relative h-screen w-full">
+    <div className="relative h-dvh w-full">
       <SceneSkeleton />
       <TopNav />
 
       {introState !== 'garage' && (
         <div
-          className={`absolute inset-0 z-[100] bg-[#0a0908] transition-opacity duration-500 ${
+          className={`absolute inset-0 z-[100] bg-[#111010] transition-opacity duration-500 ${
             introState === 'airingOut' ? 'pointer-events-none opacity-0' : 'opacity-100'
           }`}
         >

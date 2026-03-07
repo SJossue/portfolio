@@ -15,12 +15,14 @@ export function ProjectsPanel({ projectId }: ProjectsPanelProps) {
           <img
             src={activeProject.heroImage}
             alt={activeProject.title}
-            className="h-[300px] w-full object-cover opacity-90 transition-opacity hover:opacity-100"
+            className="h-[180px] w-full object-cover opacity-90 transition-opacity hover:opacity-100 sm:h-[300px]"
           />
         </div>
       )}
 
-      <h2 className="mb-2 text-3xl font-bold tracking-wide text-white">{activeProject.title}</h2>
+      <h2 className="mb-2 text-xl font-bold tracking-wide text-white sm:text-3xl">
+        {activeProject.title}
+      </h2>
 
       {/* Links & Tech Stack */}
       <div className="mb-6 flex flex-col gap-4">
@@ -112,13 +114,13 @@ export function ProjectsPanel({ projectId }: ProjectsPanelProps) {
       )}
 
       {activeProject.images && activeProject.images.length > 0 && (
-        <div className="mt-4 grid grid-cols-2 gap-4">
+        <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
           {activeProject.images.map((img, idx) => (
             <img
               key={idx}
               src={img}
               alt={`${activeProject.title} detail ${idx}`}
-              className="h-48 w-full rounded object-cover opacity-70 transition-opacity hover:opacity-100"
+              className="h-36 w-full rounded object-cover opacity-70 transition-opacity hover:opacity-100 sm:h-48"
             />
           ))}
         </div>

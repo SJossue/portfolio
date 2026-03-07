@@ -6,7 +6,7 @@ import { OrbitControls } from '@react-three/drei';
 import { CameraRig } from './CameraRig';
 import { SceneContent } from './SceneContent';
 import { useSceneState } from './useSceneState';
-import { useIsMobile } from '../../../hooks/useIsMobile';
+import { useIsMobile } from '@/hooks/useIsMobile';
 
 function isWebGL2Available(): boolean {
   if (typeof window === 'undefined') return false;
@@ -21,7 +21,7 @@ function isWebGL2Available(): boolean {
 function SceneLoader() {
   return (
     <div
-      className="flex h-full w-full flex-col items-center justify-center gap-6 bg-[#0a0908]"
+      className="flex h-full w-full flex-col items-center justify-center gap-6 bg-[#111010]"
       role="status"
     >
       <div className="font-mono text-2xl uppercase tracking-[0.3em] text-white/80">Loading</div>
@@ -83,7 +83,7 @@ export function SceneSkeleton() {
     <Suspense fallback={<SceneLoader />}>
       <Canvas
         shadows={!isMobile}
-        camera={{ position: [0, 2.5, 8], fov: 45 }}
+        camera={{ position: isMobile ? [0, 3.5, 10] : [0, 2.5, 8], fov: 45 }}
         gl={{
           alpha: true,
           antialias: false,
@@ -96,8 +96,8 @@ export function SceneSkeleton() {
           if (selectedSection) setSelectedSection(null);
         }}
       >
-        <color attach="background" args={['#0a0908']} />
-        <fog attach="fog" args={['#0a0908', 12, 20]} />
+        <color attach="background" args={['#111010']} />
+        <fog attach="fog" args={['#111010', 14, 24]} />
         <SceneContent />
         <ModelsReadySignal />
         <CameraRig />

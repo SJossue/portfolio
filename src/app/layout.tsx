@@ -49,7 +49,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={jetbrainsMono.variable}>
-      <body className="flex min-h-screen flex-col font-mono antialiased">
+      <body className="h-dvh overflow-hidden font-mono antialiased">
         <JsonLd />
         {children}
       </body>

@@ -5,6 +5,7 @@ import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import { useSceneState } from './useSceneState';
+import { useIsMobile } from '@/hooks/useIsMobile';
 
 const SHOT_WIDE = {
   position: new THREE.Vector3(-2, 3.5, 10),
@@ -46,13 +47,16 @@ const LERP_FACTOR = 0.045;
 export function CameraRig() {
   const selectedSection = useSceneState((s) => s.selectedSection);
   const setCameraArrived = useSceneState((s) => s.setCameraArrived);
+  const isMobile = useIsMobile();
 
   const targetLookAt = useRef(new THREE.Vector3(0, 0.5, 0));
   const isReturning = useRef(false);
   const arrivedRef = useRef(false);
 
   // Save the user's manual orbit position and target right before a transition
-  const savedOrbitPosition = useRef(new THREE.Vector3(1, 3.5, 8));
+  const savedOrbitPosition = useRef(
+    isMobile ? new THREE.Vector3(0, 3.5, 10) : new THREE.Vector3(1, 3.5, 8),
+  );
   const savedOrbitTarget = useRef(new THREE.Vector3(0, 0.8, 0));
 
   const controls = useThree((state) => state.controls as OrbitControlsImpl | null);

@@ -49,13 +49,13 @@ export function SceneContent() {
     <group>
       {/* Stage 0+: Golden Hour / Sunset lighting */}
       {/* Soft blue/purple ambient fill representing the twilight sky overhead */}
-      <ambientLight intensity={0.5} color="#6e85a6" />
+      <ambientLight intensity={isMobile ? 1.0 : 0.5} color="#6e85a6" />
 
-      {/* Main warm sunlight — deeper orange, lower intensity for late sunset */}
+      {/* Main warm sunlight — deeper orange, boosted on mobile to compensate */}
       <directionalLight
         position={[-5, 4, 8]}
         color="#ff7f3f"
-        intensity={isMobile ? 1.0 : 1.5}
+        intensity={isMobile ? 2.0 : 1.5}
         castShadow={!isMobile}
         shadow-mapSize={isMobile ? [512, 512] : [1024, 1024]}
         shadow-camera-left={-8}
@@ -68,22 +68,26 @@ export function SceneContent() {
       <pointLight
         position={[3, 2, 4]}
         color="#cc9666"
-        intensity={isMobile ? 0.5 : 1.0}
+        intensity={isMobile ? 1.5 : 1.0}
         distance={15}
         decay={2}
       />
 
       {/* Dramatic rim light catching the edge of the car from behind */}
-      {!isMobile && (
-        <pointLight position={[1, 3, -6]} color="#ff5500" intensity={1} distance={20} decay={2} />
-      )}
+      <pointLight
+        position={[1, 3, -6]}
+        color="#ff5500"
+        intensity={isMobile ? 0.6 : 1}
+        distance={20}
+        decay={2}
+      />
 
-      {/* Warm desk lamp glow over the tools/work area — slightly dimmer */}
+      {/* Warm desk lamp glow over the tools/work area */}
       <spotLight
         position={[2, 4, 4]}
         angle={Math.PI / 3}
         penumbra={0.6}
-        intensity={isMobile ? 40 : 80}
+        intensity={isMobile ? 60 : 80}
         color="#ffcc99"
         distance={12}
         decay={2}
@@ -92,19 +96,19 @@ export function SceneContent() {
       {/* Stage 1: Garage environment (largest model — 9.5MB) */}
       {stage >= 1 && <GarageModel />}
 
-      {/* Stage 2: Desk (3.4MB) */}
+      {/* Stage 2: Desk (4.8MB) */}
       {stage >= 2 && <DeskModel position={[3, 0, 2.5]} rotation={[0, -Math.PI / 2.2, 0]} />}
 
       {/* Stage 3: Car + Environment map (1.3MB + env) */}
       {stage >= 3 && (
         <>
           <CarModel position={[0.5, -0.6, -1]} rotation={[0, -Math.PI / 8, 0]} />
-          {!isMobile && (
-            <>
-              <Environment preset="sunset" environmentIntensity={0.25} background={false} />
-              <BakeShadows />
-            </>
-          )}
+          <Environment
+            preset="sunset"
+            environmentIntensity={isMobile ? 0.4 : 0.25}
+            background={false}
+          />
+          {!isMobile && <BakeShadows />}
         </>
       )}
 

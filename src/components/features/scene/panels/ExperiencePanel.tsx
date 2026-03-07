@@ -11,22 +11,24 @@ export function ExperiencePanel({ experienceId }: ExperiencePanelProps) {
   return (
     <div className="flex flex-col gap-8">
       {/* Header Block */}
-      <div className="flex items-start justify-between gap-4 rounded border border-white/10 bg-black/40 p-6">
+      <div className="flex items-start justify-between gap-3 rounded border border-white/10 bg-black/40 p-4 sm:gap-4 sm:p-6">
         <div className="flex flex-col gap-2">
           <div className="font-mono text-xs font-bold uppercase tracking-widest text-cyan-400">
             {activeExperience.period}
           </div>
-          <h2 className="text-2xl font-bold tracking-wide text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]">
+          <h2 className="text-lg font-bold tracking-wide text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] sm:text-2xl">
             {activeExperience.role}
           </h2>
-          <div className="text-lg font-medium text-fuchsia-400">{activeExperience.company}</div>
+          <div className="text-sm font-medium text-fuchsia-400 sm:text-lg">
+            {activeExperience.company}
+          </div>
         </div>
         {activeExperience.logo && (
           <div className="flex-shrink-0">
             <img
               src={activeExperience.logo}
               alt={`${activeExperience.company} logo`}
-              className="h-16 w-16 rounded border border-white/10 bg-white/5 object-contain p-1"
+              className="h-12 w-12 rounded border border-white/10 bg-white/5 object-contain p-1 sm:h-16 sm:w-16"
             />
           </div>
         )}

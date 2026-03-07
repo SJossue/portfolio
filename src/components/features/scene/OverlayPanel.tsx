@@ -17,6 +17,7 @@ import {
   ToolsPanel,
 } from './panels';
 import { ResumeButton } from './panels/ResumeButton';
+import { useIsMobile } from '@/hooks/useIsMobile';
 
 interface OverlayPanelProps {
   section: string;
@@ -29,23 +30,6 @@ const SECTION_HEADINGS: Record<string, string> = {
   about: 'About',
   experience: 'Experience',
   tools: 'Tools & Software',
-};
-
-const SECTION_PANELS: Record<string, (props?: any) => ReactNode> = {
-  projects: (props) => <ProjectsPanel {...props} />,
-  research: (props) => <ResearchPanel {...props} />,
-  about: () => (
-    <div className="flex h-full min-h-0 gap-6">
-      <div className="scrollbar-cyber flex-1 basis-1/2 overflow-y-auto pr-4">
-        <AboutPanel />
-      </div>
-      <div className="flex min-w-0 flex-1 basis-1/2 flex-col border-l border-white/20 pl-6">
-        <ChatPanel />
-      </div>
-    </div>
-  ),
-  experience: (props) => <ExperiencePanel {...props} />,
-  tools: () => <ToolsPanel />,
 };
 
 function toTitleCase(str: string): string {
@@ -88,12 +72,11 @@ export function OverlayPanel({ section, onClose }: OverlayPanelProps) {
   const [activeExperienceId, setActiveExperienceId] = useState<string>(experienceData[0].id);
   const [activeResearchId, setActiveResearchId] = useState<string>(researchData[0]?.id ?? '');
   const [aboutImageIdx, setAboutImageIdx] = useState(0);
+  const isMobile = useIsMobile();
 
   const handleClose = useCallback(() => {
     if (isAnimatingRef.current) return;
     isAnimatingRef.current = true;
-    // Safety fallback: if GSAP ticker stalls (e.g. no-WebGL CI),
-    // ensure onClose fires regardless.
     const fallback = window.setTimeout(() => {
       isAnimatingRef.current = false;
       onClose();
@@ -111,7 +94,6 @@ export function OverlayPanel({ section, onClose }: OverlayPanelProps) {
     });
   }, [onClose]);
 
-  // Capture previously focused element and animate in on mount
   useEffect(() => {
     previousFocusRef.current = document.activeElement;
     gsap.fromTo(
@@ -135,34 +117,26 @@ export function OverlayPanel({ section, onClose }: OverlayPanelProps) {
     };
   }, []);
 
-  // Escape key closes the panel
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === 'Escape') {
-        handleClose();
-      }
+      if (e.key === 'Escape') handleClose();
     }
-
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleClose]);
 
-  // Focus trap: keep Tab key cycling within the panel
   useEffect(() => {
     const panel = panelRef.current;
     if (!panel) return;
 
     function handleTabKey(e: KeyboardEvent) {
       if (e.key !== 'Tab') return;
-
       const focusable = panel!.querySelectorAll<HTMLElement>(
         'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])',
       );
       if (focusable.length === 0) return;
-
       const first = focusable[0];
       const last = focusable[focusable.length - 1];
-
       if (e.shiftKey) {
         if (document.activeElement === first) {
           e.preventDefault();
@@ -182,6 +156,189 @@ export function OverlayPanel({ section, onClose }: OverlayPanelProps) {
 
   const heading = SECTION_HEADINGS[section] ?? toTitleCase(section);
 
+  const sectionPanelContent = (() => {
+    switch (section) {
+      case 'projects':
+        return <ProjectsPanel projectId={activeProjectId} />;
+      case 'research':
+        return <ResearchPanel researchId={activeResearchId} />;
+      case 'about':
+        if (isMobile) {
+          return (
+            <div className="flex flex-col gap-6">
+              <AboutPanel />
+              <div className="border-t border-white/20 pt-6">
+                <ChatPanel />
+              </div>
+            </div>
+          );
+        }
+        return (
+          <div className="flex h-full min-h-0 gap-6">
+            <div className="scrollbar-cyber flex-1 basis-1/2 overflow-y-auto pr-4">
+              <AboutPanel />
+            </div>
+            <div className="flex min-w-0 flex-1 basis-1/2 flex-col border-l border-white/20 pl-6">
+              <ChatPanel />
+            </div>
+          </div>
+        );
+      case 'experience':
+        return <ExperiencePanel experienceId={activeExperienceId} />;
+      case 'tools':
+        return <ToolsPanel />;
+      default:
+        return null;
+    }
+  })();
+
+  // ─── MOBILE LAYOUT ───
+  if (isMobile) {
+    return (
+      <div
+        ref={panelRef}
+        className="pointer-events-auto absolute inset-0 z-40 flex flex-col bg-black/90 backdrop-blur-md"
+        style={{ opacity: 0 }}
+        role="dialog"
+        aria-modal="true"
+        aria-label={heading}
+        data-testid="overlay-panel"
+      >
+        {/* Mobile Header */}
+        <div className="flex flex-shrink-0 items-center justify-between border-b border-white/10 px-4 pb-3 pt-4">
+          <h2 className="font-mono text-lg font-bold uppercase tracking-widest text-white">
+            {heading}
+          </h2>
+          <button
+            ref={closeButtonRef}
+            onClick={handleClose}
+            className="flex min-h-[36px] items-center gap-1.5 border border-white/20 bg-black/40 px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-white transition-all active:bg-white active:text-black"
+            aria-label="Close panel"
+            data-testid="close-panel"
+          >
+            <span>✕</span> Close
+          </button>
+        </div>
+
+        {/* Mobile Sub-nav (horizontal scroll) */}
+        {(section === 'projects' || section === 'experience' || section === 'research') && (
+          <div className="scrollbar-none flex-shrink-0 overflow-x-auto border-b border-white/10 px-4 py-3">
+            <div className="flex gap-2">
+              {section === 'projects' &&
+                projects.map((project) => {
+                  const isActive = activeProjectId === project.id;
+                  return (
+                    <button
+                      key={project.id}
+                      onClick={() => setActiveProjectId(project.id)}
+                      className={`flex-shrink-0 rounded-full border px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider transition-all ${
+                        isActive
+                          ? 'border-cyan-400 bg-cyan-400/20 text-cyan-400'
+                          : 'border-white/20 text-white/60 active:bg-white/10'
+                      }`}
+                    >
+                      {project.title}
+                    </button>
+                  );
+                })}
+              {section === 'experience' &&
+                experienceData.map((entry) => {
+                  const isActive = activeExperienceId === entry.id;
+                  return (
+                    <button
+                      key={entry.id}
+                      onClick={() => setActiveExperienceId(entry.id)}
+                      className={`flex flex-shrink-0 flex-col rounded-full border px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider transition-all ${
+                        isActive
+                          ? 'border-cyan-400 bg-cyan-400/20 text-cyan-400'
+                          : 'border-white/20 text-white/60 active:bg-white/10'
+                      }`}
+                    >
+                      {entry.company}
+                    </button>
+                  );
+                })}
+              {section === 'research' &&
+                researchData.map((entry) => {
+                  const isActive = activeResearchId === entry.id;
+                  return (
+                    <button
+                      key={entry.id}
+                      onClick={() => setActiveResearchId(entry.id)}
+                      className={`flex-shrink-0 rounded-full border px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider transition-all ${
+                        isActive
+                          ? 'border-cyan-400 bg-cyan-400/20 text-cyan-400'
+                          : 'border-white/20 text-white/60 active:bg-white/10'
+                      }`}
+                    >
+                      {entry.title}
+                    </button>
+                  );
+                })}
+            </div>
+          </div>
+        )}
+
+        {/* Mobile About Image + Info */}
+        {section === 'about' && (
+          <div className="flex flex-shrink-0 items-center gap-4 border-b border-white/10 px-4 py-3">
+            <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-full border border-white/20">
+              {aboutData.images.length > 0 && (
+                <Image
+                  src={aboutData.images[aboutImageIdx]}
+                  alt={aboutData.name}
+                  fill
+                  className="object-cover"
+                  sizes="64px"
+                />
+              )}
+            </div>
+            <div className="flex min-w-0 flex-col">
+              <span className="font-mono text-sm font-bold text-white">{aboutData.name}</span>
+              <span className="font-mono text-xs text-cyan-400">{aboutData.roleTitle}</span>
+              <span className="font-mono text-[10px] text-white/40">{aboutData.ethnicity}</span>
+            </div>
+            {aboutData.images.length > 1 && (
+              <div className="ml-auto flex gap-2">
+                <button
+                  onClick={() =>
+                    setAboutImageIdx(
+                      (prev) => (prev - 1 + aboutData.images.length) % aboutData.images.length,
+                    )
+                  }
+                  className="flex h-7 w-7 items-center justify-center border border-white/20 font-mono text-xs text-white/60 active:bg-white/10"
+                  aria-label="Previous image"
+                >
+                  &lt;
+                </button>
+                <button
+                  onClick={() => setAboutImageIdx((prev) => (prev + 1) % aboutData.images.length)}
+                  className="flex h-7 w-7 items-center justify-center border border-white/20 font-mono text-xs text-white/60 active:bg-white/10"
+                  aria-label="Next image"
+                >
+                  &gt;
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Mobile Content */}
+        <div className="scrollbar-cyber flex-1 overflow-y-auto px-4 py-4 text-white/90">
+          {sectionPanelContent}
+        </div>
+
+        {/* Mobile Resume Button (About only) */}
+        {section === 'about' && (
+          <div className="flex-shrink-0 border-t border-white/10 px-4 py-3">
+            <ResumeButton />
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // ─── DESKTOP LAYOUT ───
   return (
     <div
       ref={panelRef}
@@ -234,11 +391,10 @@ export function OverlayPanel({ section, onClose }: OverlayPanelProps) {
             {/* Timeline Vertical Axis */}
             <div className="absolute bottom-0 left-[7px] top-0 w-px bg-cyan-400/20" />
 
-            {experienceData.map((entry, i) => {
+            {experienceData.map((entry) => {
               const isActive = activeExperienceId === entry.id;
               return (
                 <div key={entry.id} className="relative flex gap-4 pb-8 last:pb-0">
-                  {/* Timeline dot */}
                   <div className="relative z-10 mt-1.5 flex h-4 w-4 flex-shrink-0 items-center justify-center">
                     <div
                       className={`h-2.5 w-2.5 rounded-full transition-all duration-300 ${
@@ -248,8 +404,6 @@ export function OverlayPanel({ section, onClose }: OverlayPanelProps) {
                       }`}
                     />
                   </div>
-
-                  {/* Content Button */}
                   <button
                     onClick={() => setActiveExperienceId(entry.id)}
                     className={`flex-1 text-left transition-all ${
@@ -304,7 +458,7 @@ export function OverlayPanel({ section, onClose }: OverlayPanelProps) {
             {heading}
           </h2>
 
-          {/* Image Carousel — 3:4 aspect ratio */}
+          {/* Image Carousel */}
           <div className="relative mx-auto aspect-[3/4] w-full max-w-[240px] overflow-hidden border border-white/20 bg-black/40">
             {aboutData.images.length > 0 && (
               <Image
@@ -317,7 +471,6 @@ export function OverlayPanel({ section, onClose }: OverlayPanelProps) {
             )}
           </div>
 
-          {/* Carousel Controls */}
           {aboutData.images.length > 1 && (
             <div className="mt-3 flex items-center justify-center gap-4">
               <button
@@ -344,7 +497,6 @@ export function OverlayPanel({ section, onClose }: OverlayPanelProps) {
             </div>
           )}
 
-          {/* Profile Info */}
           <div className="mt-5 flex flex-col gap-1">
             <span className="font-mono text-2xl font-bold tracking-wide text-white">
               {aboutData.name}
@@ -357,7 +509,6 @@ export function OverlayPanel({ section, onClose }: OverlayPanelProps) {
             </span>
           </div>
 
-          {/* Resume CTA */}
           <div className="mt-auto pt-6">
             <ResumeButton />
           </div>
@@ -396,18 +547,12 @@ export function OverlayPanel({ section, onClose }: OverlayPanelProps) {
         </button>
       </div>
 
-      {/* RIGHT COLUMN - Stats and Details Container */}
+      {/* RIGHT COLUMN - Content */}
       <div
         className={`corner-brackets pointer-events-auto my-auto flex h-[80vh] w-full flex-col border border-r-0 border-white/20 bg-black/60 p-6 shadow-[0_0_30px_rgba(255,255,255,0.05)] backdrop-blur-md ${section === 'projects' || section === 'experience' || section === 'about' || section === 'research' ? 'max-w-[800px]' : 'max-w-[500px]'}`}
       >
         <div className="scrollbar-cyber flex-1 overflow-y-auto pr-4 text-white/90">
-          {SECTION_PANELS[section]
-            ? SECTION_PANELS[section]({
-                projectId: activeProjectId,
-                experienceId: activeExperienceId,
-                researchId: activeResearchId,
-              })
-            : null}
+          {sectionPanelContent}
         </div>
       </div>
     </div>

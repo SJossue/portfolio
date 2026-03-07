@@ -114,8 +114,9 @@ function generateRandomLine(): string {
   return indent + parts.join('');
 }
 
-const TYPE_SPEED_MS = 2;
-const LINE_PAUSE_MS = 60;
+const CHARS_PER_TICK = 3;
+const TYPE_SPEED_MS = 4;
+const LINE_PAUSE_MS = 40;
 const STREAM_INTERVAL_MS = 35;
 const MAX_VISIBLE_LINES = 80;
 
@@ -150,13 +151,11 @@ export function TerminalBoot({ onComplete }: { onComplete: () => void }) {
     const target = INIT_LOGS[logIndex];
 
     if (charIndex < target.text.length) {
-      const timer = setTimeout(
-        () => {
-          setCurrentLineText(target.text.slice(0, charIndex + 1));
-          setCharIndex((c) => c + 1);
-        },
-        Math.random() * TYPE_SPEED_MS + 1,
-      );
+      const nextIndex = Math.min(charIndex + CHARS_PER_TICK, target.text.length);
+      const timer = setTimeout(() => {
+        setCurrentLineText(target.text.slice(0, nextIndex));
+        setCharIndex(nextIndex);
+      }, TYPE_SPEED_MS);
       return () => clearTimeout(timer);
     }
 
@@ -200,7 +199,7 @@ export function TerminalBoot({ onComplete }: { onComplete: () => void }) {
   const activeLine = phase === 'init' && logIndex < INIT_LOGS.length ? INIT_LOGS[logIndex] : null;
 
   return (
-    <div className="pointer-events-auto absolute inset-0 z-50 flex h-full w-full bg-[#050505]">
+    <div className="pointer-events-auto absolute inset-0 z-50 flex h-full w-full bg-[#111010]">
       {/* Left Side: Image */}
       <div className="relative hidden w-[40%] border-r border-white/5 md:block lg:w-[50%]">
         <img
@@ -208,7 +207,7 @@ export function TerminalBoot({ onComplete }: { onComplete: () => void }) {
           alt="Jossue"
           className="h-full w-full object-cover opacity-80"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#050505]/40" />
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-[#111010]" />
       </div>
 
       {/* Right Side: AI Terminal Screen */}
@@ -222,7 +221,7 @@ export function TerminalBoot({ onComplete }: { onComplete: () => void }) {
 
         <div
           ref={containerRef}
-          className="h-[60vh] w-full max-w-2xl overflow-y-auto rounded-xl border border-white/10 bg-black/50 p-6 font-mono text-sm leading-relaxed backdrop-blur-md"
+          className="h-[60vh] w-full max-w-2xl overflow-y-auto p-6 font-mono text-sm leading-relaxed"
         >
           {history.map((log, i) => (
             <div key={i} className="mb-1 flex gap-3">
