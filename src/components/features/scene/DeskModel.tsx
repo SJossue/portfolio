@@ -6,16 +6,15 @@ import * as THREE from 'three';
 import type { JSX } from 'react';
 import { useEmissiveGlow } from './useEmissiveGlow';
 
-type GroupProps = JSX.IntrinsicElements['group'] & { mobile?: boolean };
+type GroupProps = JSX.IntrinsicElements['group'];
 
 const MODEL_PATH = '/models/desk-transformed.glb';
-const MODEL_PATH_MOBILE = '/models/desk-mobile.glb';
 
 /** Target size of the desk along its longest axis (in scene units). */
 const TARGET_SIZE = 3.5;
 
-export function DeskModel({ mobile = false, ...props }: GroupProps) {
-  const { scene } = useGLTF(mobile ? MODEL_PATH_MOBILE : MODEL_PATH);
+export function DeskModel(props: GroupProps) {
+  const { scene } = useGLTF(MODEL_PATH);
   const groupRef = useRef<THREE.Group>(null);
 
   const pivot = useMemo(() => {

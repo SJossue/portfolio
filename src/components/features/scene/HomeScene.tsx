@@ -1,11 +1,36 @@
 'use client';
 
-import { useEffect, useCallback, useRef } from 'react';
+import { useEffect, useCallback, useRef, useState } from 'react';
 import { OverlayPanel, SceneSkeleton, TopNav } from '.';
+import { MobileScene } from './MobileScene';
 import { TerminalBoot } from './TerminalBoot';
 import { useSceneState } from './useSceneState';
 
+function isMobileDevice(): boolean {
+  if (typeof window === 'undefined') return false;
+  return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth < 768;
+}
+
 export function HomeScene() {
+  const [mobile, setMobile] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    setMobile(isMobileDevice());
+  }, []);
+
+  // Show nothing until we know (avoids hydration mismatch)
+  if (mobile === null) {
+    return <div className="h-dvh w-full bg-[#0a0908]" />;
+  }
+
+  if (mobile) {
+    return <MobileScene />;
+  }
+
+  return <DesktopScene />;
+}
+
+function DesktopScene() {
   const {
     introState,
     setIntroState,

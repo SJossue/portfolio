@@ -6,13 +6,12 @@ import type { JSX } from 'react';
 import * as THREE from 'three';
 import { useEmissiveGlow } from './useEmissiveGlow';
 
-type GroupProps = JSX.IntrinsicElements['group'] & { mobile?: boolean };
+type GroupProps = JSX.IntrinsicElements['group'];
 
 const MODEL_PATH = '/models/garage-transformed.glb';
-const MODEL_PATH_MOBILE = '/models/garage-mobile.glb';
 
-export function GarageModel({ mobile = false, ...props }: GroupProps) {
-  const { scene } = useGLTF(mobile ? MODEL_PATH_MOBILE : MODEL_PATH);
+export function GarageModel(props: GroupProps) {
+  const { scene } = useGLTF(MODEL_PATH);
   const groupRef = useRef<THREE.Group>(null);
 
   const cloned = useMemo(() => scene.clone(true), [scene]);
