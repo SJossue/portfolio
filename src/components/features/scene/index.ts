@@ -2,7 +2,6 @@ export { CarModel } from './CarModel';
 export { DeskModel } from './DeskModel';
 export { GarageModel } from './GarageModel';
 export { HomeScene } from './HomeScene';
-export { MobileScene } from './MobileScene';
 export { OverlayPanel } from './OverlayPanel';
 export { SceneContent } from './SceneContent';
 export { SceneSkeleton } from './SceneSkeleton';
