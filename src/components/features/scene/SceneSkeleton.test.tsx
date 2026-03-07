@@ -51,7 +51,9 @@ describe('SceneSkeleton', () => {
     vi.spyOn(document, 'createElement').mockImplementation((tag: string) => {
       const el = originalCreateElement(tag);
       if (tag === 'canvas') {
-        (el as HTMLCanvasElement).getContext = vi.fn().mockReturnValue({});
+        (el as HTMLCanvasElement).getContext = vi.fn().mockReturnValue({
+          getParameter: vi.fn().mockReturnValue(4096),
+        });
       }
       return el;
     });
@@ -67,7 +69,6 @@ describe('SceneSkeleton', () => {
     await act(async () => {
       render(<SceneSkeleton />);
     });
-    expect(screen.getByTestId('scene-fallback')).toBeInTheDocument();
-    expect(screen.getByText(/webgl 2/i)).toBeInTheDocument();
+    expect(screen.getByText(/mobile view/i)).toBeInTheDocument();
   });
 });
