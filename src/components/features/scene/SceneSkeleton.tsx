@@ -162,7 +162,7 @@ export function SceneSkeleton() {
           }}
         >
           <color attach="background" args={['#0a0908']} />
-          <fog attach="fog" args={mobile ? ['#0a0908', 6, 14] : ['#0a0908', 12, 20]} />
+          <fog attach="fog" args={['#0a0908', 12, 20]} />
           <SceneContent mobile={mobile} />
           <ModelsReadySignal />
           <CameraRig />

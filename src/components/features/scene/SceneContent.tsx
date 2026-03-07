@@ -79,18 +79,22 @@ export function SceneContent({ mobile = false }: { mobile?: boolean }) {
         decay={2}
       />
 
-      {/* Desktop: load all models progressively */}
-      {!mobile && stage >= 1 && <GarageModel />}
-      {!mobile && stage >= 2 && <DeskModel position={[2, 0, 5]} rotation={[0, -Math.PI / 3, 0]} />}
+      {/* Stage 1: Garage environment */}
+      {stage >= 1 && <GarageModel mobile={mobile} />}
 
-      {/* Car loads on both desktop and mobile (331KB mobile variant) */}
-      {stage >= 1 && (
-        <CarModel mobile={mobile} position={[0.5, -0.6, -1]} rotation={[0, -Math.PI / 8, 0]} />
+      {/* Stage 2: Desk */}
+      {stage >= 2 && (
+        <DeskModel mobile={mobile} position={[2, 0, 5]} rotation={[0, -Math.PI / 3, 0]} />
       )}
 
-      {/* Desktop-only: full environment map + remaining models at stage 3 */}
-      {!mobile && stage >= 3 && (
-        <Environment preset="sunset" environmentIntensity={0.25} background={false} />
+      {/* Stage 3: Car + Environment map */}
+      {stage >= 3 && (
+        <>
+          <CarModel mobile={mobile} position={[0.5, -0.6, -1]} rotation={[0, -Math.PI / 8, 0]} />
+          {!mobile && (
+            <Environment preset="sunset" environmentIntensity={0.25} background={false} />
+          )}
+        </>
       )}
 
       <SceneHitboxes />
