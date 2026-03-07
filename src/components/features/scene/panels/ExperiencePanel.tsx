@@ -1,43 +1,94 @@
 import { experienceData } from '@/content/experience';
 
-export function ExperiencePanel() {
+interface ExperiencePanelProps {
+  experienceId?: string;
+}
+
+export function ExperiencePanel({ experienceId }: ExperiencePanelProps) {
+  // Gracefully fallback if state is somehow missing
+  const activeExperience = experienceData.find((e) => e.id === experienceId) || experienceData[0];
+
   return (
-    <div className="flex flex-col gap-6">
-      <p className="text-sm text-white/50">Career timeline and key roles.</p>
-
-      <div className="relative flex flex-col gap-0">
-        {/* Timeline line */}
-        <div className="absolute bottom-0 left-[7px] top-0 w-px bg-cyan-400/20" />
-
-        {experienceData.map((entry, i) => (
-          <div key={entry.id} className="relative flex gap-4 pb-8 last:pb-0">
-            {/* Timeline dot */}
-            <div className="relative z-10 mt-1.5 flex h-4 w-4 flex-shrink-0 items-center justify-center">
-              <div
-                className={`h-2.5 w-2.5 rounded-full ${i === 0 ? 'bg-cyan-400 shadow-[0_0_8px_rgba(0,240,255,0.5)]' : 'border border-cyan-400/40 bg-black'}`}
-              />
-            </div>
-
-            {/* Content */}
-            <div className="flex-1">
-              <div className="font-mono text-xs tracking-wider text-cyan-400">{entry.period}</div>
-              <h3 className="mt-1 text-sm font-medium text-white">{entry.role}</h3>
-              <div className="text-xs text-fuchsia-400">{entry.company}</div>
-              <p className="mt-2 text-sm leading-relaxed text-white/60">{entry.description}</p>
-              <div className="mt-2 flex flex-wrap gap-1.5">
-                {entry.techStack.map((tech) => (
-                  <span
-                    key={tech}
-                    className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 font-mono text-[10px] text-white/40"
-                  >
-                    {tech}
-                  </span>
-                ))}
-              </div>
-            </div>
+    <div className="flex flex-col gap-8">
+      {/* Header Block */}
+      <div className="flex items-start justify-between gap-4 rounded border border-white/10 bg-black/40 p-6">
+        <div className="flex flex-col gap-2">
+          <div className="font-mono text-xs font-bold uppercase tracking-widest text-cyan-400">
+            {activeExperience.period}
           </div>
-        ))}
+          <h2 className="text-2xl font-bold tracking-wide text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]">
+            {activeExperience.role}
+          </h2>
+          <div className="text-lg font-medium text-fuchsia-400">{activeExperience.company}</div>
+        </div>
+        {activeExperience.logo && (
+          <div className="flex-shrink-0">
+            <img
+              src={activeExperience.logo}
+              alt={`${activeExperience.company} logo`}
+              className="h-16 w-16 rounded border border-white/10 bg-white/5 object-contain p-1"
+            />
+          </div>
+        )}
       </div>
+
+      {/* Description */}
+      <div className="rounded border border-white/5 bg-black/50 p-6">
+        <h4 className="mb-3 font-mono text-xs font-bold uppercase tracking-widest text-white/50">
+          Overview
+        </h4>
+        <p className="text-base leading-relaxed text-white/90">{activeExperience.description}</p>
+      </div>
+
+      {/* Key Achievements List (Conditional) */}
+      {activeExperience.achievements && activeExperience.achievements.length > 0 && (
+        <div className="rounded border border-white/5 bg-black/50 p-6">
+          <h4 className="mb-4 font-mono text-xs font-bold uppercase tracking-widest text-amber-400">
+            Key Achievements
+          </h4>
+          <ul className="flex flex-col gap-3 pl-4 text-sm text-white/90">
+            {activeExperience.achievements.map((item, idx) => (
+              <li key={idx} className="list-disc marker:text-cyan-500">
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* Tech/Skills Pillbox */}
+      <div className="pt-2">
+        <h4 className="mb-4 font-mono text-xs font-bold uppercase tracking-widest text-white/50">
+          Core Capabilities
+        </h4>
+        <div className="flex flex-wrap gap-2">
+          {activeExperience.techStack.map((tech) => (
+            <span
+              key={tech}
+              className="rounded-full border border-white/20 bg-white/10 px-3 py-1 font-mono text-xs font-medium text-white/90"
+            >
+              {tech}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* Image Gallery (Conditional) */}
+      {activeExperience.images && activeExperience.images.length > 0 && (
+        <div className="mt-4 border-t border-white/10 pt-6">
+          <div className="grid gap-4 sm:grid-cols-2">
+            {activeExperience.images.map((img, idx) => (
+              <div key={idx} className="overflow-hidden rounded border border-white/20">
+                <img
+                  src={img}
+                  alt={`${activeExperience.company} gallery image ${idx + 1}`}
+                  className="h-[200px] w-full object-cover transition-transform duration-500 hover:scale-105"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

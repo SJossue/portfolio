@@ -11,9 +11,14 @@ export function SceneHitboxes() {
   return (
     <group>
       {/* Desk */}
-      <InteractiveHitbox section="contact" position={[2, 0.8, 5]} args={[1.8, 1.2, 1.2]} />
+      <InteractiveHitbox
+        section="research"
+        position={[3, 0.5, 2.5]}
+        args={[2.2, 1.2, 1.2]}
+        rotation={[0, -Math.PI / 2.2, 0]}
+      />
       {/* Right cabinet */}
-      <InteractiveHitbox section="projects" position={[5, 1.5, -1]} args={[1.5, 3, 1.5]} />
+      <InteractiveHitbox section="projects" position={[5.5, 1.5, -2]} args={[1.5, 3, 1.5]} />
       {/* Car */}
       <InteractiveHitbox
         section="about"
@@ -22,9 +27,9 @@ export function SceneHitboxes() {
         rotation={[0, -Math.PI / 8, 0]}
       />
       {/* Back tools/workbench */}
-      <InteractiveHitbox section="tools" position={[0, 1.5, -4]} args={[2.5, 2, 1.5]} />
+      <InteractiveHitbox section="tools" position={[3.5, 1.5, -8]} args={[3, 2, 2]} />
       {/* Tire on rack (left of car) */}
-      <InteractiveHitbox section="experience" position={[-3, 1.2, -1]} args={[1.5, 1.5, 1.5]} />
+      <InteractiveHitbox section="experience" position={[-6, 1.5, 0]} args={[2, 3, 2]} />
     </group>
   );
 }

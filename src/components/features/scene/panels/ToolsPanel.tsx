@@ -1,7 +1,7 @@
 const TOOL_CATEGORIES = [
   {
     category: 'Languages',
-    items: ['TypeScript', 'JavaScript', 'Python', 'Rust', 'SQL'],
+    items: ['TypeScript', 'JavaScript', 'Python', 'SQL'],
   },
   {
     category: 'Frameworks',
@@ -13,7 +13,7 @@ const TOOL_CATEGORIES = [
   },
   {
     category: 'Tools',
-    items: ['Git', 'Neovim', 'Figma', 'Postman'],
+    items: ['Git', 'SolidWorks', 'Blender', 'Figma', 'Postman'],
   },
 ];
 

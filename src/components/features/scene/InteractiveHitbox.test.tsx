@@ -14,19 +14,19 @@ describe('InteractiveHitbox store integration', () => {
   });
 
   it('setSelectedSection updates store when unlocked', () => {
-    useSceneState.getState().setSelectedSection('contact');
-    expect(useSceneState.getState().selectedSection).toBe('contact');
+    useSceneState.getState().setSelectedSection('research');
+    expect(useSceneState.getState().selectedSection).toBe('research');
   });
 
   it('setSelectedSection is blocked when interaction is locked', () => {
     useSceneState.setState({ interactionLocked: true });
-    useSceneState.getState().setSelectedSection('contact');
+    useSceneState.getState().setSelectedSection('research');
     expect(useSceneState.getState().selectedSection).toBeNull();
   });
 
   it('setSelectedSection can clear back to null', () => {
-    useSceneState.getState().setSelectedSection('contact');
-    expect(useSceneState.getState().selectedSection).toBe('contact');
+    useSceneState.getState().setSelectedSection('research');
+    expect(useSceneState.getState().selectedSection).toBe('research');
     useSceneState.getState().setSelectedSection(null);
     expect(useSceneState.getState().selectedSection).toBeNull();
   });

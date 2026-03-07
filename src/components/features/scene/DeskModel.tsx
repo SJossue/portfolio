@@ -37,7 +37,7 @@ export function DeskModel(props: GroupProps) {
     return group;
   }, [scene]);
 
-  useEmissiveGlow(groupRef, 'contact', '#ffffff', 0.4);
+  useEmissiveGlow(groupRef, 'research', '#ffffff', 0.4);
 
   return (
     <group ref={groupRef} {...props}>
@@ -45,3 +45,5 @@ export function DeskModel(props: GroupProps) {
     </group>
   );
 }
+
+useGLTF.preload(MODEL_PATH);

@@ -5,6 +5,9 @@ export interface ExperienceEntry {
   period: string;
   description: string;
   techStack: string[];
+  achievements?: string[];
+  images?: string[];
+  logo?: string;
 }
 
 export const experienceData: ExperienceEntry[] = [

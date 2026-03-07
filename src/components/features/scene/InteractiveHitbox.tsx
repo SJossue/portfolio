@@ -29,7 +29,7 @@ export function InteractiveHitbox({ section, position, args, rotation }: Interac
 
   function handlePointerOver(e: ThreeEvent<PointerEvent>) {
     e.stopPropagation();
-    if (!interactionLocked) {
+    if (!interactionLocked && !selectedSection) {
       setHoveredSection(section);
       document.body.style.cursor = 'pointer';
     }

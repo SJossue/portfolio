@@ -23,7 +23,7 @@ describe('SceneHitboxes', () => {
   });
 
   it('each section can be selected when garage is active', () => {
-    const sections = ['contact', 'projects', 'tools', 'about'];
+    const sections = ['research', 'projects', 'tools', 'about'];
     for (const section of sections) {
       useSceneState.getState().setSelectedSection(section);
       expect(useSceneState.getState().selectedSection).toBe(section);
@@ -32,7 +32,7 @@ describe('SceneHitboxes', () => {
 
   it('sections cannot be selected when not in garage state', () => {
     useSceneState.getState().setIntroState('idle');
-    useSceneState.getState().setSelectedSection('contact');
+    useSceneState.getState().setSelectedSection('research');
     expect(useSceneState.getState().selectedSection).toBeNull();
   });
 });

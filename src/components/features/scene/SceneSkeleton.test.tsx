@@ -11,6 +11,7 @@ vi.mock('@react-three/fiber', () => ({
 
 vi.mock('@react-three/drei', () => ({
   OrbitControls: () => <div>OrbitControls</div>,
+  useGLTF: { preload: vi.fn() },
 }));
 
 vi.mock('@react-three/postprocessing', () => ({

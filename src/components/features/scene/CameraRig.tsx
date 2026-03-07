@@ -20,24 +20,24 @@ const SHOT_WIDE = {
  */
 const SHOT_SECTIONS: Record<string, { position: THREE.Vector3; lookAt: THREE.Vector3 }> = {
   projects: {
-    position: new THREE.Vector3(2, 2, 1.5),
-    lookAt: new THREE.Vector3(4.4, 1.3, -0.5),
+    position: new THREE.Vector3(1, 2, 2),
+    lookAt: new THREE.Vector3(6.5, 1, -2),
   },
-  contact: {
-    position: new THREE.Vector3(0, 2, 8),
-    lookAt: new THREE.Vector3(5.5, 0.3, 3),
+  research: {
+    position: new THREE.Vector3(2, 1.5, 5),
+    lookAt: new THREE.Vector3(6, 0.3, 0),
   },
   tools: {
-    position: new THREE.Vector3(-2, 2, -4),
-    lookAt: new THREE.Vector3(3, 0.5, -8),
+    position: new THREE.Vector3(-2, 1.7, -4),
+    lookAt: new THREE.Vector3(3.5, 0, -8),
   },
   about: {
-    position: new THREE.Vector3(-0.3, 1.5, 5),
-    lookAt: new THREE.Vector3(0.6, 0.5, -1),
+    position: new THREE.Vector3(1, 1.5, 10),
+    lookAt: new THREE.Vector3(2.4, 0.5, -1),
   },
   experience: {
-    position: new THREE.Vector3(-6, 1.5, 4),
-    lookAt: new THREE.Vector3(0, 1.2, -1),
+    position: new THREE.Vector3(-2, 1.5, 4),
+    lookAt: new THREE.Vector3(-3.5, 0.3, 0),
   },
 };
 
@@ -52,8 +52,8 @@ export function CameraRig() {
   const arrivedRef = useRef(false);
 
   // Save the user's manual orbit position and target right before a transition
-  const savedOrbitPosition = useRef(new THREE.Vector3(-2, 3.5, 10));
-  const savedOrbitTarget = useRef(new THREE.Vector3(0, 0.5, 0));
+  const savedOrbitPosition = useRef(new THREE.Vector3(1, 3.5, 8));
+  const savedOrbitTarget = useRef(new THREE.Vector3(0, 0.8, 0));
 
   const controls = useThree((state) => state.controls as OrbitControlsImpl | null);
 

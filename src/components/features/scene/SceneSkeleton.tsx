@@ -6,6 +6,7 @@ import { OrbitControls } from '@react-three/drei';
 import { CameraRig } from './CameraRig';
 import { SceneContent } from './SceneContent';
 import { useSceneState } from './useSceneState';
+import { useIsMobile } from '../../../hooks/useIsMobile';
 
 function isWebGL2Available(): boolean {
   if (typeof window === 'undefined') return false;
@@ -66,6 +67,7 @@ export function SceneSkeleton() {
   const selectedSection = useSceneState((s) => s.selectedSection);
   const setSelectedSection = useSceneState((s) => s.setSelectedSection);
   const [hasWebGL2, setHasWebGL2] = useState(false);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     if (isWebGL2Available()) {
@@ -80,9 +82,15 @@ export function SceneSkeleton() {
   return (
     <Suspense fallback={<SceneLoader />}>
       <Canvas
-        camera={{ position: [-5, 3.5, 10], fov: 50 }}
-        gl={{ alpha: true, antialias: false, powerPreference: 'high-performance' }}
-        dpr={[1, 1.5]}
+        shadows={!isMobile}
+        camera={{ position: [0, 2.5, 8], fov: 45 }}
+        gl={{
+          alpha: true,
+          antialias: false,
+          powerPreference: 'high-performance',
+          preserveDrawingBuffer: false,
+        }}
+        dpr={isMobile ? 1 : [1, 1.5]}
         performance={{ min: 0.5 }}
         onPointerMissed={() => {
           if (selectedSection) setSelectedSection(null);
@@ -99,8 +107,8 @@ export function SceneSkeleton() {
           enablePan={false}
           minDistance={2}
           maxDistance={10.5}
-          minPolarAngle={Math.PI / 2.2}
-          maxPolarAngle={Math.PI / 2.2}
+          minPolarAngle={Math.PI / 2.75}
+          maxPolarAngle={Math.PI / 2}
           minAzimuthAngle={-Math.PI / 4}
           maxAzimuthAngle={Math.PI / 4}
           target={[0, 0.8, 0]}

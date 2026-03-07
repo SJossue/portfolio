@@ -14,13 +14,13 @@ vi.mock('gsap', () => {
 
 describe('OverlayPanel', () => {
   it('renders section heading', () => {
-    render(<OverlayPanel section="projects" onClose={vi.fn()} />);
-    expect(screen.getByRole('heading', { name: /projects/i })).toBeInTheDocument();
+    render(<OverlayPanel section="about" onClose={vi.fn()} />);
+    expect(screen.getByRole('heading', { name: /about/i })).toBeInTheDocument();
   });
 
   it('renders section description', () => {
-    render(<OverlayPanel section="projects" onClose={vi.fn()} />);
-    expect(screen.getByText(/curated selection/i)).toBeInTheDocument();
+    render(<OverlayPanel section="about" onClose={vi.fn()} />);
+    expect(screen.getByText(/technical leadership/i)).toBeInTheDocument();
   });
 
   it('calls onClose when close button is clicked', async () => {

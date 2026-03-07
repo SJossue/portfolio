@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { Environment } from '@react-three/drei';
+import { Environment, BakeShadows } from '@react-three/drei';
 
 import { GarageModel } from './GarageModel';
 import { DeskModel } from './DeskModel';
 import { CarModel } from './CarModel';
 import { SceneHitboxes } from './SceneHitboxes';
+import { useIsMobile } from '../../../hooks/useIsMobile';
 
 /**
  * Composes all GLB models into the scene with appropriate positioning and lighting.
@@ -23,6 +24,7 @@ import { SceneHitboxes } from './SceneHitboxes';
  */
 export function SceneContent() {
   const [stage, setStage] = useState(0);
+  const isMobile = useIsMobile();
   // Advance the loading stage each time a few frames have rendered,
   // giving the GPU time to process each model's geometry.
   useFrame(() => {
@@ -47,15 +49,15 @@ export function SceneContent() {
     <group>
       {/* Stage 0+: Golden Hour / Sunset lighting */}
       {/* Soft blue/purple ambient fill representing the twilight sky overhead */}
-      <ambientLight intensity={0.15} color="#4b5d78" />
+      <ambientLight intensity={0.5} color="#6e85a6" />
 
       {/* Main warm sunlight — deeper orange, lower intensity for late sunset */}
       <directionalLight
         position={[-5, 4, 8]}
         color="#ff7f3f"
-        intensity={1.2}
-        castShadow
-        shadow-mapSize={[1024, 1024]}
+        intensity={isMobile ? 1.0 : 1.5}
+        castShadow={!isMobile}
+        shadow-mapSize={isMobile ? [512, 512] : [1024, 1024]}
         shadow-camera-left={-8}
         shadow-camera-right={8}
         shadow-camera-top={8}
@@ -63,17 +65,25 @@ export function SceneContent() {
       />
 
       {/* Soft warm fill to soften the darkest shadows under the car/desk */}
-      <pointLight position={[3, 2, 4]} color="#cc9666" intensity={0.5} distance={15} decay={2} />
+      <pointLight
+        position={[3, 2, 4]}
+        color="#cc9666"
+        intensity={isMobile ? 0.5 : 1.0}
+        distance={15}
+        decay={2}
+      />
 
       {/* Dramatic rim light catching the edge of the car from behind */}
-      <pointLight position={[1, 3, -6]} color="#ff5500" intensity={1} distance={20} decay={2} />
+      {!isMobile && (
+        <pointLight position={[1, 3, -6]} color="#ff5500" intensity={1} distance={20} decay={2} />
+      )}
 
       {/* Warm desk lamp glow over the tools/work area — slightly dimmer */}
       <spotLight
         position={[2, 4, 4]}
-        angle={Math.PI / 4}
+        angle={Math.PI / 3}
         penumbra={0.6}
-        intensity={20}
+        intensity={isMobile ? 40 : 80}
         color="#ffcc99"
         distance={12}
         decay={2}
@@ -83,13 +93,18 @@ export function SceneContent() {
       {stage >= 1 && <GarageModel />}
 
       {/* Stage 2: Desk (3.4MB) */}
-      {stage >= 2 && <DeskModel position={[2, 0, 5]} rotation={[0, -Math.PI / 3, 0]} />}
+      {stage >= 2 && <DeskModel position={[3, 0, 2.5]} rotation={[0, -Math.PI / 2.2, 0]} />}
 
       {/* Stage 3: Car + Environment map (1.3MB + env) */}
       {stage >= 3 && (
         <>
           <CarModel position={[0.5, -0.6, -1]} rotation={[0, -Math.PI / 8, 0]} />
-          <Environment preset="sunset" environmentIntensity={0.25} background={false} />
+          {!isMobile && (
+            <>
+              <Environment preset="sunset" environmentIntensity={0.25} background={false} />
+              <BakeShadows />
+            </>
+          )}
         </>
       )}
 

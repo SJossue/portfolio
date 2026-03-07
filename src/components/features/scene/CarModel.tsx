@@ -45,3 +45,5 @@ export function CarModel(props: GroupProps) {
     </group>
   );
 }
+
+useGLTF.preload(MODEL_PATH);

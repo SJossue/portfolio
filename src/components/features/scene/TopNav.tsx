@@ -3,11 +3,11 @@
 import { useSceneState } from './useSceneState';
 
 const NAV_ITEMS = [
-  { id: 'projects', label: 'Projects' },
-  { id: 'experience', label: 'Experience' },
-  { id: 'tools', label: 'Tools' },
   { id: 'about', label: 'About' },
-  { id: 'contact', label: 'Contact' },
+  { id: 'experience', label: 'Experience' },
+  { id: 'projects', label: 'Projects' },
+  { id: 'research', label: 'Research' },
+  { id: 'tools', label: 'Tools' },
 ] as const;
 
 export function TopNav() {

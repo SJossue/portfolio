@@ -6,3 +6,5 @@ export { experienceData } from './experience';
 export type { ExperienceEntry } from './experience';
 export { projects } from './projects';
 export type { Project } from './projects';
+export { researchData } from './research';
+export type { ResearchEntry } from './research';

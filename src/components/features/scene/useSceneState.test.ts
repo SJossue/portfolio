@@ -55,20 +55,20 @@ describe('useSceneState', () => {
   it('updates hoveredSection when unlocked', () => {
     const { result } = renderHook(() => useSceneState((s) => s));
     act(() => result.current.setIntroState('garage'));
-    act(() => result.current.setHoveredSection('contact'));
-    expect(result.current.hoveredSection).toBe('contact');
+    act(() => result.current.setHoveredSection('research'));
+    expect(result.current.hoveredSection).toBe('research');
   });
 
   it('blocks setHoveredSection when locked', () => {
     const { result } = renderHook(() => useSceneState((s) => s));
-    act(() => result.current.setHoveredSection('contact'));
+    act(() => result.current.setHoveredSection('research'));
     expect(result.current.hoveredSection).toBeNull();
   });
 
   it('clears hoveredSection regardless of lock', () => {
     const { result } = renderHook(() => useSceneState((s) => s));
     act(() => result.current.setIntroState('garage'));
-    act(() => result.current.setHoveredSection('contact'));
+    act(() => result.current.setHoveredSection('research'));
     // Re-lock interaction
     act(() => result.current.setIntroState('idle'));
     // Clearing to null should still work even when locked

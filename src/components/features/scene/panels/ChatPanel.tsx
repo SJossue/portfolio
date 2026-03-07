@@ -40,7 +40,8 @@ export function ChatPanel() {
   return (
     <div className="flex h-full flex-col gap-4">
       <p className="text-sm text-white/50">
-        Ask me anything about Jossue&apos;s work, skills, or projects.
+        <span className="text-orange-400">Ask me anything</span> about Jossue&apos;s work, skills,
+        or projects.
       </p>
 
       {/* Messages */}
@@ -126,18 +127,25 @@ export function ChatPanel() {
       <div className="border-t border-white/10 pt-3">
         <p className="mb-2 text-xs text-white/30">Or reach out directly:</p>
         <div className="flex gap-3">
-          {contactLinks.map((link) => (
-            <a
-              key={link.id}
-              href={link.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={link.label}
-              className="border border-white/10 px-3 py-1.5 font-mono text-xs text-white/50 transition-colors hover:border-cyan-400/50 hover:text-cyan-400"
-            >
-              {link.icon} {link.label}
-            </a>
-          ))}
+          {contactLinks.map((link) => {
+            const styles: Record<string, string> = {
+              github: 'bg-white text-black border-white hover:bg-white/80',
+              linkedin: 'bg-[#0A66C2] text-white border-[#0A66C2] hover:bg-[#004182]',
+              email: 'bg-[#EA4335] text-white border-[#EA4335] hover:bg-[#C5221F]',
+            };
+            return (
+              <a
+                key={link.id}
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={link.label}
+                className={`border px-3 py-1.5 font-mono text-xs transition-colors ${styles[link.id] ?? 'border-white/10 text-white/50 hover:border-cyan-400/50 hover:text-cyan-400'}`}
+              >
+                {link.icon} {link.label}
+              </a>
+            );
+          })}
         </div>
       </div>
     </div>
