@@ -63,11 +63,9 @@ describe('SceneSkeleton', () => {
     expect(screen.getByTestId('canvas')).toBeInTheDocument();
   });
 
-  it('renders fallback when WebGL 2 is unavailable', async () => {
-    await act(async () => {
-      render(<SceneSkeleton />);
-    });
-    expect(screen.getByTestId('scene-fallback')).toBeInTheDocument();
+  it('renders fallback when WebGL 2 is unavailable', () => {
+    render(<SceneSkeleton />);
+    expect(screen.getByTestId('webgl-fallback')).toBeInTheDocument();
     expect(screen.getByText(/webgl 2/i)).toBeInTheDocument();
   });
 });

@@ -1,12 +1,21 @@
 'use client';
 
-import { Component, Suspense, useEffect, useState, useRef, useCallback } from 'react';
-import type { ReactNode, ErrorInfo } from 'react';
+import { Suspense, useEffect, useState, useRef, useCallback, type ReactNode } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import { CameraRig } from './CameraRig';
 import { SceneContent } from './SceneContent';
 import { useSceneState } from './useSceneState';
+
+function isWebGL2Available(): boolean {
+  if (typeof window === 'undefined') return false;
+  try {
+    const canvas = document.createElement('canvas');
+    return !!canvas.getContext('webgl2');
+  } catch {
+    return false;
+  }
+}
 
 function isMobileDevice(): boolean {
   if (typeof window === 'undefined') return false;
@@ -30,21 +39,32 @@ function SceneLoader() {
   );
 }
 
-function SceneFallback({ message, onRetry }: { message: string; onRetry?: () => void }) {
+function WebGLFallback() {
+  return (
+    <div
+      className="flex h-full w-full items-center justify-center bg-neutral-900"
+      data-testid="webgl-fallback"
+    >
+      <p className="text-sm text-white/60">
+        3D scene requires WebGL 2. Please use a modern browser.
+      </p>
+    </div>
+  );
+}
+
+function ContextLostFallback({ onRetry }: { onRetry: () => void }) {
   return (
     <div
       className="flex h-full w-full flex-col items-center justify-center gap-4 bg-[#0a0908]"
-      data-testid="scene-fallback"
+      data-testid="context-lost-fallback"
     >
-      <p className="max-w-xs text-center font-mono text-sm text-white/60">{message}</p>
-      {onRetry && (
-        <button
-          onClick={onRetry}
-          className="border border-white/20 bg-white/5 px-4 py-2 font-mono text-xs uppercase tracking-widest text-white transition-colors hover:bg-white/10"
-        >
-          Reload
-        </button>
-      )}
+      <p className="font-mono text-sm text-white/60">3D scene lost — GPU ran out of memory.</p>
+      <button
+        onClick={onRetry}
+        className="border border-white/20 bg-white/5 px-4 py-2 font-mono text-xs uppercase tracking-widest text-white transition-colors hover:bg-white/10"
+      >
+        Reload
+      </button>
     </div>
   );
 }
@@ -63,79 +83,50 @@ function ModelsReadySignal() {
   return null;
 }
 
-/** Proper React error boundary (class component) to catch render/lifecycle errors. */
-class SceneErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
-  constructor(props: { children: ReactNode }) {
-    super(props);
-    this.state = { hasError: false };
-  }
+function SceneErrorBoundary({ children }: { children: ReactNode }) {
+  const [hasError, setHasError] = useState(false);
 
-  static getDerivedStateFromError(): { hasError: boolean } {
-    return { hasError: true };
-  }
-
-  componentDidCatch(error: Error, info: ErrorInfo) {
-    console.error('[SceneErrorBoundary]', error, info.componentStack);
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return (
-        <SceneFallback
-          message="Something went wrong loading the 3D scene."
-          onRetry={() => window.location.reload()}
-        />
-      );
+  useEffect(() => {
+    function handleError(e: ErrorEvent) {
+      if (e.message?.includes('WebGL') || e.message?.includes('context')) {
+        setHasError(true);
+      }
     }
-    return this.props.children;
+    window.addEventListener('error', handleError);
+    return () => window.removeEventListener('error', handleError);
+  }, []);
+
+  if (hasError) {
+    return <ContextLostFallback onRetry={() => window.location.reload()} />;
   }
+
+  return <>{children}</>;
 }
 
 export function SceneSkeleton() {
   const selectedSection = useSceneState((s) => s.selectedSection);
   const setSelectedSection = useSceneState((s) => s.setSelectedSection);
-  const [ready, setReady] = useState(false);
+  const [hasWebGL2, setHasWebGL2] = useState(false);
   const [contextLost, setContextLost] = useState(false);
   const [mobile, setMobile] = useState(false);
-  const [webgl, setWebgl] = useState(true);
 
-  // Run all browser-only checks after mount to avoid hydration mismatch
   useEffect(() => {
-    const m = isMobileDevice();
-    setMobile(m);
-
-    try {
-      const canvas = document.createElement('canvas');
-      if (!canvas.getContext('webgl2')) {
-        setWebgl(false);
-      }
-    } catch {
-      setWebgl(false);
+    if (isWebGL2Available()) {
+      setHasWebGL2(true);
     }
-
-    setReady(true);
+    setMobile(isMobileDevice());
   }, []);
 
   const handleContextLost = useCallback(() => {
     setContextLost(true);
   }, []);
 
-  // Before client-side checks complete, show the loader (matches SSR output)
-  if (!ready) {
-    return <SceneLoader />;
-  }
-
-  if (!webgl) {
-    return <SceneFallback message="3D scene requires WebGL 2. Please use a modern browser." />;
+  if (!hasWebGL2) {
+    return <WebGLFallback />;
   }
 
   if (contextLost) {
-    return (
-      <SceneFallback
-        message="3D scene lost — GPU ran out of memory."
-        onRetry={() => window.location.reload()}
-      />
-    );
+    return <ContextLostFallback onRetry={() => window.location.reload()} />;
   }
 
   return (
