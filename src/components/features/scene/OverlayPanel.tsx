@@ -166,19 +166,20 @@ export function OverlayPanel({ section, onClose }: OverlayPanelProps) {
   return (
     <div
       ref={panelRef}
-      className="pointer-events-none absolute inset-0 z-40 flex h-full w-full flex-col items-center justify-center md:flex-row md:justify-between md:py-12"
+      className="pointer-events-none absolute inset-0 z-40 flex h-full w-full justify-between py-6 md:py-12"
       style={{ opacity: 0 }}
       role="dialog"
       aria-modal="true"
       aria-label={heading}
       data-testid="overlay-panel"
     >
-      {/* LEFT COLUMN - Sub-navigation (hidden on mobile) */}
-      <div className="corner-brackets pointer-events-auto my-auto hidden h-[80vh] w-full max-w-[300px] flex-col border border-l-0 border-white/20 bg-white/5 p-6 shadow-[0_0_30px_rgba(255,255,255,0.05)] backdrop-blur-md md:flex">
+      {/* LEFT COLUMN - Sub-navigation */}
+      <div className="corner-brackets pointer-events-auto my-auto flex h-[80vh] w-full max-w-[300px] flex-col border border-l-0 border-white/20 bg-white/5 p-6 shadow-[0_0_30px_rgba(255,255,255,0.05)] backdrop-blur-md">
         <h2 className="animate-glitch-skew mb-8 font-mono text-3xl font-bold uppercase tracking-widest text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.8)]">
           {heading}
         </h2>
         <div className="flex flex-col gap-4">
+          {/* Loadout categories for visual flair */}
           {['OVERVIEW', 'DETAILS', 'LOGS'].map((item, i) => (
             <button
               key={item}
@@ -206,13 +207,9 @@ export function OverlayPanel({ section, onClose }: OverlayPanelProps) {
         </button>
       </div>
 
-      {/* MAIN COLUMN - Full width on mobile, right column on desktop */}
-      <div className="corner-brackets pointer-events-auto mx-4 flex max-h-[85vh] w-[calc(100%-2rem)] flex-col border border-white/20 bg-black/80 p-4 shadow-[0_0_30px_rgba(255,255,255,0.05)] backdrop-blur-md md:mx-0 md:my-auto md:h-[80vh] md:max-h-none md:w-full md:max-w-[500px] md:border-r-0 md:bg-white/5 md:p-6">
-        {/* Mobile heading */}
-        <h2 className="animate-glitch-skew mb-4 font-mono text-xl font-bold uppercase tracking-widest text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.8)] md:hidden">
-          {heading}
-        </h2>
-        <div className="scrollbar-cyber flex-1 overflow-y-auto pr-2 text-white/90 md:pr-4">
+      {/* RIGHT COLUMN - Stats and Details Container */}
+      <div className="corner-brackets pointer-events-auto my-auto flex h-[80vh] w-full max-w-[500px] flex-col border border-r-0 border-white/20 bg-white/5 p-6 shadow-[0_0_30px_rgba(255,255,255,0.05)] backdrop-blur-md">
+        <div className="scrollbar-cyber flex-1 overflow-y-auto pr-4 text-white/90">
           {SECTION_PANELS[section] ?? null}
         </div>
       </div>

@@ -49,7 +49,7 @@ export function HomeScene() {
   }, [bootComplete, modelsReady, setIntroState]);
 
   return (
-    <div className="relative h-dvh w-full">
+    <div className="relative h-screen w-full">
       <SceneSkeleton />
       <TopNav />
 

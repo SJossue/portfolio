@@ -21,7 +21,7 @@ import { SceneHitboxes } from './SceneHitboxes';
  * - Desk: front center, the first thing the user sees
  * - Car: center of the garage
  */
-export function SceneContent({ mobile = false }: { mobile?: boolean }) {
+export function SceneContent() {
   const [stage, setStage] = useState(0);
   // Advance the loading stage each time a few frames have rendered,
   // giving the GPU time to process each model's geometry.
@@ -46,34 +46,34 @@ export function SceneContent({ mobile = false }: { mobile?: boolean }) {
   return (
     <group>
       {/* Stage 0+: Golden Hour / Sunset lighting */}
-      <ambientLight intensity={mobile ? 0.25 : 0.15} color="#4b5d78" />
+      {/* Soft blue/purple ambient fill representing the twilight sky overhead */}
+      <ambientLight intensity={0.15} color="#4b5d78" />
 
-      {/* Main warm sunlight */}
+      {/* Main warm sunlight — deeper orange, lower intensity for late sunset */}
       <directionalLight
         position={[-5, 4, 8]}
         color="#ff7f3f"
         intensity={1.2}
-        castShadow={!mobile}
-        shadow-mapSize={mobile ? [512, 512] : [1024, 1024]}
+        castShadow
+        shadow-mapSize={[1024, 1024]}
         shadow-camera-left={-8}
         shadow-camera-right={8}
         shadow-camera-top={8}
         shadow-camera-bottom={-8}
       />
 
-      {/* Soft warm fill */}
+      {/* Soft warm fill to soften the darkest shadows under the car/desk */}
       <pointLight position={[3, 2, 4]} color="#cc9666" intensity={0.5} distance={15} decay={2} />
 
-      {/* Skip expensive lights on mobile */}
-      {!mobile && (
-        <pointLight position={[1, 3, -6]} color="#ff5500" intensity={1} distance={20} decay={2} />
-      )}
+      {/* Dramatic rim light catching the edge of the car from behind */}
+      <pointLight position={[1, 3, -6]} color="#ff5500" intensity={1} distance={20} decay={2} />
 
+      {/* Warm desk lamp glow over the tools/work area — slightly dimmer */}
       <spotLight
         position={[2, 4, 4]}
         angle={Math.PI / 4}
         penumbra={0.6}
-        intensity={mobile ? 10 : 20}
+        intensity={20}
         color="#ffcc99"
         distance={12}
         decay={2}
