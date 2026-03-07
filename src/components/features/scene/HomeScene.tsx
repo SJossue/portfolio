@@ -1,15 +1,9 @@
 'use client';
 
-import { useEffect, useCallback, useRef, useState } from 'react';
-import { MobileScene } from './MobileScene';
+import { useCallback, useEffect, useRef } from 'react';
 import { OverlayPanel, SceneSkeleton, TopNav } from '.';
 import { TerminalBoot } from './TerminalBoot';
 import { useSceneState } from './useSceneState';
-
-function isMobileDevice(): boolean {
-  if (typeof window === 'undefined') return false;
-  return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth < 768;
-}
 
 function DesktopScene() {
   const {
@@ -82,20 +76,5 @@ function DesktopScene() {
 }
 
 export function HomeScene() {
-  const [mobile, setMobile] = useState<boolean | null>(null);
-
-  useEffect(() => {
-    setMobile(isMobileDevice());
-  }, []);
-
-  // Before hydration check completes, render empty dark div to avoid mismatch
-  if (mobile === null) {
-    return <div className="h-dvh w-full bg-[#0a0908]" />;
-  }
-
-  if (mobile) {
-    return <MobileScene />;
-  }
-
   return <DesktopScene />;
 }
