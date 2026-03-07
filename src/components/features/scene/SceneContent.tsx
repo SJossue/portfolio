@@ -79,17 +79,21 @@ export function SceneContent({ mobile = false }: { mobile?: boolean }) {
         decay={2}
       />
 
-      {/* Stage 1: Garage environment (largest model — 9.5MB) */}
-      {stage >= 1 && <GarageModel />}
+      {/* Stage 1: Garage environment */}
+      {stage >= 1 && <GarageModel mobile={mobile} />}
 
-      {/* Stage 2: Desk (3.4MB) */}
-      {stage >= 2 && <DeskModel position={[2, 0, 5]} rotation={[0, -Math.PI / 3, 0]} />}
+      {/* Stage 2: Desk */}
+      {stage >= 2 && (
+        <DeskModel mobile={mobile} position={[2, 0, 5]} rotation={[0, -Math.PI / 3, 0]} />
+      )}
 
-      {/* Stage 3: Car + Environment map (1.3MB + env) */}
+      {/* Stage 3: Car + Environment map */}
       {stage >= 3 && (
         <>
-          <CarModel position={[0.5, -0.6, -1]} rotation={[0, -Math.PI / 8, 0]} />
-          <Environment preset="sunset" environmentIntensity={0.25} background={false} />
+          <CarModel mobile={mobile} position={[0.5, -0.6, -1]} rotation={[0, -Math.PI / 8, 0]} />
+          {!mobile && (
+            <Environment preset="sunset" environmentIntensity={0.25} background={false} />
+          )}
         </>
       )}
 

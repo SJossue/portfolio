@@ -6,15 +6,16 @@ import * as THREE from 'three';
 import type { JSX } from 'react';
 import { useEmissiveGlow } from './useEmissiveGlow';
 
-type GroupProps = JSX.IntrinsicElements['group'];
+type GroupProps = JSX.IntrinsicElements['group'] & { mobile?: boolean };
 
 const MODEL_PATH = '/models/accord-transformed.glb';
+const MODEL_PATH_MOBILE = '/models/accord-mobile.glb';
 
 /** Target size of the car along its longest axis (in scene units). */
 const TARGET_SIZE = 6;
 
-export function CarModel(props: GroupProps) {
-  const { scene } = useGLTF(MODEL_PATH);
+export function CarModel({ mobile = false, ...props }: GroupProps) {
+  const { scene } = useGLTF(mobile ? MODEL_PATH_MOBILE : MODEL_PATH);
   const groupRef = useRef<THREE.Group>(null);
 
   const pivot = useMemo(() => {
