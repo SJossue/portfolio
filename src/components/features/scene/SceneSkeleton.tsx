@@ -5,7 +5,6 @@ import type { ReactNode, ErrorInfo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import { CameraRig } from './CameraRig';
-import { MobileScene } from './MobileScene';
 import { SceneContent } from './SceneContent';
 import { useSceneState } from './useSceneState';
 
@@ -131,7 +130,12 @@ export function SceneSkeleton() {
   }
 
   if (contextLost) {
-    return <MobileScene />;
+    return (
+      <SceneFallback
+        message="3D scene lost — GPU ran out of memory."
+        onRetry={() => window.location.reload()}
+      />
+    );
   }
 
   return (
