@@ -9,12 +9,10 @@ describe('AboutPanel', () => {
 
   it('renders all highlight labels and values', () => {
     render(<AboutPanel />);
-    expect(screen.getByText('Identity')).toBeInTheDocument();
-    expect(screen.getByText('Product-Oriented Systems Engineer')).toBeInTheDocument();
     expect(screen.getByText('Philosophy')).toBeInTheDocument();
     expect(screen.getByText('Learn by Building')).toBeInTheDocument();
     expect(screen.getByText('Pillars')).toBeInTheDocument();
-    expect(screen.getByText('Hardware, Software, UX')).toBeInTheDocument();
+    expect(screen.getByText('Execution, Systems, Leadership')).toBeInTheDocument();
   });
 
   it('renders all skill categories', () => {

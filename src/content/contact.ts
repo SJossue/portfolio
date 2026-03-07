@@ -21,7 +21,7 @@ export const contactLinks: ContactLink[] = [
   {
     id: 'email',
     label: 'Email',
-    href: 'mailto:jossue.sarango@example.com',
+    href: 'mailto:jossuesarango1@gmail.com',
     icon: '@',
   },
 ];
