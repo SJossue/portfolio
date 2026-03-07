@@ -14,63 +14,6 @@ function isMobileDevice(): boolean {
   return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth < 768;
 }
 
-type SceneMode = 'full' | 'lite' | 'fallback';
-
-type SceneProfile = {
-  mobile: boolean;
-  mode: SceneMode;
-};
-
-function detectSceneProfile(): SceneProfile {
-  const mobile = isMobileDevice();
-
-  if (typeof document === 'undefined') {
-    return { mobile, mode: 'fallback' };
-  }
-
-  const canvas = document.createElement('canvas');
-  const contextOptions: WebGLContextAttributes = {
-    alpha: true,
-    antialias: false,
-    failIfMajorPerformanceCaveat: true,
-    powerPreference: mobile ? 'low-power' : 'high-performance',
-  };
-
-  const getContext = (
-    contextType: 'webgl2' | 'webgl',
-  ): WebGLRenderingContext | WebGL2RenderingContext | null => {
-    try {
-      return canvas.getContext(contextType, contextOptions) as
-        | WebGLRenderingContext
-        | WebGL2RenderingContext
-        | null;
-    } catch {
-      return null;
-    }
-  };
-
-  const webgl2 = getContext('webgl2');
-  const gl = webgl2 || getContext('webgl');
-
-  if (!gl) {
-    return { mobile, mode: 'fallback' };
-  }
-
-  const isLowEnd =
-    typeof gl.getParameter(gl.MAX_TEXTURE_SIZE) === 'number' &&
-    (gl.getParameter(gl.MAX_TEXTURE_SIZE) as number) < 2048;
-
-  if (webgl2 && !mobile && isLowEnd) {
-    return { mobile, mode: 'lite' };
-  }
-
-  if (mobile) {
-    return { mobile, mode: 'lite' };
-  }
-
-  return { mobile: false, mode: webgl2 ? 'full' : 'lite' };
-}
-
 function SceneLoader() {
   return (
     <div
@@ -155,13 +98,21 @@ export function SceneSkeleton() {
   const [ready, setReady] = useState(false);
   const [contextLost, setContextLost] = useState(false);
   const [mobile, setMobile] = useState(false);
-  const [sceneMode, setSceneMode] = useState<SceneMode>('fallback');
+  const [webgl, setWebgl] = useState(true);
 
   // Run all browser-only checks after mount to avoid hydration mismatch
   useEffect(() => {
-    const profile = detectSceneProfile();
-    setMobile(profile.mobile);
-    setSceneMode(profile.mode);
+    const m = isMobileDevice();
+    setMobile(m);
+
+    try {
+      const canvas = document.createElement('canvas');
+      if (!canvas.getContext('webgl2')) {
+        setWebgl(false);
+      }
+    } catch {
+      setWebgl(false);
+    }
 
     setReady(true);
   }, []);
@@ -175,28 +126,26 @@ export function SceneSkeleton() {
     return <SceneLoader />;
   }
 
-  if (sceneMode === 'fallback') {
-    return <MobileScene />;
+  if (!webgl) {
+    return <SceneFallback message="3D scene requires WebGL 2. Please use a modern browser." />;
   }
 
   if (contextLost) {
     return <MobileScene />;
   }
 
-  const isLiteMode = sceneMode === 'lite';
-
   return (
     <SceneErrorBoundary>
       <Suspense fallback={<SceneLoader />}>
         <Canvas
-          camera={{ position: [-5, 3.5, 10], fov: isLiteMode ? 60 : 50 }}
+          camera={{ position: [-5, 3.5, 10], fov: mobile ? 60 : 50 }}
           gl={{
             alpha: true,
             antialias: false,
-            powerPreference: isLiteMode ? 'low-power' : 'high-performance',
+            powerPreference: mobile ? 'low-power' : 'high-performance',
           }}
-          dpr={isLiteMode ? 1 : [1, 1.5]}
-          performance={{ min: isLiteMode ? 0.2 : 0.5 }}
+          dpr={mobile ? 1 : [1, 1.5]}
+          performance={{ min: 0.5 }}
           onPointerMissed={() => {
             if (selectedSection) setSelectedSection(null);
           }}
@@ -209,8 +158,8 @@ export function SceneSkeleton() {
           }}
         >
           <color attach="background" args={['#0a0908']} />
-          <fog attach="fog" args={isLiteMode ? ['#0a0908', 6, 14] : ['#0a0908', 12, 20]} />
-          <SceneContent mobile={isLiteMode} />
+          <fog attach="fog" args={mobile ? ['#0a0908', 6, 14] : ['#0a0908', 12, 20]} />
+          <SceneContent mobile={mobile} />
           <ModelsReadySignal />
           <CameraRig />
           <OrbitControls
