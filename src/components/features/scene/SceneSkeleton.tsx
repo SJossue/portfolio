@@ -86,11 +86,11 @@ export function SceneSkeleton() {
         camera={{ position: isMobile ? [0, 3.5, 10] : [0, 2.5, 8], fov: 45 }}
         gl={{
           alpha: true,
-          antialias: false,
+          antialias: !isMobile,
           powerPreference: 'high-performance',
           preserveDrawingBuffer: false,
         }}
-        dpr={isMobile ? 1 : [1, 1.5]}
+        dpr={isMobile ? [1, 2] : [1, 2]}
         performance={{ min: 0.5 }}
         onPointerMissed={() => {
           if (selectedSection) setSelectedSection(null);
