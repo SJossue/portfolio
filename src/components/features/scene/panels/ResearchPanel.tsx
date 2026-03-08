@@ -95,7 +95,7 @@ export function ResearchPanel({ researchId }: ResearchPanelProps) {
 
           // Regular paragraph
           return (
-            <p key={i} className="indent-8">
+            <p key={i} className="indent-4 sm:indent-8">
               {renderInline(trimmed)}
             </p>
           );

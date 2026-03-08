@@ -126,7 +126,7 @@ export function ChatPanel() {
       {/* Contact links fallback */}
       <div className="border-t border-white/10 pt-3">
         <p className="mb-2 text-xs text-white/30">Or reach out directly:</p>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
           {contactLinks.map((link) => {
             const styles: Record<string, string> = {
               github: 'bg-white text-black border-white hover:bg-white/80',

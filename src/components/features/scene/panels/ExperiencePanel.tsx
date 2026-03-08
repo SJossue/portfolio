@@ -9,7 +9,7 @@ export function ExperiencePanel({ experienceId }: ExperiencePanelProps) {
   const activeExperience = experienceData.find((e) => e.id === experienceId) || experienceData[0];
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-6 sm:gap-8">
       {/* Header Block */}
       <div className="flex items-start justify-between gap-3 rounded border border-white/10 bg-black/40 p-4 sm:gap-4 sm:p-6">
         <div className="flex flex-col gap-2">
@@ -35,16 +35,18 @@ export function ExperiencePanel({ experienceId }: ExperiencePanelProps) {
       </div>
 
       {/* Description */}
-      <div className="rounded border border-white/5 bg-black/50 p-6">
+      <div className="rounded border border-white/5 bg-black/50 p-4 sm:p-6">
         <h4 className="mb-3 font-mono text-xs font-bold uppercase tracking-widest text-white/50">
           Overview
         </h4>
-        <p className="text-base leading-relaxed text-white/90">{activeExperience.description}</p>
+        <p className="text-sm leading-relaxed text-white/90 sm:text-base">
+          {activeExperience.description}
+        </p>
       </div>
 
       {/* Key Achievements List (Conditional) */}
       {activeExperience.achievements && activeExperience.achievements.length > 0 && (
-        <div className="rounded border border-white/5 bg-black/50 p-6">
+        <div className="rounded border border-white/5 bg-black/50 p-4 sm:p-6">
           <h4 className="mb-4 font-mono text-xs font-bold uppercase tracking-widest text-amber-400">
             Key Achievements
           </h4>

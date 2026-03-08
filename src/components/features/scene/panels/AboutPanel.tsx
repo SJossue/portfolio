@@ -7,7 +7,7 @@ export function AboutPanel() {
       <p className="text-sm leading-relaxed text-white/70">{aboutData.bio}</p>
 
       {/* Highlights */}
-      <div className="flex gap-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
         {aboutData.highlights.map((h) => (
           <div key={h.label} className="flex-1 border-l-2 border-white/40 bg-white/5 p-3">
             <div className="font-mono text-xs uppercase tracking-widest text-white/50">
@@ -21,7 +21,7 @@ export function AboutPanel() {
       </div>
 
       {/* Skills grid */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {aboutData.skills.map((group) => (
           <div key={group.category}>
             <h3 className="mb-2 border-b border-white/20 pb-2 font-mono text-xs font-bold uppercase tracking-widest text-white">

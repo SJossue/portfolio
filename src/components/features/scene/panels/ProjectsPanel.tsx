@@ -26,7 +26,7 @@ export function ProjectsPanel({ projectId }: ProjectsPanelProps) {
 
       {/* Links & Tech Stack */}
       <div className="mb-6 flex flex-col gap-4">
-        <div className="flex gap-4">
+        <div className="flex flex-wrap gap-4">
           {activeProject.githubUrl && (
             <a
               href={activeProject.githubUrl}
@@ -62,7 +62,7 @@ export function ProjectsPanel({ projectId }: ProjectsPanelProps) {
       </div>
 
       {/* STAR Methodology Sections */}
-      <div className="grid gap-8 md:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-2 md:gap-8">
         {activeProject.situation && (
           <div className="flex flex-col gap-2">
             <h4 className="font-mono text-xs font-bold uppercase tracking-widest text-cyan-400">
@@ -114,7 +114,7 @@ export function ProjectsPanel({ projectId }: ProjectsPanelProps) {
       )}
 
       {activeProject.images && activeProject.images.length > 0 && (
-        <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
+        <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-4">
           {activeProject.images.map((img, idx) => (
             <img
               key={idx}

@@ -7,7 +7,7 @@ describe('ResumeButton', () => {
     render(<ResumeButton />);
     const link = screen.getByRole('link', { name: /download resume/i });
     expect(link).toBeInTheDocument();
-    expect(link).toHaveAttribute('href', '/resume.pdf');
+    expect(link).toHaveAttribute('href', '/resume/JossueSarango-Resume.pdf');
     expect(link).toHaveAttribute('download');
   });
 });
