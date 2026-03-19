@@ -5,7 +5,11 @@ import { OverlayPanel, SceneSkeleton, TopNav } from '.';
 import { TerminalBoot } from './TerminalBoot';
 import { useSceneState } from './useSceneState';
 
-export function HomeScene() {
+interface HomeSceneProps {
+  onExit3D?: () => void;
+}
+
+export function HomeScene({ onExit3D }: HomeSceneProps) {
   const {
     introState,
     setIntroState,
@@ -48,10 +52,26 @@ export function HomeScene() {
     }
   }, [bootComplete, modelsReady, setIntroState]);
 
+  // Add/remove mode-3d class for viewport locking
+  useEffect(() => {
+    document.documentElement.classList.add('mode-3d');
+    return () => document.documentElement.classList.remove('mode-3d');
+  }, []);
+
   return (
     <div className="relative h-dvh w-full">
       <SceneSkeleton />
       <TopNav />
+
+      {/* Back to Portfolio button */}
+      {onExit3D && (
+        <button
+          onClick={onExit3D}
+          className="fixed left-4 top-4 z-[110] rounded border border-white/20 bg-black/70 px-3 py-1.5 text-xs text-white/70 backdrop-blur-sm transition-colors hover:border-cyan-400/40 hover:text-cyan-400"
+        >
+          ← Portfolio
+        </button>
+      )}
 
       {introState !== 'garage' && (
         <div

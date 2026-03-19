@@ -51,7 +51,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={jetbrainsMono.variable}>
-      <body className="h-dvh overflow-hidden font-mono antialiased">
+      <body className="font-mono antialiased">
         <JsonLd />
         {children}
         <Analytics />
