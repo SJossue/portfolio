@@ -47,9 +47,11 @@ function OnboardingHint() {
   if (!show) return null;
 
   return (
-    <div className="pointer-events-auto absolute bottom-20 left-1/2 z-50 -translate-x-1/2">
-      <div className="glass-card flex items-center gap-4 rounded-lg border-cyan-400/20 px-5 py-3 shadow-[0_0_20px_rgba(0,240,255,0.1)]">
-        <p className="font-mono text-sm text-white/80">Click objects in the scene to explore</p>
+    <div className="pointer-events-auto absolute bottom-24 left-1/2 z-50 -translate-x-1/2 sm:bottom-20">
+      <div className="glass-card flex w-[calc(100vw-2rem)] max-w-sm items-center gap-3 rounded-lg border-cyan-400/20 px-4 py-3 shadow-[0_0_20px_rgba(0,240,255,0.1)] sm:w-auto sm:gap-4 sm:px-5">
+        <p className="font-mono text-xs text-white/80 sm:text-sm">
+          Tap objects in the scene to explore
+        </p>
         <button
           onClick={dismiss}
           className="shrink-0 rounded border border-white/20 px-3 py-1 font-mono text-xs text-white/60 transition-colors hover:border-cyan-400/40 hover:text-cyan-400"

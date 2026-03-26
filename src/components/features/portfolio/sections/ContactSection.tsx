@@ -9,14 +9,14 @@ import { ScrollReveal } from '../ScrollReveal';
 
 export function ContactSection() {
   return (
-    <section id="contact" className="mx-auto max-w-5xl px-4 py-24">
+    <section id="contact" className="mx-auto max-w-5xl px-4 py-16 sm:py-24">
       <ScrollReveal>
         <SectionHeader title="Contact" />
       </ScrollReveal>
 
       <div className="grid gap-6 md:grid-cols-2">
         <ScrollReveal animation="slide-left">
-          <div className="glass-card rounded-lg p-6">
+          <div className="glass-card rounded-lg p-4 sm:p-6">
             <ContactPanel />
             <div className="mt-4">
               <MagneticWrap>
@@ -27,7 +27,7 @@ export function ContactSection() {
         </ScrollReveal>
 
         <ScrollReveal animation="slide-right" delay={0.15}>
-          <div className="glass-card rounded-lg p-6">
+          <div className="glass-card max-h-[70vh] overflow-y-auto rounded-lg p-4 sm:max-h-none sm:p-6">
             <ChatPanel />
           </div>
         </ScrollReveal>

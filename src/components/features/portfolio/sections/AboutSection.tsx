@@ -69,7 +69,7 @@ function CyclingImage({ images, name }: { images: string[]; name: string }) {
   }, [images.length]);
 
   return (
-    <div className="relative h-full min-h-[240px] w-full">
+    <div className="relative h-full min-h-[200px] w-full sm:min-h-[240px]">
       {images.map((src, i) => (
         <Image
           key={src}
@@ -88,7 +88,7 @@ function CyclingImage({ images, name }: { images: string[]; name: string }) {
           <button
             key={i}
             onClick={() => setIdx(i)}
-            className={`h-1.5 w-1.5 rounded-full transition-colors ${
+            className={`h-2 w-2 rounded-full transition-colors ${
               i === idx ? 'bg-cyan-400' : 'bg-white/30'
             }`}
             aria-label={`View photo ${i + 1}`}
@@ -103,7 +103,7 @@ export function AboutSection() {
   const isNumeric = (v: string) => /^\d+$/.test(v);
 
   return (
-    <section id="about" className="mx-auto max-w-5xl px-4 py-24">
+    <section id="about" className="mx-auto max-w-5xl px-4 py-16 sm:py-24">
       <ScrollReveal>
         <SectionHeader title="About" />
       </ScrollReveal>

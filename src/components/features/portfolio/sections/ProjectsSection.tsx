@@ -188,7 +188,7 @@ function ProjectCard({
                     {project.images.map((src, idx) => (
                       <div
                         key={idx}
-                        className="relative h-32 w-48 flex-shrink-0 overflow-hidden rounded"
+                        className="relative h-28 w-40 flex-shrink-0 overflow-hidden rounded sm:h-32 sm:w-48"
                       >
                         <Image
                           src={src}
@@ -213,7 +213,7 @@ export function ProjectsSection() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   return (
-    <section id="projects" className="mx-auto max-w-5xl px-4 py-24">
+    <section id="projects" className="mx-auto max-w-5xl px-4 py-16 sm:py-24">
       <ScrollReveal>
         <SectionHeader title="Projects" />
       </ScrollReveal>

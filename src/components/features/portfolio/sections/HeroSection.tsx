@@ -114,7 +114,7 @@ export function HeroSection({ introComplete = true }: HeroSectionProps) {
 
       <div
         ref={containerRef}
-        className="relative z-10 flex max-w-3xl flex-col items-center gap-8 text-center"
+        className="relative z-10 flex max-w-3xl flex-col items-center gap-5 text-center sm:gap-8"
       >
         {/* Headshot */}
         <div data-hero-anim className="corner-brackets p-1 opacity-0">
@@ -123,16 +123,18 @@ export function HeroSection({ introComplete = true }: HeroSectionProps) {
             alt={aboutData.name}
             width={140}
             height={140}
-            className="rounded-sm"
+            className="h-24 w-24 rounded-sm sm:h-[140px] sm:w-[140px]"
             priority
           />
         </div>
 
         {/* Name — split-text reveal */}
-        <h1 className="text-5xl font-bold tracking-tight text-white sm:text-7xl">{nameElements}</h1>
+        <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-7xl">
+          {nameElements}
+        </h1>
 
         {/* Role — typewriter */}
-        <p className="h-7 text-lg text-cyan-400 sm:text-xl">
+        <p className="h-7 text-base text-cyan-400 sm:text-lg md:text-xl">
           <span ref={roleRef} className="font-mono" />
           <span className="animate-typing-cursor ml-0.5" aria-hidden="true" />
         </p>
@@ -153,7 +155,7 @@ export function HeroSection({ introComplete = true }: HeroSectionProps) {
               href={link.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="glass-card rounded-lg px-4 py-2 text-xs text-white/70 transition-colors hover:text-cyan-400"
+              className="glass-card rounded-lg px-3 py-1.5 text-[11px] text-white/70 transition-colors hover:text-cyan-400 sm:px-4 sm:py-2 sm:text-xs"
             >
               <span className="mr-1.5 font-bold">{link.icon}</span>
               {link.label}

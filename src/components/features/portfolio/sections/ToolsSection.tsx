@@ -4,13 +4,13 @@ import { ScrollReveal } from '../ScrollReveal';
 
 export function ToolsSection() {
   return (
-    <section id="tools" className="mx-auto max-w-5xl px-4 py-24">
+    <section id="tools" className="mx-auto max-w-5xl px-4 py-16 sm:py-24">
       <ScrollReveal>
         <SectionHeader title="Tools & Technologies" />
       </ScrollReveal>
 
       <ScrollReveal animation="blur-in" delay={0.1}>
-        <div className="glass-card rounded-lg p-6">
+        <div className="glass-card rounded-lg p-4 sm:p-6">
           <ToolsPanel />
         </div>
       </ScrollReveal>

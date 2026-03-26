@@ -24,7 +24,7 @@ export function ToolsPanel() {
         Technologies and tools I use to build modern, performant applications.
       </p>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4">
         {TOOL_CATEGORIES.map((group) => (
           <div key={group.category}>
             <h3 className="mb-2 border-b border-white/20 pb-2 font-mono text-xs font-bold uppercase tracking-widest text-white">

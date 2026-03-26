@@ -24,8 +24,8 @@ interface ScrollRevealProps {
 const animationFrom: Record<Animation, gsap.TweenVars> = {
   'fade-up': { y: 40, opacity: 0 },
   'fade-in': { opacity: 0 },
-  'slide-left': { x: -60, opacity: 0 },
-  'slide-right': { x: 60, opacity: 0 },
+  'slide-left': { x: -30, opacity: 0 },
+  'slide-right': { x: 30, opacity: 0 },
   'scale-up': { scale: 0.9, opacity: 0 },
   'blur-in': { opacity: 0, filter: 'blur(8px)' },
   'clip-reveal': { clipPath: 'inset(100% 0 0 0)', opacity: 0 },

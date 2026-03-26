@@ -27,7 +27,7 @@ export function ScrollNav({ onEnter3D }: ScrollNavProps) {
 
   return (
     <header className="fixed left-0 right-0 top-0 z-50 bg-black/80 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:h-14">
+      <div className="mx-auto flex h-12 max-w-7xl items-center justify-between px-3 sm:h-14 sm:px-4">
         {/* Brand */}
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
@@ -49,7 +49,7 @@ export function ScrollNav({ onEnter3D }: ScrollNavProps) {
             <MagneticWrap key={id} strength={0.2}>
               <button
                 onClick={() => scrollTo(id)}
-                className={`whitespace-nowrap rounded px-3 py-2.5 text-xs transition-colors sm:px-2.5 sm:py-1 ${
+                className={`whitespace-nowrap rounded px-2 py-1.5 text-[11px] transition-colors sm:px-2.5 sm:py-1 sm:text-xs ${
                   activeSection === id
                     ? 'bg-cyan-400/10 text-cyan-400'
                     : 'text-white/60 hover:text-white'
@@ -65,7 +65,7 @@ export function ScrollNav({ onEnter3D }: ScrollNavProps) {
         <MagneticWrap strength={0.2}>
           <button
             onClick={onEnter3D}
-            className="ml-2 whitespace-nowrap rounded-lg border border-cyan-400/40 px-3 py-1 text-xs font-medium text-cyan-400 shadow-[0_0_8px_rgba(0,240,255,0.15)] transition-all hover:bg-cyan-400/10 hover:shadow-[0_0_16px_rgba(0,240,255,0.3)]"
+            className="ml-1 whitespace-nowrap rounded-lg border border-cyan-400/40 px-2 py-1 text-[10px] font-medium text-cyan-400 shadow-[0_0_8px_rgba(0,240,255,0.15)] transition-all hover:bg-cyan-400/10 hover:shadow-[0_0_16px_rgba(0,240,255,0.3)] sm:ml-2 sm:px-3 sm:text-xs"
           >
             Enter 3D World
           </button>

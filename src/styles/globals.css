@@ -6,6 +6,15 @@
 
 body {
   min-height: 100dvh;
+  /* Prevent iOS tap highlight flash */
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Safe area insets for notched devices (iPhone X+, etc.) */
+.mode-3d header,
+header {
+  padding-left: max(env(safe-area-inset-left), 0px);
+  padding-right: max(env(safe-area-inset-right), 0px);
 }
 
 /* Lock viewport for 3D immersive mode */

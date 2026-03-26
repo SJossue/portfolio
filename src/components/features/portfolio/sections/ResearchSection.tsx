@@ -95,7 +95,7 @@ function ResearchCard({
     <ScrollReveal animation="fade-up" delay={index * 0.08}>
       <div ref={tiltRef} className="glass-card overflow-hidden rounded-lg">
         {entry.heroImage && (
-          <div className="relative h-48 overflow-hidden sm:h-64">
+          <div className="relative h-40 overflow-hidden sm:h-48 md:h-64">
             <Image src={entry.heroImage} alt={entry.title} fill className="object-cover" />
           </div>
         )}
@@ -120,7 +120,7 @@ export function ResearchSection() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   return (
-    <section id="research" className="mx-auto max-w-5xl px-4 py-24">
+    <section id="research" className="mx-auto max-w-5xl px-4 py-16 sm:py-24">
       <ScrollReveal>
         <SectionHeader title="Research" />
       </ScrollReveal>

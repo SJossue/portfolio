@@ -38,7 +38,7 @@ export function ScrollProgress() {
       ref={barRef}
       role="progressbar"
       aria-label="Page scroll progress"
-      className="fixed left-0 right-0 top-14 z-50 h-[2px] origin-left scale-x-0 bg-gradient-to-r from-cyan-400 to-fuchsia-500"
+      className="fixed left-0 right-0 top-12 z-50 h-[2px] origin-left scale-x-0 bg-gradient-to-r from-cyan-400 to-fuchsia-500 sm:top-14"
     />
   );
 }

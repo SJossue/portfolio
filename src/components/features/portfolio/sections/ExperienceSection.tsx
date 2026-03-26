@@ -59,7 +59,7 @@ function ExperienceCard({
 
 export function ExperienceSection() {
   return (
-    <section id="experience" className="mx-auto max-w-5xl px-4 py-24">
+    <section id="experience" className="mx-auto max-w-5xl px-4 py-16 sm:py-24">
       <ScrollReveal>
         <SectionHeader title="Experience" />
       </ScrollReveal>
@@ -73,7 +73,7 @@ export function ExperienceSection() {
           }}
         />
 
-        <div className="space-y-10">
+        <div className="space-y-6 sm:space-y-10">
           {experienceData.map((entry, i) => (
             <ExperienceCard key={entry.id} entry={entry} index={i} />
           ))}

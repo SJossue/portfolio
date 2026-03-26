@@ -22,7 +22,7 @@ export function ScrollPortfolio({ onEnter3D, introComplete = true }: ScrollPortf
   useSmoothScroll();
 
   return (
-    <div className="noise-bg bg-[#0a0a0a] text-white">
+    <div className="noise-bg overflow-x-hidden bg-[#0a0a0a] text-white">
       {introComplete && <ScrollNav onEnter3D={onEnter3D} />}
       {introComplete && <ScrollProgress />}
       <div className="vignette pointer-events-none fixed inset-0 z-40" aria-hidden="true" />
