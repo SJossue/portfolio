@@ -1,9 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import Image from 'next/image';
+import gsap from 'gsap';
 import { researchData } from '@/content';
+import { SectionHeader } from '@/components/ui/SectionHeader';
 import { ScrollReveal } from '../ScrollReveal';
+import { useTiltEffect } from '@/hooks/useTiltEffect';
 
 /** Minimal markdown renderer for research body text */
 function renderMarkdown(body: string) {
@@ -45,46 +48,93 @@ function renderMarkdown(body: string) {
   });
 }
 
+function ResearchCard({
+  entry,
+  index,
+  expanded,
+  onToggle,
+}: {
+  entry: (typeof researchData)[number];
+  index: number;
+  expanded: boolean;
+  onToggle: () => void;
+}) {
+  const tiltRef = useTiltEffect<HTMLDivElement>();
+  const detailRef = useRef<HTMLDivElement>(null);
+  const preview = entry.body.split('\n').slice(0, 6).join('\n');
+
+  const handleToggle = useCallback(() => {
+    const el = detailRef.current;
+    if (!el) {
+      onToggle();
+      return;
+    }
+
+    if (expanded) {
+      gsap.to(el, {
+        height: 0,
+        opacity: 0,
+        duration: 0.3,
+        ease: 'power2.in',
+        onComplete: onToggle,
+      });
+    } else {
+      onToggle();
+      requestAnimationFrame(() => {
+        if (!detailRef.current) return;
+        gsap.fromTo(
+          detailRef.current,
+          { height: 0, opacity: 0 },
+          { height: 'auto', opacity: 1, duration: 0.4, ease: 'power2.out' },
+        );
+      });
+    }
+  }, [expanded, onToggle]);
+
+  return (
+    <ScrollReveal animation="fade-up" delay={index * 0.08}>
+      <div ref={tiltRef} className="glass-card overflow-hidden rounded-lg">
+        {entry.heroImage && (
+          <div className="relative h-48 overflow-hidden sm:h-64">
+            <Image src={entry.heroImage} alt={entry.title} fill className="object-cover" />
+          </div>
+        )}
+        <div className="p-5">
+          <h3 className="text-base font-bold text-white">{entry.title}</h3>
+          <div ref={detailRef} className="mt-3 space-y-1 overflow-hidden">
+            {renderMarkdown(expanded ? entry.body : preview)}
+          </div>
+          <button
+            onClick={handleToggle}
+            className="mt-3 font-mono text-xs text-cyan-400/70 transition-colors hover:text-cyan-400"
+          >
+            {expanded ? 'Show less ↑' : 'Read full paper →'}
+          </button>
+        </div>
+      </div>
+    </ScrollReveal>
+  );
+}
+
 export function ResearchSection() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   return (
     <section id="research" className="mx-auto max-w-5xl px-4 py-24">
       <ScrollReveal>
-        <h2 className="mb-12 text-2xl font-bold text-white">
-          <span className="text-cyan-400">//</span> Research
-        </h2>
+        <SectionHeader title="Research" />
       </ScrollReveal>
 
       <div className="space-y-8">
-        {researchData.map((entry, i) => {
-          const expanded = expandedId === entry.id;
-          const preview = entry.body.split('\n').slice(0, 6).join('\n');
-
-          return (
-            <ScrollReveal key={entry.id} animation="fade-up" delay={i * 0.08}>
-              <div className="overflow-hidden rounded border border-white/10 bg-white/[0.03]">
-                {entry.heroImage && (
-                  <div className="relative h-48 overflow-hidden sm:h-64">
-                    <Image src={entry.heroImage} alt={entry.title} fill className="object-cover" />
-                  </div>
-                )}
-                <div className="p-4">
-                  <h3 className="text-sm font-bold text-white">{entry.title}</h3>
-                  <div className="mt-3 space-y-1">
-                    {renderMarkdown(expanded ? entry.body : preview)}
-                  </div>
-                  <button
-                    onClick={() => setExpandedId(expanded ? null : entry.id)}
-                    className="mt-3 text-xs text-cyan-400/70 transition-colors hover:text-cyan-400"
-                  >
-                    {expanded ? '▴ Show less' : '▾ Read more'}
-                  </button>
-                </div>
-              </div>
-            </ScrollReveal>
-          );
-        })}
+        {researchData.map((entry, i) => (
+          <ResearchCard
+            key={entry.id}
+            entry={entry}
+            index={i}
+            expanded={expandedId === entry.id}
+            onToggle={() => setExpandedId(expandedId === entry.id ? null : entry.id)}
+          />
+        ))}
       </div>
     </section>
   );

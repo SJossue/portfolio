@@ -10,18 +10,18 @@ export const contactLinks: ContactLink[] = [
     id: 'github',
     label: 'GitHub',
     href: 'https://github.com/SJossue',
-    icon: '/>',
+    icon: 'GH',
   },
   {
     id: 'linkedin',
     label: 'LinkedIn',
-    href: 'https://linkedin.com/in/jossuesarango',
-    icon: 'in',
+    href: 'https://linkedin.com/in/jossue-sarango',
+    icon: 'LI',
   },
   {
     id: 'email',
     label: 'Email',
     href: 'mailto:jossuesarango1@gmail.com',
-    icon: '@',
+    icon: '✉',
   },
 ];

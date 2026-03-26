@@ -51,5 +51,7 @@ export const aboutData: AboutData = {
   highlights: [
     { label: 'Philosophy', value: 'Learn by Building' },
     { label: 'Pillars', value: 'Execution, Systems, Leadership' },
+    { label: 'Roles', value: '8' },
+    { label: 'Projects', value: '6' },
   ],
 };

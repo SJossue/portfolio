@@ -1,38 +1,123 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import gsap from 'gsap';
 import { aboutData, contactLinks } from '@/content';
+import { useTextSplit } from '@/hooks/useTextSplit';
+import { useIsMobile } from '@/hooks/useIsMobile';
+import { MagneticWrap } from '@/components/ui/MagneticWrap';
 
 interface HeroSectionProps {
-  onEnter3D: () => void;
+  introComplete?: boolean;
 }
 
-export function HeroSection({ onEnter3D }: HeroSectionProps) {
+export function HeroSection({ introComplete = true }: HeroSectionProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const gradientRef = useRef<HTMLDivElement>(null);
+  const roleRef = useRef<HTMLSpanElement>(null);
+  const isMobile = useIsMobile();
+  const { elements: nameElements } = useTextSplit(aboutData.name, 'translate-y-full');
+
+  // Mousemove parallax for gradient (desktop only)
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      if (isMobile || !gradientRef.current) return;
+      const x = (e.clientX / window.innerWidth) * 100;
+      const y = (e.clientY / window.innerHeight) * 100;
+      gradientRef.current.style.setProperty('--gx', `${x}%`);
+      gradientRef.current.style.setProperty('--gy', `${y}%`);
+    },
+    [isMobile],
+  );
 
   useEffect(() => {
-    const el = containerRef.current;
-    if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, [handleMouseMove]);
 
-    const items = el.querySelectorAll('[data-hero-anim]');
-    gsap.set(items, { y: 30, opacity: 0 });
-    gsap.to(items, {
+  // Animation timeline — wait for intro to complete
+  useEffect(() => {
+    const el = containerRef.current;
+    const roleEl = roleRef.current;
+    if (!el || !roleEl) return;
+    if (!introComplete) return;
+
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (prefersReduced) {
+      // Instantly show everything
+      gsap.set(el.querySelectorAll('.split-char'), { y: 0 });
+      gsap.set(el.querySelectorAll('[data-hero-anim]'), { opacity: 1, y: 0 });
+      roleEl.textContent = aboutData.roleTitle;
+      return;
+    }
+
+    const tl = gsap.timeline({ delay: 0.2 });
+    const chars = el.querySelectorAll('.split-char');
+
+    // 1. Split-text name reveal
+    tl.to(chars, {
       y: 0,
-      opacity: 1,
-      duration: 0.7,
-      stagger: 0.12,
+      duration: 0.6,
+      stagger: 0.03,
       ease: 'power3.out',
-      delay: 0.2,
     });
-  }, []);
+
+    // 2. Typewriter role title
+    const roleText = aboutData.roleTitle;
+    tl.to(
+      {},
+      {
+        duration: roleText.length * 0.04,
+        ease: 'none',
+        onUpdate: function () {
+          const progress = this.progress();
+          const charCount = Math.floor(progress * roleText.length);
+          roleEl.textContent = roleText.slice(0, charCount);
+        },
+      },
+      '-=0.2',
+    );
+
+    // 3. Stagger in remaining elements
+    const animItems = el.querySelectorAll('[data-hero-anim]');
+    tl.fromTo(
+      animItems,
+      { y: 20, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.6,
+        stagger: 0.1,
+        ease: 'power3.out',
+      },
+      '-=0.3',
+    );
+
+    return () => {
+      tl.kill();
+    };
+  }, [introComplete]);
 
   return (
-    <section className="circuit-grid vignette relative flex min-h-dvh items-center justify-center px-4">
-      <div ref={containerRef} className="flex max-w-2xl flex-col items-center gap-6 text-center">
+    <section className="relative flex min-h-dvh items-center justify-center overflow-hidden px-4">
+      {/* Animated gradient mesh background */}
+      <div
+        ref={gradientRef}
+        className="gradient-mesh pointer-events-none absolute inset-0"
+        aria-hidden="true"
+      />
+
+      {/* Subtle circuit grid on top */}
+      <div className="circuit-grid pointer-events-none absolute inset-0" aria-hidden="true" />
+
+      <div
+        ref={containerRef}
+        className="relative z-10 flex max-w-3xl flex-col items-center gap-8 text-center"
+      >
         {/* Headshot */}
-        <div data-hero-anim className="corner-brackets p-1">
+        <div data-hero-anim className="corner-brackets p-1 opacity-0">
           <Image
             src={aboutData.images[0]}
             alt={aboutData.name}
@@ -43,28 +128,32 @@ export function HeroSection({ onEnter3D }: HeroSectionProps) {
           />
         </div>
 
-        {/* Name + role */}
-        <div data-hero-anim>
-          <h1 className="animate-glitch text-3xl font-bold tracking-tight text-white sm:text-5xl">
-            {aboutData.name}
-          </h1>
-          <p className="mt-2 text-lg text-cyan-400">{aboutData.roleTitle}</p>
-        </div>
+        {/* Name — split-text reveal */}
+        <h1 className="text-5xl font-bold tracking-tight text-white sm:text-7xl">{nameElements}</h1>
 
-        {/* Bio one-liner */}
-        <p data-hero-anim className="max-w-lg text-sm leading-relaxed text-white/70">
-          {aboutData.bio.split('.')[0]}.
+        {/* Role — typewriter */}
+        <p className="h-7 text-lg text-cyan-400 sm:text-xl">
+          <span ref={roleRef} className="font-mono" />
+          <span className="animate-typing-cursor ml-0.5" aria-hidden="true" />
         </p>
 
-        {/* Contact links row */}
-        <div data-hero-anim className="flex gap-4">
+        {/* Quote */}
+        <p
+          data-hero-anim
+          className="max-w-lg text-sm italic leading-relaxed text-white/70 opacity-0 sm:text-base"
+        >
+          &ldquo;If you&apos;re going through hell, keep going. Why would you stop?&rdquo;
+        </p>
+
+        {/* Contact links */}
+        <div data-hero-anim className="flex flex-wrap justify-center gap-3 opacity-0">
           {contactLinks.map((link) => (
             <a
               key={link.id}
               href={link.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded border border-white/10 px-3 py-1.5 text-xs text-white/70 transition-colors hover:border-cyan-400/40 hover:text-cyan-400"
+              className="glass-card rounded-lg px-4 py-2 text-xs text-white/70 transition-colors hover:text-cyan-400"
             >
               <span className="mr-1.5 font-bold">{link.icon}</span>
               {link.label}
@@ -72,19 +161,35 @@ export function HeroSection({ onEnter3D }: HeroSectionProps) {
           ))}
         </div>
 
-        {/* CTAs */}
-        <div data-hero-anim className="flex gap-3">
-          <a
-            href="#about"
-            className="rounded bg-white/10 px-5 py-2 text-sm text-white transition-colors hover:bg-white/20"
-          >
-            Explore
-          </a>
+        {/* CTA */}
+        <div data-hero-anim className="opacity-0">
+          <MagneticWrap>
+            <a
+              href="#about"
+              className="rounded-lg bg-white/10 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-white/20"
+            >
+              Explore
+            </a>
+          </MagneticWrap>
+        </div>
+
+        {/* Scroll indicator */}
+        <div data-hero-anim className="mt-4 opacity-0">
           <button
-            onClick={onEnter3D}
-            className="rounded border border-cyan-400/40 px-5 py-2 text-sm text-cyan-400 shadow-[0_0_12px_rgba(0,240,255,0.15)] transition-all hover:bg-cyan-400/10 hover:shadow-[0_0_24px_rgba(0,240,255,0.3)]"
+            onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}
+            className="group flex flex-col items-center gap-1 text-white/40 transition-colors hover:text-cyan-400"
+            aria-label="Scroll to content"
           >
-            Enter 3D World
+            <span className="font-mono text-[10px] uppercase tracking-widest">Scroll</span>
+            <svg
+              className="h-5 w-5 animate-bounce"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
           </button>
         </div>
       </div>

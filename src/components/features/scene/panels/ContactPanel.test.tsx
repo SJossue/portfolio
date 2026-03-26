@@ -24,8 +24,8 @@ describe('ContactPanel', () => {
 
   it('renders contact icons', () => {
     render(<ContactPanel />);
-    expect(screen.getByText('/>')).toBeInTheDocument();
-    expect(screen.getByText('in')).toBeInTheDocument();
-    expect(screen.getByText('@')).toBeInTheDocument();
+    expect(screen.getByText('GH')).toBeInTheDocument();
+    expect(screen.getByText('LI')).toBeInTheDocument();
+    expect(screen.getByText('✉')).toBeInTheDocument();
   });
 });

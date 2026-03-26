@@ -37,20 +37,15 @@ export function HomeScene({ onExit3D }: HomeSceneProps) {
 
   const transitioning = useRef(false);
 
-  // Transition: both boot + models ready → pause → fade out → garage
+  // Transition: boot complete → fade out → garage (no artificial delay)
   useEffect(() => {
-    if (bootComplete && modelsReady && !transitioning.current) {
+    if (bootComplete && !transitioning.current) {
       transitioning.current = true;
-      const delayTimer = setTimeout(() => {
-        setIntroState('airingOut');
-      }, 1500);
-      const garageTimer = setTimeout(() => setIntroState('garage'), 2000);
-      return () => {
-        clearTimeout(delayTimer);
-        clearTimeout(garageTimer);
-      };
+      setIntroState('airingOut');
+      const garageTimer = setTimeout(() => setIntroState('garage'), 500);
+      return () => clearTimeout(garageTimer);
     }
-  }, [bootComplete, modelsReady, setIntroState]);
+  }, [bootComplete, setIntroState]);
 
   // Add/remove mode-3d class for viewport locking
   useEffect(() => {
@@ -79,12 +74,7 @@ export function HomeScene({ onExit3D }: HomeSceneProps) {
             introState === 'airingOut' ? 'pointer-events-none opacity-0' : 'opacity-100'
           }`}
         >
-          <TerminalBoot onComplete={handleBootComplete} />
-          {bootComplete && !modelsReady && (
-            <div className="absolute inset-x-0 bottom-1/4 text-center font-mono text-xs text-cyan-400/60">
-              Initializing environment...
-            </div>
-          )}
+          <TerminalBoot onComplete={handleBootComplete} modelsReady={modelsReady} />
         </div>
       )}
 

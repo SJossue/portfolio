@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useSceneState } from './useSceneState';
 import { useIsMobile } from '@/hooks/useIsMobile';
 
@@ -11,10 +12,60 @@ const NAV_ITEMS: readonly { id: string; label: string; hideOnMobile?: boolean }[
   { id: 'tools', label: 'Tools', hideOnMobile: true },
 ];
 
+const SECTION_LABELS: Record<string, string> = {
+  about: 'About',
+  experience: 'Experience',
+  projects: 'Projects',
+  research: 'Research',
+  tools: 'Tools',
+};
+
+function OnboardingHint() {
+  const [show, setShow] = useState(false);
+  const selectedSection = useSceneState((s) => s.selectedSection);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (localStorage.getItem('scene-onboarded')) return;
+    const timer = setTimeout(() => setShow(true), 800);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Auto-dismiss when user clicks any hitbox
+  useEffect(() => {
+    if (selectedSection && show) {
+      setShow(false);
+      localStorage.setItem('scene-onboarded', '1');
+    }
+  }, [selectedSection, show]);
+
+  const dismiss = () => {
+    setShow(false);
+    localStorage.setItem('scene-onboarded', '1');
+  };
+
+  if (!show) return null;
+
+  return (
+    <div className="pointer-events-auto absolute bottom-20 left-1/2 z-50 -translate-x-1/2">
+      <div className="glass-card flex items-center gap-4 rounded-lg border-cyan-400/20 px-5 py-3 shadow-[0_0_20px_rgba(0,240,255,0.1)]">
+        <p className="font-mono text-sm text-white/80">Click objects in the scene to explore</p>
+        <button
+          onClick={dismiss}
+          className="shrink-0 rounded border border-white/20 px-3 py-1 font-mono text-xs text-white/60 transition-colors hover:border-cyan-400/40 hover:text-cyan-400"
+        >
+          Got it
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export function TopNav() {
   const introState = useSceneState((s) => s.introState);
   const selectedSection = useSceneState((s) => s.selectedSection);
   const setSelectedSection = useSceneState((s) => s.setSelectedSection);
+  const hoveredSection = useSceneState((s) => s.hoveredSection);
   const interactionLocked = useSceneState((s) => s.interactionLocked);
   const isMobile = useIsMobile();
 
@@ -69,12 +120,17 @@ export function TopNav() {
         </nav>
       </header>
 
-      {/* Bottom Right Status */}
+      {/* Onboarding hint (first visit only) */}
+      <OnboardingHint />
+
+      {/* Bottom Right Status — contextual */}
       <div className="pointer-events-none absolute bottom-0 right-0 z-50 p-3 sm:p-6 md:p-8">
         <div className="flex items-center gap-2">
           <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(0,240,255,0.6)]"></div>
           <span className="font-mono text-[10px] uppercase tracking-widest text-cyan-400/60">
-            Connected
+            {hoveredSection
+              ? `→ ${SECTION_LABELS[hoveredSection] ?? hoveredSection}`
+              : 'Interactive Mode'}
           </span>
         </div>
       </div>

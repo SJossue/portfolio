@@ -1,10 +1,16 @@
 import type { Metadata } from 'next';
-import { JetBrains_Mono } from 'next/font/google';
+import { JetBrains_Mono, Space_Grotesk } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import '@/styles/globals.css';
 import { JsonLd } from '@/components/features/JsonLd';
 import { siteConfig } from '@/lib/site';
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  variable: '--font-sans',
+  display: 'swap',
+});
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin'],
@@ -50,8 +56,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={jetbrainsMono.variable}>
-      <body className="font-mono antialiased">
+    <html lang="en" className={`${spaceGrotesk.variable} ${jetbrainsMono.variable}`}>
+      <body className="font-sans antialiased">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[999] focus:rounded focus:bg-cyan-400 focus:px-4 focus:py-2 focus:font-mono focus:text-sm focus:text-black"
+        >
+          Skip to content
+        </a>
         <JsonLd />
         {children}
         <Analytics />
