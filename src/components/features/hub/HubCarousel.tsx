@@ -13,7 +13,6 @@ import Aurora from '@/components/ui/Aurora';
 import Particles from '@/components/ui/Particles';
 import BlurText from '@/components/ui/BlurText';
 import CursorGlow from './CursorGlow';
-import HubIntro from './HubIntro';
 import HubNav from './HubNav';
 import HubSocials from './HubSocials';
 import IslandChat from './IslandChat';
@@ -205,7 +204,12 @@ export default function HubCarousel() {
   return (
     <div
       className="relative bg-[#030318]"
-      style={{ minHeight: isMobile ? 'auto' : `${worlds.length * 100}vh` }}
+      style={
+        {
+          minHeight: isMobile ? 'auto' : `${worlds.length * 100}vh`,
+          '--world-color-rgb': activeWorld.colorRgb,
+        } as React.CSSProperties
+      }
     >
       {/* Skip link — visually hidden until focused */}
       <a
@@ -315,13 +319,6 @@ export default function HubCarousel() {
                 layout="inline"
               />
             </div>
-            <div
-              aria-hidden="true"
-              className="absolute bottom-6 left-1/2 -translate-x-1/2 font-mono text-[10px] uppercase tracking-[3px] text-white/35"
-              style={{ opacity: loaded ? 1 : 0, transition: 'opacity 1.5s ease 1s' }}
-            >
-              ↓ Scroll
-            </div>
           </section>
           {worlds.map((world, i) => (
             <div key={world.id} id={`island-${world.id}`} className="snap-start">
@@ -365,8 +362,6 @@ export default function HubCarousel() {
           />
         </div>
       )}
-
-      {loaded && <HubIntro />}
     </div>
   );
 }

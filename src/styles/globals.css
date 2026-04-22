@@ -279,6 +279,13 @@ html.lenis body {
   outline: none;
 }
 
+/* Per-world text selection — picks up --world-color-rgb from WorldTheme,
+   falls back to hub cyan. */
+::selection {
+  background-color: rgba(var(--world-color-rgb, 0, 240, 255), 0.2);
+  color: rgb(var(--world-color-rgb, 0, 240, 255));
+}
+
 /* Suppress animations for reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .animate-bounce,
