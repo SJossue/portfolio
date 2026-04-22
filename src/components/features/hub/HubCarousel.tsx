@@ -247,17 +247,7 @@ export default function HubCarousel() {
       {/* Cursor glow */}
       <CursorGlow color={activeWorld.color} colorRgb={activeWorld.colorRgb} />
 
-      {/* Top header band — mobile gets a solid, opaque bar so the name +
-          social buttons feel locked to the viewport top while world content
-          scrolls underneath. Desktop keeps the subtle gradient. */}
-      <div
-        className="pointer-events-none fixed inset-x-0 top-0 z-10 h-[104px] md:hidden"
-        style={{
-          background: 'rgba(3,3,24,0.96)',
-          borderBottom: `1px solid rgba(${activeWorld.colorRgb}, 0.22)`,
-          boxShadow: '0 6px 18px -10px rgba(0,0,0,0.55)',
-        }}
-      />
+      {/* Desktop top scrim — subtle gradient behind the fixed name + socials. */}
       <div
         className="pointer-events-none fixed inset-x-0 top-0 z-10 hidden h-32 md:block"
         style={{
@@ -266,29 +256,73 @@ export default function HubCarousel() {
         }}
       />
 
-      {/* Top name */}
-      <div
-        className="fixed left-1/2 top-5 z-20 -translate-x-1/2 text-center"
-        style={{ opacity: loaded ? 1 : 0, transition: 'opacity 1.5s ease 0.5s' }}
-      >
-        <BlurText
-          text="JOSSUE SARANGO"
-          delay={80}
-          animateBy="letters"
-          className="text-[11px] font-semibold tracking-[4px] text-white/35"
-          stepDuration={0.25}
-        />
-      </div>
+      {/* Desktop top name — fixed at the top, present across all worlds. Mobile
+          uses an inline hero section inside the scroll flow instead (below). */}
+      {!isMobile && (
+        <div
+          className="fixed left-1/2 top-5 z-20 -translate-x-1/2 text-center"
+          style={{ opacity: loaded ? 1 : 0, transition: 'opacity 1.5s ease 0.5s' }}
+        >
+          <BlurText
+            text="JOSSUE SARANGO"
+            delay={80}
+            animateBy="letters"
+            className="text-[11px] font-semibold tracking-[4px] text-white/35"
+            stepDuration={0.25}
+          />
+        </div>
+      )}
 
       {/* Navigation */}
       <HubNav activeIndex={activeIndex} onNavigate={navigateTo} onPrev={navPrev} onNext={navNext} />
 
-      {/* Social / contact buttons */}
-      <HubSocials accentColor={activeWorld.color} accentRgb={activeWorld.colorRgb} />
+      {/* Desktop social / contact buttons — fixed. Mobile renders them inline
+          inside the hero section below. */}
+      {!isMobile && <HubSocials accentColor={activeWorld.color} accentRgb={activeWorld.colorRgb} />}
 
       {/* Scroll container */}
       {isMobile ? (
         <div className="relative z-10 snap-y snap-mandatory">
+          {/* Mobile intro hero — inline section at the very top. Acts like the
+              first page of the scroll flow: identity + contact, then fades into
+              the world content below so the transition is seamless. */}
+          <section
+            className="relative flex min-h-[62dvh] w-full snap-start flex-col items-center justify-center overflow-hidden px-6 py-16"
+            aria-label="Portfolio intro"
+          >
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0"
+              style={{
+                background:
+                  'linear-gradient(to bottom, rgba(3,3,24,0.92) 0%, rgba(3,3,24,0.55) 55%, rgba(3,3,24,0) 100%)',
+              }}
+            />
+            <div
+              className="relative z-10 flex flex-col items-center gap-10"
+              style={{ opacity: loaded ? 1 : 0, transition: 'opacity 1.5s ease 0.3s' }}
+            >
+              <BlurText
+                text="JOSSUE SARANGO"
+                delay={80}
+                animateBy="letters"
+                className="text-[14px] font-semibold tracking-[5px] text-white/80"
+                stepDuration={0.25}
+              />
+              <HubSocials
+                accentColor={activeWorld.color}
+                accentRgb={activeWorld.colorRgb}
+                layout="inline"
+              />
+            </div>
+            <div
+              aria-hidden="true"
+              className="absolute bottom-6 left-1/2 -translate-x-1/2 font-mono text-[10px] uppercase tracking-[3px] text-white/35"
+              style={{ opacity: loaded ? 1 : 0, transition: 'opacity 1.5s ease 1s' }}
+            >
+              ↓ Scroll
+            </div>
+          </section>
           {worlds.map((world, i) => (
             <div key={world.id} id={`island-${world.id}`} className="snap-start">
               <IslandViewport

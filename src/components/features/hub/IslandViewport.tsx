@@ -29,7 +29,7 @@ export default function IslandViewport({
 
   return (
     <section
-      className="relative flex min-h-dvh w-screen flex-shrink-0 flex-col items-center justify-start overflow-x-hidden pb-40 pt-[120px] md:h-dvh md:flex-row md:items-center md:justify-center md:overflow-hidden md:pb-0 md:pt-0"
+      className="relative flex min-h-dvh w-screen flex-shrink-0 flex-col items-center justify-start overflow-x-hidden pb-40 pt-12 md:h-dvh md:flex-row md:items-center md:justify-center md:overflow-hidden md:pb-0 md:pt-0"
       aria-label={`${world.name} world`}
     >
       {/* Left panel (top on mobile) */}

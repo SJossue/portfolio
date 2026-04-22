@@ -70,14 +70,16 @@ const links: SocialLink[] = [
 interface HubSocialsProps {
   accentColor: string;
   accentRgb: string;
+  layout?: 'fixed' | 'inline';
 }
 
-export default function HubSocials({ accentColor, accentRgb }: HubSocialsProps) {
+export default function HubSocials({ accentColor, accentRgb, layout = 'fixed' }: HubSocialsProps) {
+  const navClass =
+    layout === 'fixed'
+      ? 'fixed left-1/2 top-14 z-30 flex -translate-x-1/2 items-center gap-3'
+      : 'flex items-center gap-3';
   return (
-    <nav
-      aria-label="Contact links"
-      className="fixed left-1/2 top-14 z-30 flex -translate-x-1/2 items-center gap-3"
-    >
+    <nav aria-label="Contact links" className={navClass}>
       {links.map((link) => (
         <a
           key={link.id}
