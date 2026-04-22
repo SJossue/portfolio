@@ -276,3 +276,12 @@ html.lenis body {
     animation: none !important;
   }
 }
+
+/* Freeze animations on non-active island previews to save GPU/CPU
+   — only the island the viewer is looking at runs live. */
+[data-island-frozen='true'],
+[data-island-frozen='true'] *,
+[data-island-frozen='true'] *::before,
+[data-island-frozen='true'] *::after {
+  animation-play-state: paused !important;
+}

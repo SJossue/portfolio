@@ -6,7 +6,7 @@ import { useIsMobile } from './useIsMobile';
 
 const MAX_TILT = 5; // degrees
 
-export function useTiltEffect<T extends HTMLElement = HTMLDivElement>() {
+export function useTiltEffect<T extends HTMLElement = HTMLDivElement>(enabled = true) {
   const ref = useRef<T>(null);
   const isMobile = useIsMobile();
 
@@ -44,15 +44,17 @@ export function useTiltEffect<T extends HTMLElement = HTMLDivElement>() {
 
   useEffect(() => {
     const el = ref.current;
-    if (!el || isMobile) return;
+    if (!el || isMobile || !enabled) return;
 
     el.addEventListener('mousemove', handleMouseMove);
     el.addEventListener('mouseleave', handleMouseLeave);
     return () => {
       el.removeEventListener('mousemove', handleMouseMove);
       el.removeEventListener('mouseleave', handleMouseLeave);
+      // Reset any lingering tilt when the listener detaches.
+      gsap.to(el, { rotateX: 0, rotateY: 0, duration: 0.3, ease: 'power2.out' });
     };
-  }, [isMobile, handleMouseMove, handleMouseLeave]);
+  }, [isMobile, enabled, handleMouseMove, handleMouseLeave]);
 
   return ref;
 }

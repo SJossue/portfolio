@@ -110,7 +110,7 @@ export async function POST(req: Request) {
     return jsonResponse({ error: 'Invalid request body.' }, 400);
   }
 
-  const { messages } = body;
+  const { messages } = body as { messages?: unknown };
 
   if (!Array.isArray(messages) || messages.length === 0) {
     return jsonResponse({ error: 'Messages array is required.' }, 400);

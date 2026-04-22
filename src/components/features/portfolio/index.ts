@@ -1,1 +1,0 @@
-export { ScrollPortfolio } from './ScrollPortfolio';

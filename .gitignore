@@ -32,3 +32,4 @@ test-results/
 .aider*
 gh-cli-cache/
 node-compile-cache/
+.superpowers/
