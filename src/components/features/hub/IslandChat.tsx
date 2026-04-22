@@ -2,12 +2,16 @@
 
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
-import { type FormEvent, useEffect, useMemo, useRef, useState } from 'react';
+import { type FormEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+
+import { renderChatMarkdown } from '@/lib/chat-markdown';
 
 interface IslandChatProps {
   accentColor: string;
   accentRgb: string;
 }
+
+type ViewMode = 'default' | 'minimized' | 'fullscreen';
 
 const MAX_INPUT_CHARS = 500;
 
@@ -47,7 +51,9 @@ export default function IslandChat({ accentColor, accentRgb }: IslandChatProps) 
 
   const [input, setInput] = useState('');
   const [available, setAvailable] = useState<boolean | null>(null);
+  const [viewMode, setViewMode] = useState<ViewMode>('default');
   const threadRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (available !== null) return;
@@ -72,9 +78,26 @@ export default function IslandChat({ accentColor, accentRgb }: IslandChatProps) 
     el.scrollTop = el.scrollHeight;
   }, [messages, status]);
 
+  // Lock body scroll + bind Escape in fullscreen.
+  useEffect(() => {
+    if (viewMode !== 'fullscreen') return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setViewMode('default');
+    };
+    window.addEventListener('keydown', onKey);
+    inputRef.current?.focus();
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [viewMode]);
+
   const busy = status === 'submitted' || status === 'streaming';
   const hasMessages = messages.length > 0;
   const disabled = available === false || busy;
+  const isFullscreen = viewMode === 'fullscreen';
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -89,15 +112,18 @@ export default function IslandChat({ accentColor, accentRgb }: IslandChatProps) 
     }
   };
 
-  const sendSuggestion = async (text: string) => {
-    if (busy || available === false) return;
-    if (error) clearError();
-    try {
-      await sendMessage({ text });
-    } catch {
-      // swallowed — error surfaced via `error`
-    }
-  };
+  const sendSuggestion = useCallback(
+    async (text: string) => {
+      if (busy || available === false) return;
+      if (error) clearError();
+      try {
+        await sendMessage({ text });
+      } catch {
+        // swallowed — error surfaced via `error`
+      }
+    },
+    [busy, available, error, clearError, sendMessage],
+  );
 
   const suggestions = SUGGESTIONS;
   const accent = accentColor;
@@ -119,20 +145,159 @@ export default function IslandChat({ accentColor, accentRgb }: IslandChatProps) 
         ? 'Keep asking…'
         : 'Ask about Jossue…';
 
-  return (
+  if (viewMode === 'minimized') {
+    return (
+      <button
+        type="button"
+        onClick={() => setViewMode('default')}
+        aria-label="Open chat"
+        className="pointer-events-auto inline-flex items-center gap-2 rounded-full border px-4 py-2 font-mono text-[11px] uppercase tracking-wider backdrop-blur-md transition-all hover:-translate-y-0.5"
+        style={{
+          ['--accent' as string]: accent,
+          ['--accent-rgb' as string]: rgb,
+          background: 'rgba(0,0,0,0.55)',
+          borderColor: `rgba(${rgb}, 0.3)`,
+          color: accent,
+          boxShadow: `0 10px 30px -15px rgba(${rgb}, 0.45)`,
+        }}
+      >
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+        </svg>
+        Chat with Jossue
+      </button>
+    );
+  }
+
+  const panel = (
     <div
-      className="pointer-events-auto w-full max-w-[520px] px-2 sm:max-w-[560px]"
-      style={{ ['--accent' as string]: accent, ['--accent-rgb' as string]: rgb }}
+      className={
+        isFullscreen
+          ? 'relative z-10 flex h-full max-h-[min(720px,90dvh)] w-full max-w-3xl flex-col overflow-hidden rounded-2xl border px-4 py-4 backdrop-blur-md sm:px-6'
+          : 'w-full'
+      }
+      style={
+        isFullscreen
+          ? {
+              background: 'rgba(6,6,14,0.85)',
+              borderColor: `rgba(${rgb}, 0.28)`,
+              boxShadow: `0 30px 80px -20px rgba(${rgb}, 0.4)`,
+            }
+          : undefined
+      }
+      onClick={(e) => {
+        if (isFullscreen) e.stopPropagation();
+      }}
     >
-      {/* Message thread — only when there are messages */}
+      {/* Toolbar: minimize + fullscreen toggle */}
+      <div
+        className={`flex items-center justify-between gap-2 ${
+          isFullscreen ? 'mb-3 pb-2' : 'mb-1.5'
+        }`}
+        style={isFullscreen ? { borderBottom: `1px solid rgba(${rgb}, 0.15)` } : undefined}
+      >
+        {isFullscreen ? (
+          <span
+            className="font-mono text-[11px] uppercase tracking-[0.25em]"
+            style={{ color: accent }}
+          >
+            Chat with Jossue
+          </span>
+        ) : (
+          <span aria-hidden="true" />
+        )}
+        <div className="flex items-center gap-1">
+          <button
+            type="button"
+            onClick={() => setViewMode('minimized')}
+            aria-label="Minimize chat"
+            className="flex h-6 w-6 items-center justify-center rounded-md transition-colors hover:bg-white/10"
+            style={{ color: accent }}
+          >
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              aria-hidden="true"
+            >
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            onClick={() => setViewMode(isFullscreen ? 'default' : 'fullscreen')}
+            aria-label={isFullscreen ? 'Exit fullscreen' : 'Expand chat'}
+            className="flex h-6 w-6 items-center justify-center rounded-md transition-colors hover:bg-white/10"
+            style={{ color: accent }}
+          >
+            {isFullscreen ? (
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <polyline points="4 14 10 14 10 20" />
+                <polyline points="20 10 14 10 14 4" />
+                <line x1="14" y1="10" x2="21" y2="3" />
+                <line x1="3" y1="21" x2="10" y2="14" />
+              </svg>
+            ) : (
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <polyline points="15 3 21 3 21 9" />
+                <polyline points="9 21 3 21 3 15" />
+                <line x1="21" y1="3" x2="14" y2="10" />
+                <line x1="3" y1="21" x2="10" y2="14" />
+              </svg>
+            )}
+          </button>
+        </div>
+      </div>
+
+      {/* Message thread */}
       {hasMessages && (
         <div
           ref={threadRef}
-          className="scrollbar-thin mb-2 max-h-[140px] overflow-y-auto rounded-2xl border px-3 py-2 text-[13px] leading-relaxed backdrop-blur-md sm:max-h-[180px]"
+          className={`scrollbar-thin mb-2 overflow-y-auto rounded-2xl border px-3 py-2 text-[13px] leading-relaxed backdrop-blur-md transition-[max-height] duration-300 ${
+            isFullscreen
+              ? 'max-h-none flex-1'
+              : messages.length >= 2
+                ? 'max-h-[260px] sm:max-h-[340px]'
+                : 'max-h-[140px] sm:max-h-[180px]'
+          }`}
           style={{
             background: 'rgba(0,0,0,0.55)',
             borderColor: `rgba(${rgb}, 0.2)`,
-            boxShadow: `0 10px 30px -15px rgba(${rgb}, 0.35)`,
+            boxShadow: isFullscreen ? 'none' : `0 10px 30px -15px rgba(${rgb}, 0.35)`,
           }}
           aria-live="polite"
           aria-atomic="false"
@@ -158,7 +323,15 @@ export default function IslandChat({ accentColor, accentRgb }: IslandChatProps) 
                         }
                   }
                 >
-                  {text || (!isUser && busy ? <ThinkingDots /> : null)}
+                  {text ? (
+                    isUser ? (
+                      text
+                    ) : (
+                      renderChatMarkdown(text)
+                    )
+                  ) : !isUser && busy ? (
+                    <ThinkingDots />
+                  ) : null}
                 </div>
               </div>
             );
@@ -181,7 +354,11 @@ export default function IslandChat({ accentColor, accentRgb }: IslandChatProps) 
 
       {/* Suggestion chips — only when empty and available */}
       {!hasMessages && available !== false && suggestions.length > 0 && (
-        <div className="mb-2 flex flex-wrap justify-center gap-1.5">
+        <div
+          className={`mb-2 flex flex-wrap gap-1.5 ${
+            isFullscreen ? 'flex-1 content-start justify-start' : 'justify-center'
+          }`}
+        >
           {suggestions.map((s) => (
             <button
               key={s}
@@ -212,6 +389,7 @@ export default function IslandChat({ accentColor, accentRgb }: IslandChatProps) 
         }}
       >
         <input
+          ref={inputRef}
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value.slice(0, MAX_INPUT_CHARS))}
@@ -274,6 +452,36 @@ export default function IslandChat({ accentColor, accentRgb }: IslandChatProps) 
           )}
         </div>
       )}
+    </div>
+  );
+
+  if (isFullscreen) {
+    return (
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label="Chat with Jossue"
+        className="pointer-events-auto fixed inset-0 z-[60] flex items-center justify-center p-4 sm:p-8"
+        style={{
+          ['--accent' as string]: accent,
+          ['--accent-rgb' as string]: rgb,
+          background: 'rgba(0,0,0,0.65)',
+          backdropFilter: 'blur(6px)',
+          WebkitBackdropFilter: 'blur(6px)',
+        }}
+        onClick={() => setViewMode('default')}
+      >
+        {panel}
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className="pointer-events-auto w-full max-w-[520px] px-2 sm:max-w-[560px]"
+      style={{ ['--accent' as string]: accent, ['--accent-rgb' as string]: rgb }}
+    >
+      {panel}
     </div>
   );
 }
