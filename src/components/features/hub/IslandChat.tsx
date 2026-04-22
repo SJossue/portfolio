@@ -96,12 +96,14 @@ export default function IslandChat({
       if (e.key === 'Escape') setViewMode(closeMode);
     };
     window.addEventListener('keydown', onKey);
-    inputRef.current?.focus();
+    // Don't auto-focus on mobile — that pops up the on-screen keyboard
+    // immediately and covers half the chat the moment it opens.
+    if (!isMobile) inputRef.current?.focus();
     return () => {
       document.body.style.overflow = prevOverflow;
       window.removeEventListener('keydown', onKey);
     };
-  }, [viewMode, closeMode]);
+  }, [viewMode, closeMode, isMobile]);
 
   const busy = status === 'submitted' || status === 'streaming';
   const hasMessages = messages.length > 0;

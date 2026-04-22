@@ -306,7 +306,7 @@ export default function HubCarousel() {
                 text="JOSSUE SARANGO"
                 delay={80}
                 animateBy="letters"
-                className="text-[14px] font-semibold tracking-[5px] text-white/80"
+                className="text-[22px] font-semibold tracking-[3px] text-white/85"
                 stepDuration={0.25}
               />
               <HubSocials

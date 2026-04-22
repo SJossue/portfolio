@@ -376,9 +376,7 @@ function ResearchSection() {
       >
         Research
       </p>
-      <h2 className="mb-6 text-center text-3xl font-bold text-white sm:text-4xl">
-        Published Papers
-      </h2>
+      <h2 className="mb-6 text-center text-3xl font-bold text-white sm:text-4xl">Written Papers</h2>
       <p className="mx-auto mb-16 max-w-lg text-center text-sm leading-relaxed text-slate-500">
         Deep dives into the technologies shaping tomorrow &mdash; from hybrid-electric aviation to
         maglev transportation systems.

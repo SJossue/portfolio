@@ -23,7 +23,7 @@ const links: SocialLink[] = [
   {
     id: 'resume',
     label: 'Resume',
-    href: '/JossueSarango-Resume.pdf',
+    href: '/resume/JossueSarango-Resume.pdf',
     external: true,
     icon: (
       <svg
