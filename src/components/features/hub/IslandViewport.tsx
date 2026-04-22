@@ -29,11 +29,11 @@ export default function IslandViewport({
 
   return (
     <section
-      className="relative flex h-dvh w-screen flex-shrink-0 flex-col items-center justify-center overflow-hidden md:flex-row md:items-center"
+      className="relative flex min-h-dvh w-screen flex-shrink-0 flex-col items-center justify-start overflow-x-hidden pb-40 pt-[120px] md:h-dvh md:flex-row md:items-center md:justify-center md:overflow-hidden md:pb-0 md:pt-0"
       aria-label={`${world.name} world`}
     >
       {/* Left panel (top on mobile) */}
-      <div className="relative z-10 w-full flex-shrink-0 px-6 pt-28 text-center md:w-[320px] md:px-0 md:pl-12 md:pt-0 md:text-left lg:w-[360px] lg:pl-16">
+      <div className="relative z-10 w-full flex-shrink-0 px-6 text-center md:w-[320px] md:px-0 md:pl-12 md:text-left lg:w-[360px] lg:pl-16 3xl:w-[440px] 3xl:pl-24 4xl:w-[540px] 4xl:pl-36">
         {/* World number */}
         <div
           className="font-mono text-[13px] font-semibold tracking-[3px] md:text-[12px]"
@@ -51,13 +51,13 @@ export default function IslandViewport({
                 text={word}
                 delay={100 + i * 200}
                 animateBy="letters"
-                className="whitespace-nowrap text-[40px] font-extrabold leading-[1.05] tracking-[2px] sm:text-[48px] md:text-[50px] lg:text-[56px]"
+                className="whitespace-nowrap text-[40px] font-extrabold leading-[1.05] tracking-[2px] sm:text-[48px] md:text-[50px] lg:text-[56px] 3xl:text-[72px] 4xl:text-[88px]"
                 stepDuration={0.3}
               />
             ) : (
               <span
                 key={`${word}-${i}`}
-                className="text-[44px] font-extrabold leading-[1.05] tracking-[2px] opacity-0 sm:text-[52px] md:text-[56px]"
+                className="text-[44px] font-extrabold leading-[1.05] tracking-[2px] opacity-0 sm:text-[52px] md:text-[56px] 3xl:text-[72px] 4xl:text-[88px]"
               >
                 {word}
               </span>
@@ -80,7 +80,7 @@ export default function IslandViewport({
         />
 
         {/* Description */}
-        <p className="mt-4 text-[15px] leading-[1.7] text-slate-400 md:mt-5 md:text-[14px]">
+        <p className="mt-4 text-[15px] leading-[1.7] text-slate-400 md:mt-5 md:text-[14px] 3xl:text-[17px] 4xl:text-[19px]">
           {world.description}
         </p>
 
@@ -136,7 +136,7 @@ export default function IslandViewport({
       </div>
 
       {/* Right panel (bottom on mobile) */}
-      <div className="relative z-10 w-full flex-shrink-0 px-6 pb-16 text-center md:w-[240px] md:px-0 md:pb-0 md:pr-12 md:text-right lg:w-[280px] lg:pr-16">
+      <div className="relative z-10 w-full flex-shrink-0 px-6 text-center md:w-[240px] md:px-0 md:pr-12 md:text-right lg:w-[360px] lg:pr-16 3xl:w-[440px] 3xl:pr-24 4xl:w-[540px] 4xl:pr-36">
         <div
           className="mb-4 font-mono text-[12px] tracking-[2px] md:mb-6 md:text-[11px]"
           style={{ color: `rgba(${world.colorRgb}, 0.4)` }}
@@ -151,10 +151,12 @@ export default function IslandViewport({
         <div className="flex flex-col gap-4 md:gap-5">
           {world.highlights.map((highlight, i) => (
             <div key={i}>
-              <div className="text-[15px] font-semibold text-slate-200 md:text-[14px]">
+              <div className="text-[15px] font-semibold text-slate-200 md:text-[14px] 3xl:text-[17px] 4xl:text-[19px]">
                 {highlight.title}
               </div>
-              <div className="mt-1 text-[13px] text-slate-500 md:text-[12px]">{highlight.tech}</div>
+              <div className="mt-1 text-[13px] text-slate-500 md:text-[12px] 3xl:text-[14px] 4xl:text-[16px]">
+                {highlight.tech}
+              </div>
               {i < world.highlights.length - 1 && (
                 <div
                   className="mx-auto mt-4 h-px w-3/4 md:ml-auto md:mr-0 md:mt-5 md:w-full"

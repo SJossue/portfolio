@@ -136,7 +136,7 @@ export default function TimelineWorld() {
 
         <div className="pointer-events-none relative z-10 text-center">
           {/* Title */}
-          <h1 className="timeline-hero-title text-5xl font-black uppercase tracking-tight sm:text-7xl md:text-8xl">
+          <h1 className="timeline-hero-title text-5xl font-black uppercase tracking-tight sm:text-7xl md:text-8xl 3xl:text-9xl 4xl:text-[12rem]">
             <span className="block bg-gradient-to-b from-white via-white to-white/60 bg-clip-text text-transparent">
               MY
             </span>
@@ -176,7 +176,10 @@ export default function TimelineWorld() {
       </section>
 
       {/* ---- EXPERIENCE TIMELINE ---- */}
-      <section ref={timelineRef} className="relative mx-auto max-w-5xl px-4 py-32">
+      <section
+        ref={timelineRef}
+        className="relative mx-auto max-w-5xl px-4 py-32 3xl:max-w-6xl 4xl:max-w-[88rem]"
+      >
         <h2 className="mb-20 text-center text-3xl font-bold tracking-wide sm:text-4xl">
           Experience
         </h2>
@@ -284,7 +287,7 @@ export default function TimelineWorld() {
       </section>
 
       {/* ---- SKILLS / TOOLS ---- */}
-      <section ref={skillsRef} className="mx-auto max-w-4xl px-6 py-24">
+      <section ref={skillsRef} className="mx-auto max-w-4xl px-6 py-24 3xl:max-w-5xl 4xl:max-w-6xl">
         <h2 className="mb-12 text-center text-3xl font-bold tracking-wide sm:text-4xl">
           Skills &amp; Tools
         </h2>

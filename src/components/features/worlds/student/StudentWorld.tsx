@@ -108,7 +108,7 @@ function HeroSection() {
 
       <div className="pointer-events-none relative z-10 text-center">
         {/* Title */}
-        <h1 className="student-hero-title text-5xl font-black uppercase tracking-tight sm:text-7xl md:text-8xl">
+        <h1 className="student-hero-title text-5xl font-black uppercase tracking-tight sm:text-7xl md:text-8xl 3xl:text-9xl 4xl:text-[12rem]">
           <span className="block bg-gradient-to-b from-white via-white to-white/60 bg-clip-text text-transparent">
             THE
           </span>

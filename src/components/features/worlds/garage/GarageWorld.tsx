@@ -403,7 +403,7 @@ export default function GarageWorld() {
 
         <div className="pointer-events-none relative z-10 text-center">
           {/* Title */}
-          <h1 className="garage-hero-title text-5xl font-black uppercase tracking-tight sm:text-7xl md:text-8xl">
+          <h1 className="garage-hero-title text-5xl font-black uppercase tracking-tight sm:text-7xl md:text-8xl 3xl:text-9xl 4xl:text-[12rem]">
             <span className="block bg-gradient-to-b from-white via-white to-white/60 bg-clip-text text-transparent">
               MY
             </span>
@@ -442,7 +442,10 @@ export default function GarageWorld() {
       {/* ============================================================ */}
       {/*  FEATURED PROJECTS                                            */}
       {/* ============================================================ */}
-      <section ref={projectsRef} className="relative mx-auto max-w-6xl px-4 py-20 sm:py-32">
+      <section
+        ref={projectsRef}
+        className="relative mx-auto max-w-6xl px-4 py-20 sm:py-32 3xl:max-w-7xl 4xl:max-w-[100rem]"
+      >
         <div className="mb-16 text-center">
           <p className="font-mono text-xs uppercase tracking-[0.25em] text-orange-300/70">
             Case Studies
@@ -472,7 +475,10 @@ export default function GarageWorld() {
       {/* ============================================================ */}
       {/*  TOOLS / SKILLS                                               */}
       {/* ============================================================ */}
-      <section ref={skillsRef} className="relative mx-auto max-w-6xl px-4 py-20 sm:py-28">
+      <section
+        ref={skillsRef}
+        className="relative mx-auto max-w-6xl px-4 py-20 sm:py-28 3xl:max-w-7xl 4xl:max-w-[100rem]"
+      >
         <div className="mb-12 text-center">
           <p className="font-mono text-xs uppercase tracking-[0.25em] text-orange-300/70">
             The Toolbox

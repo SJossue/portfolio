@@ -4,6 +4,17 @@
 
 /* scroll-behavior handled by Lenis when active */
 
+/* Fluid root font-size: every rem-based Tailwind utility scales with viewport.
+   Reference points:
+     ≤1280px laptop → 16px (floor, mobile/small-laptop untouched)
+      1440px laptop → ~17px (gentle bump)
+      1920px desktop → ~19px
+     ≥2560px display → 22px (cap, so 4K doesn't produce cartoon type)
+   Tuned so typical laptops (1440–1536) feel close to native 16px. */
+html {
+  font-size: clamp(16px, 10.58px + 0.446vw, 22px);
+}
+
 body {
   min-height: 100dvh;
   /* Prevent iOS tap highlight flash */

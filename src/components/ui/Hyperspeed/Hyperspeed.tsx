@@ -39,16 +39,12 @@ export interface HyperspeedColors {
 }
 
 export interface HyperspeedEffectOptions {
-  onSpeedUp?: (ev: Event) => void;
-  onSlowDown?: (ev: Event) => void;
   distortion?: HyperspeedDistortion;
   length?: number;
   roadWidth?: number;
   islandWidth?: number;
   lanesPerRoad?: number;
   fov?: number;
-  fovSpeedUp?: number;
-  speedUp?: number;
   carLightsFade?: number;
   totalSideLightSticks?: number;
   lightPairsPerRoadWay?: number;
@@ -72,23 +68,15 @@ export interface HyperspeedProps {
   className?: string;
 }
 
-const DEFAULT_EFFECT_OPTIONS: Required<
-  Omit<HyperspeedEffectOptions, 'colors' | 'onSpeedUp' | 'onSlowDown'>
-> & {
+const DEFAULT_EFFECT_OPTIONS: Required<Omit<HyperspeedEffectOptions, 'colors'>> & {
   colors: HyperspeedColors;
-  onSpeedUp: (ev: Event) => void;
-  onSlowDown: (ev: Event) => void;
 } = {
-  onSpeedUp: () => {},
-  onSlowDown: () => {},
   distortion: 'turbulentDistortion',
   length: 400,
   roadWidth: 10,
   islandWidth: 2,
   lanesPerRoad: 4,
   fov: 90,
-  fovSpeedUp: 150,
-  speedUp: 2,
   carLightsFade: 0.4,
   totalSideLightSticks: 20,
   lightPairsPerRoadWay: 40,
@@ -416,14 +404,6 @@ export default function Hyperspeed({ effectOptions, className }: HyperspeedProps
         },
       },
     };
-
-    function lerp(current: number, target: number, speed = 0.1, limit = 0.001) {
-      let change = (target - current) * speed;
-      if (Math.abs(change) < limit) {
-        change = target - current;
-      }
-      return change;
-    }
 
     const random = (base: number | [number, number]) => {
       if (Array.isArray(base)) return Math.random() * (base[1] - base[0]) + base[0];
@@ -944,10 +924,6 @@ export default function Hyperspeed({ effectOptions, className }: HyperspeedProps
       leftCarLights: CarLights;
       rightCarLights: CarLights;
       leftSticks: LightsSticks;
-      fovTarget: number;
-      speedUpTarget = 0;
-      speedUp = 0;
-      timeOffset = 0;
       renderPass!: RenderPass;
       bloomPass!: EffectPass;
 
@@ -966,7 +942,9 @@ export default function Hyperspeed({ effectOptions, className }: HyperspeedProps
 
         this.renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true });
         this.renderer.setSize(initW, initH, false);
-        this.renderer.setPixelRatio(window.devicePixelRatio);
+        // Cap at 2× — postprocessing (RenderPass + Bloom + SMAA) is the bottleneck.
+        // Retina/4K at native DPR quadruples fragment work for no visible gain here.
+        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         this.composer = new EffectComposer(this.renderer);
         container.append(this.renderer.domElement);
 
@@ -1007,16 +985,9 @@ export default function Hyperspeed({ effectOptions, className }: HyperspeedProps
         );
         this.leftSticks = new LightsSticks(this, options);
 
-        this.fovTarget = options.fov;
-
         this.tick = this.tick.bind(this);
         this.init = this.init.bind(this);
         this.setSize = this.setSize.bind(this);
-        this.onMouseDown = this.onMouseDown.bind(this);
-        this.onMouseUp = this.onMouseUp.bind(this);
-        this.onTouchStart = this.onTouchStart.bind(this);
-        this.onTouchEnd = this.onTouchEnd.bind(this);
-        this.onContextMenu = this.onContextMenu.bind(this);
         this.onWindowResize = this.onWindowResize.bind(this);
 
         window.addEventListener('resize', this.onWindowResize);
@@ -1049,7 +1020,9 @@ export default function Hyperspeed({ effectOptions, className }: HyperspeedProps
           new BloomEffect({
             luminanceThreshold: 0.2,
             luminanceSmoothing: 0,
-            resolutionScale: 1,
+            // Half-res bloom: visually indistinguishable on a motion-blur loader,
+            // halves the fragment cost of the most expensive pass.
+            resolutionScale: 0.5,
           }),
         );
 
@@ -1098,63 +1071,16 @@ export default function Hyperspeed({ effectOptions, className }: HyperspeedProps
         this.leftSticks.init();
         this.leftSticks.mesh.position.setX(-(options.roadWidth + options.islandWidth / 2));
 
-        this.container.addEventListener('mousedown', this.onMouseDown);
-        this.container.addEventListener('mouseup', this.onMouseUp);
-        this.container.addEventListener('mouseout', this.onMouseUp);
-        this.container.addEventListener('touchstart', this.onTouchStart, { passive: true });
-        this.container.addEventListener('touchend', this.onTouchEnd, { passive: true });
-        this.container.addEventListener('touchcancel', this.onTouchEnd, { passive: true });
-        this.container.addEventListener('contextmenu', this.onContextMenu);
-
         this.tick();
       }
 
-      onMouseDown(ev: Event) {
-        if (this.options.onSpeedUp) this.options.onSpeedUp(ev);
-        this.fovTarget = this.options.fovSpeedUp;
-        this.speedUpTarget = this.options.speedUp;
-      }
-
-      onMouseUp(ev: Event) {
-        if (this.options.onSlowDown) this.options.onSlowDown(ev);
-        this.fovTarget = this.options.fov;
-        this.speedUpTarget = 0;
-      }
-
-      onTouchStart(ev: Event) {
-        if (this.options.onSpeedUp) this.options.onSpeedUp(ev);
-        this.fovTarget = this.options.fovSpeedUp;
-        this.speedUpTarget = this.options.speedUp;
-      }
-
-      onTouchEnd(ev: Event) {
-        if (this.options.onSlowDown) this.options.onSlowDown(ev);
-        this.fovTarget = this.options.fov;
-        this.speedUpTarget = 0;
-      }
-
-      onContextMenu(ev: Event) {
-        ev.preventDefault();
-      }
-
       update(delta: number) {
-        const lerpPercentage = Math.exp(-(-60 * Math.log2(1 - 0.1)) * delta);
-        this.speedUp += lerp(this.speedUp, this.speedUpTarget, lerpPercentage, 0.00001);
-        this.timeOffset += this.speedUp * delta;
-
-        const time = this.clock.elapsedTime + this.timeOffset;
+        const time = this.clock.elapsedTime;
 
         this.rightCarLights.update(time);
         this.leftCarLights.update(time);
         this.leftSticks.update(time);
         this.road.update(time);
-
-        let updateCamera = false;
-        const fovChange = lerp(this.camera.fov, this.fovTarget, lerpPercentage);
-        if (fovChange !== 0) {
-          this.camera.fov += fovChange * delta * 6;
-          updateCamera = true;
-        }
 
         if (this.options.distortion.getJS) {
           const distortion = this.options.distortion.getJS(0.025, time);
@@ -1165,9 +1091,6 @@ export default function Hyperspeed({ effectOptions, className }: HyperspeedProps
               this.camera.position.z + distortion.z,
             ),
           );
-          updateCamera = true;
-        }
-        if (updateCamera) {
           this.camera.updateProjectionMatrix();
         }
       }
@@ -1209,15 +1132,6 @@ export default function Hyperspeed({ effectOptions, className }: HyperspeedProps
         }
 
         window.removeEventListener('resize', this.onWindowResize);
-        if (this.container) {
-          this.container.removeEventListener('mousedown', this.onMouseDown);
-          this.container.removeEventListener('mouseup', this.onMouseUp);
-          this.container.removeEventListener('mouseout', this.onMouseUp);
-          this.container.removeEventListener('touchstart', this.onTouchStart);
-          this.container.removeEventListener('touchend', this.onTouchEnd);
-          this.container.removeEventListener('touchcancel', this.onTouchEnd);
-          this.container.removeEventListener('contextmenu', this.onContextMenu);
-        }
       }
 
       setSize(width: number, height: number, updateStyles?: boolean) {
@@ -1256,9 +1170,12 @@ export default function Hyperspeed({ effectOptions, className }: HyperspeedProps
         }
 
         if (this.hasValidSize) {
-          const delta = this.clock.getDelta();
-          this.render(delta);
+          // Clamp delta: during router.push / tab throttling the browser can hand
+          // us a 100 ms+ tick. Uncapped, distortion time advances in large jumps
+          // and the scene visibly stutters.
+          const delta = Math.min(this.clock.getDelta(), 0.05);
           this.update(delta);
+          this.render(delta);
         }
 
         requestAnimationFrame(this.tick);

@@ -60,7 +60,7 @@ export default function IslandScene({
       data-island-frozen={!isActive}
       onClick={onEnter}
       aria-label={`Enter ${worldName}`}
-      className="mx-auto block w-full max-w-[620px] animate-island-float cursor-pointer select-none appearance-none border-0 bg-transparent p-0 text-left"
+      className="mx-auto block w-full max-w-[620px] animate-island-float cursor-pointer select-none appearance-none border-0 bg-transparent p-0 text-left 3xl:max-w-[820px] 4xl:max-w-[1080px]"
     >
       <BorderGlow
         glowColor={`${h} ${s} ${l}`}

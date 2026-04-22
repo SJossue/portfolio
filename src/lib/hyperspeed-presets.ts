@@ -14,8 +14,6 @@ const SHARED_BASE: HyperspeedEffectOptions = {
   islandWidth: 2,
   lanesPerRoad: 3,
   fov: 90,
-  fovSpeedUp: 150,
-  speedUp: 2,
   carLightsFade: 0.4,
   totalSideLightSticks: 22,
   lightPairsPerRoadWay: 42,

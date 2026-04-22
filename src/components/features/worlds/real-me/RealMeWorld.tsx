@@ -129,7 +129,7 @@ export default function RealMeWorld() {
           {/* Title */}
           <h1
             data-reveal-child
-            className="text-5xl font-black uppercase tracking-tight sm:text-7xl md:text-8xl"
+            className="text-5xl font-black uppercase tracking-tight sm:text-7xl md:text-8xl 3xl:text-9xl 4xl:text-[12rem]"
           >
             <span className="block bg-gradient-to-b from-white via-white to-white/60 bg-clip-text text-transparent">
               ABOUT
@@ -174,7 +174,7 @@ export default function RealMeWorld() {
       </section>
 
       {/* ── About Section ── */}
-      <section className="relative mx-auto max-w-6xl px-6 py-24 sm:py-32">
+      <section className="relative mx-auto max-w-6xl px-6 py-24 sm:py-32 3xl:max-w-7xl 4xl:max-w-[100rem]">
         {/* Photo collage */}
         <div data-reveal className="mb-16 flex justify-center">
           <div className="relative h-72 w-80 sm:h-80 sm:w-96">
@@ -259,7 +259,7 @@ export default function RealMeWorld() {
       </section>
 
       {/* ── Skills Grid ── */}
-      <section className="mx-auto max-w-6xl px-6 py-24 sm:py-32">
+      <section className="mx-auto max-w-6xl px-6 py-24 sm:py-32 3xl:max-w-7xl 4xl:max-w-[100rem]">
         <div data-reveal className="mb-12 text-center">
           <h2 data-reveal-child className="text-3xl font-bold sm:text-4xl">
             Skills & Expertise

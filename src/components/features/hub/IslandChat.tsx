@@ -9,6 +9,8 @@ import { renderChatMarkdown } from '@/lib/chat-markdown';
 interface IslandChatProps {
   accentColor: string;
   accentRgb: string;
+  isMobile?: boolean;
+  defaultMinimized?: boolean;
 }
 
 type ViewMode = 'default' | 'minimized' | 'fullscreen';
@@ -35,7 +37,12 @@ function extractText(parts: UIPart[] | undefined): string {
     .join('');
 }
 
-export default function IslandChat({ accentColor, accentRgb }: IslandChatProps) {
+export default function IslandChat({
+  accentColor,
+  accentRgb,
+  isMobile = false,
+  defaultMinimized = false,
+}: IslandChatProps) {
   const transport = useMemo(
     () =>
       new DefaultChatTransport({
@@ -51,7 +58,9 @@ export default function IslandChat({ accentColor, accentRgb }: IslandChatProps) 
 
   const [input, setInput] = useState('');
   const [available, setAvailable] = useState<boolean | null>(null);
-  const [viewMode, setViewMode] = useState<ViewMode>('default');
+  const [viewMode, setViewMode] = useState<ViewMode>(defaultMinimized ? 'minimized' : 'default');
+  const closeMode: ViewMode = isMobile ? 'minimized' : 'default';
+  const openMode: ViewMode = isMobile ? 'fullscreen' : 'default';
   const threadRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -84,7 +93,7 @@ export default function IslandChat({ accentColor, accentRgb }: IslandChatProps) 
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setViewMode('default');
+      if (e.key === 'Escape') setViewMode(closeMode);
     };
     window.addEventListener('keydown', onKey);
     inputRef.current?.focus();
@@ -92,7 +101,7 @@ export default function IslandChat({ accentColor, accentRgb }: IslandChatProps) 
       document.body.style.overflow = prevOverflow;
       window.removeEventListener('keydown', onKey);
     };
-  }, [viewMode]);
+  }, [viewMode, closeMode]);
 
   const busy = status === 'submitted' || status === 'streaming';
   const hasMessages = messages.length > 0;
@@ -149,9 +158,9 @@ export default function IslandChat({ accentColor, accentRgb }: IslandChatProps) 
     return (
       <button
         type="button"
-        onClick={() => setViewMode('default')}
+        onClick={() => setViewMode(openMode)}
         aria-label="Open chat"
-        className="pointer-events-auto inline-flex items-center gap-2 rounded-full border px-4 py-2 font-mono text-[11px] uppercase tracking-wider backdrop-blur-md transition-all hover:-translate-y-0.5"
+        className="pointer-events-auto inline-flex h-14 w-14 items-center justify-center rounded-full border backdrop-blur-md transition-all hover:-translate-y-0.5 md:h-auto md:w-auto md:gap-2 md:px-4 md:py-2 md:font-mono md:text-[11px] md:uppercase md:tracking-wider"
         style={{
           ['--accent' as string]: accent,
           ['--accent-rgb' as string]: rgb,
@@ -162,8 +171,6 @@ export default function IslandChat({ accentColor, accentRgb }: IslandChatProps) 
         }}
       >
         <svg
-          width="14"
-          height="14"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -171,10 +178,11 @@ export default function IslandChat({ accentColor, accentRgb }: IslandChatProps) 
           strokeLinecap="round"
           strokeLinejoin="round"
           aria-hidden="true"
+          className="h-5 w-5 md:h-[14px] md:w-[14px]"
         >
           <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
         </svg>
-        Chat with Jossue
+        <span className="hidden md:inline">Chat with Jossue</span>
       </button>
     );
   }
@@ -239,7 +247,7 @@ export default function IslandChat({ accentColor, accentRgb }: IslandChatProps) 
           </button>
           <button
             type="button"
-            onClick={() => setViewMode(isFullscreen ? 'default' : 'fullscreen')}
+            onClick={() => setViewMode(isFullscreen ? closeMode : 'fullscreen')}
             aria-label={isFullscreen ? 'Exit fullscreen' : 'Expand chat'}
             className="flex h-6 w-6 items-center justify-center rounded-md transition-colors hover:bg-white/10"
             style={{ color: accent }}
@@ -469,7 +477,7 @@ export default function IslandChat({ accentColor, accentRgb }: IslandChatProps) 
           backdropFilter: 'blur(6px)',
           WebkitBackdropFilter: 'blur(6px)',
         }}
-        onClick={() => setViewMode('default')}
+        onClick={() => setViewMode(closeMode)}
       >
         {panel}
       </div>

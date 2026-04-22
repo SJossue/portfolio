@@ -58,6 +58,22 @@ export default function HubCarousel() {
     return () => clearTimeout(timer);
   }, []);
 
+  // Preload the Hyperspeed chunk on idle so the first world entry doesn't pay
+  // chunk-download + WebGL-init cost in the critical path. Reduced-motion users
+  // get a flat color wash, so skip the warm-up for them.
+  useEffect(() => {
+    if (reducedMotion) return;
+    const warm = () => {
+      import('@/components/ui/Hyperspeed').catch(() => {});
+    };
+    if (typeof window.requestIdleCallback === 'function') {
+      const id = window.requestIdleCallback(warm, { timeout: 3000 });
+      return () => window.cancelIdleCallback?.(id);
+    }
+    const t = window.setTimeout(warm, 1800);
+    return () => window.clearTimeout(t);
+  }, [reducedMotion]);
+
   // Horizontal scroll via GSAP ScrollTrigger (desktop only)
   useEffect(() => {
     if (isMobile || !trackRef.current || !containerRef.current) return;
@@ -231,9 +247,19 @@ export default function HubCarousel() {
       {/* Cursor glow */}
       <CursorGlow color={activeWorld.color} colorRgb={activeWorld.colorRgb} />
 
-      {/* Top scrim — improves legibility of name + social buttons over the aurora */}
+      {/* Top header band — mobile gets a solid bar with accent divider so the
+          name + social buttons have dedicated space above the world content.
+          Desktop keeps the subtle gradient. */}
       <div
-        className="pointer-events-none fixed inset-x-0 top-0 z-10 h-32"
+        className="pointer-events-none fixed inset-x-0 top-0 z-10 h-[104px] md:hidden"
+        style={{
+          background:
+            'linear-gradient(to bottom, rgba(3,3,24,0.92) 0%, rgba(3,3,24,0.72) 80%, rgba(3,3,24,0) 100%)',
+          borderBottom: `1px solid rgba(${activeWorld.colorRgb}, 0.18)`,
+        }}
+      />
+      <div
+        className="pointer-events-none fixed inset-x-0 top-0 z-10 hidden h-32 md:block"
         style={{
           background:
             'linear-gradient(to bottom, rgba(3,3,24,0.75) 0%, rgba(3,3,24,0.35) 50%, rgba(3,3,24,0) 100%)',
@@ -292,10 +318,17 @@ export default function HubCarousel() {
         </div>
       )}
 
-      {/* Universal chat — one instance across all worlds, pinned to viewport bottom */}
+      {/* Universal chat — condensed FAB in the bottom-right on mobile, centered
+          panel on desktop. The component renders a fullscreen modal (z-60) when
+          expanded, which escapes this container. */}
       {loaded && (
-        <div className="pointer-events-none fixed bottom-14 left-0 right-0 z-30 flex justify-center px-4">
-          <IslandChat accentColor={activeWorld.color} accentRgb={activeWorld.colorRgb} />
+        <div className="pointer-events-none fixed bottom-20 right-4 z-30 md:inset-x-0 md:bottom-14 md:flex md:justify-center md:px-4">
+          <IslandChat
+            accentColor={activeWorld.color}
+            accentRgb={activeWorld.colorRgb}
+            isMobile={isMobile}
+            defaultMinimized={isMobile}
+          />
         </div>
       )}
 
