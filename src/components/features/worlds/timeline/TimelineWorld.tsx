@@ -7,7 +7,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { experienceData } from '@/content/experience';
 
-const BarberHero3D = dynamic(() => import('./BarberHero3D'), { ssr: false });
+const TimelineHero3D = dynamic(() => import('./TimelineHero3D'), { ssr: false });
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -26,7 +26,7 @@ function collectSkills(): string[] {
 /*  Main component                                                    */
 /* ------------------------------------------------------------------ */
 
-export default function BarberWorld() {
+export default function TimelineWorld() {
   const timelineRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLElement>(null);
   const skillsRef = useRef<HTMLElement>(null);
@@ -121,7 +121,7 @@ export default function BarberWorld() {
       >
         {/* 3D hero scene (sits behind the title text) */}
         <div className="pointer-events-none absolute inset-0 z-0 opacity-90" aria-hidden="true">
-          <BarberHero3D />
+          <TimelineHero3D />
         </div>
 
         {/* Soft vignette to keep the title readable over the 3D scene */}

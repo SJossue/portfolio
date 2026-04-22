@@ -136,7 +136,7 @@ function DepthOrbs() {
 /*  Scene                                                             */
 /* ------------------------------------------------------------------ */
 
-export default function BarberHero3D() {
+export default function TimelineHero3D() {
   // Nodes positioned along the axis (which is tilted -0.18 rad on Z).
   // Axis direction ≈ (sin(0.18), cos(0.18)) ≈ (0.179, 0.984).
   const nodes = useMemo<Array<[number, number, number]>>(() => {

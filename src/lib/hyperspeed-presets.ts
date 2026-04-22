@@ -55,7 +55,7 @@ const WORLD_PRESETS: WorldHyperspeedPreset[] = [
     },
   },
   {
-    worldId: 'barber',
+    worldId: 'timeline',
     label: 'My Timeline',
     accentHex: '#8b5cf6',
     accentRgb: '139, 92, 246',

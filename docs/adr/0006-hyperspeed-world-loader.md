@@ -5,7 +5,7 @@
 
 ## Context
 
-Each hub world (`/garage`, `/barber`, `/student`, `/real-me`) ships a heavy
+Each hub world (`/garage`, `/timeline`, `/student`, `/real-me`) ships a heavy
 hero scene built with `@react-three/fiber`, custom shaders, and (in some
 worlds) a GLB model. On a fresh navigation from the hub the destination
 takes ~600–1500 ms to:

@@ -42,8 +42,8 @@ export const worlds: WorldData[] = [
     moreCount: 3,
   },
   {
-    id: 'barber',
-    slug: '/barber',
+    id: 'timeline',
+    slug: '/timeline',
     name: 'MY TIMELINE',
     subtitle: 'Experience',
     description: 'A journey through the roles, milestones, and moments that shaped the path.',
