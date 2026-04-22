@@ -247,15 +247,15 @@ export default function HubCarousel() {
       {/* Cursor glow */}
       <CursorGlow color={activeWorld.color} colorRgb={activeWorld.colorRgb} />
 
-      {/* Top header band — mobile gets a solid bar with accent divider so the
-          name + social buttons have dedicated space above the world content.
-          Desktop keeps the subtle gradient. */}
+      {/* Top header band — mobile gets a solid, opaque bar so the name +
+          social buttons feel locked to the viewport top while world content
+          scrolls underneath. Desktop keeps the subtle gradient. */}
       <div
         className="pointer-events-none fixed inset-x-0 top-0 z-10 h-[104px] md:hidden"
         style={{
-          background:
-            'linear-gradient(to bottom, rgba(3,3,24,0.92) 0%, rgba(3,3,24,0.72) 80%, rgba(3,3,24,0) 100%)',
-          borderBottom: `1px solid rgba(${activeWorld.colorRgb}, 0.18)`,
+          background: 'rgba(3,3,24,0.96)',
+          borderBottom: `1px solid rgba(${activeWorld.colorRgb}, 0.22)`,
+          boxShadow: '0 6px 18px -10px rgba(0,0,0,0.55)',
         }}
       />
       <div

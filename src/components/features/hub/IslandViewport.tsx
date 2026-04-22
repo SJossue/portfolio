@@ -124,7 +124,7 @@ export default function IslandViewport({
       </div>
 
       {/* Center: Island preview */}
-      <div className="relative z-0 flex h-[240px] w-full items-center justify-center px-4 md:h-auto md:flex-1">
+      <div className="relative z-0 my-12 flex h-[240px] w-full items-center justify-center px-4 md:my-0 md:h-auto md:flex-1">
         <IslandScene
           worldId={world.id}
           worldName={world.name}
