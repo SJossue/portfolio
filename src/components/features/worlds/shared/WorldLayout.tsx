@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { worlds } from '@/content/worlds';
+import { useEffect } from 'react';
 import WorldTheme from '@/components/features/worlds/shared/WorldTheme';
 import WorldNav from '@/components/features/worlds/shared/WorldNav';
 import SmoothScroll from '@/components/features/worlds/shared/SmoothScroll';
+import { useWorldLoader } from '@/lib/world-loader-store';
 
 interface WorldLayoutProps {
   worldId: string;
@@ -12,29 +12,37 @@ interface WorldLayoutProps {
 }
 
 export default function WorldLayout({ worldId, children }: WorldLayoutProps) {
-  const [entered, setEntered] = useState(false);
-  const world = worlds.find((w) => w.id === worldId);
+  const markReady = useWorldLoader((s) => s.markReady);
+  const dismiss = useWorldLoader((s) => s.dismiss);
 
+  // Signal "world chrome mounted" after the next paint.
+  // The loader enforces a min display window, so brief gaps don't flash.
   useEffect(() => {
-    const id = requestAnimationFrame(() => setEntered(true));
-    return () => cancelAnimationFrame(id);
-  }, []);
+    let cancelled = false;
+    const id = requestAnimationFrame(() => {
+      if (cancelled) return;
+      // One extra rAF to let dynamic-imported 3D heroes attach their Canvases.
+      requestAnimationFrame(() => {
+        if (!cancelled) markReady();
+      });
+    });
+    return () => {
+      cancelled = true;
+      cancelAnimationFrame(id);
+    };
+  }, [markReady, worldId]);
+
+  // Safety net: if the loader is still up after 6s (slow network / GLB), force-dismiss.
+  useEffect(() => {
+    const t = window.setTimeout(() => dismiss(), 6000);
+    return () => window.clearTimeout(t);
+  }, [dismiss]);
 
   return (
     <WorldTheme worldId={worldId}>
       <SmoothScroll>
         <div className="relative min-h-dvh bg-[#030318]">
           <WorldNav worldId={worldId} />
-
-          {/* Entry color-wash overlay */}
-          <div
-            className="pointer-events-none fixed inset-0 z-40 transition-opacity duration-[800ms] ease-out"
-            style={{
-              backgroundColor: world?.color,
-              opacity: entered ? 0 : 1,
-            }}
-          />
-
           <main id="main-content">{children}</main>
         </div>
       </SmoothScroll>

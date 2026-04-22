@@ -8,6 +8,7 @@ import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { worlds } from '@/content/worlds';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { useWorldLoader } from '@/lib/world-loader-store';
 import Aurora from '@/components/ui/Aurora';
 import Particles from '@/components/ui/Particles';
 import BlurText from '@/components/ui/BlurText';
@@ -17,7 +18,6 @@ import HubNav from './HubNav';
 import HubSocials from './HubSocials';
 import IslandChat from './IslandChat';
 import IslandViewport from './IslandViewport';
-import WorldTransition from './WorldTransition';
 
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
@@ -25,15 +25,12 @@ export default function HubCarousel() {
   const router = useRouter();
   const isMobile = useIsMobile();
   const reducedMotion = useReducedMotion();
+  const startWorldLoader = useWorldLoader((s) => s.start);
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [loaded, setLoaded] = useState(false);
-  const [transitioning, setTransitioning] = useState<{
-    slug: string;
-    color: string;
-    colorRgb: string;
-  } | null>(null);
+  const enteringRef = useRef(false);
   const activeIndexRef = useRef(0);
   const isScrolling = useRef(false);
 
@@ -41,9 +38,19 @@ export default function HubCarousel() {
   activeIndexRef.current = activeIndex;
   const activeWorld = worlds[activeIndex];
 
-  const enterWorld = useCallback((world: (typeof worlds)[number]) => {
-    setTransitioning({ slug: world.slug, color: world.color, colorRgb: world.colorRgb });
-  }, []);
+  const enterWorld = useCallback(
+    (world: (typeof worlds)[number]) => {
+      if (enteringRef.current) return;
+      enteringRef.current = true;
+      startWorldLoader(world.id);
+      // Allow the loader to mount/paint a frame before route navigation
+      // tears down this tree.
+      requestAnimationFrame(() => {
+        router.push(world.slug);
+      });
+    },
+    [router, startWorldLoader],
+  );
 
   // Load animation
   useEffect(() => {
@@ -72,6 +79,10 @@ export default function HubCarousel() {
           snapTo: 1 / (worlds.length - 1),
           duration: { min: 0.3, max: 0.6 },
           ease: 'power2.inOut',
+          // Snap to nearest world only — no direction/velocity projection.
+          // Prevents programmatic scroll (click/arrow/keyboard) from overshooting by 1 world.
+          directional: false,
+          inertia: false,
         },
         onUpdate: (self) => {
           const newIndex = Math.round(self.progress * (worlds.length - 1));
@@ -91,20 +102,30 @@ export default function HubCarousel() {
   const navigateTo = useCallback(
     (index: number) => {
       if (index < 0 || index >= worlds.length || isScrolling.current) return;
+      if (index === activeIndexRef.current) return;
 
       if (isMobile) {
+        isScrolling.current = true;
         const section = document.getElementById(`island-${worlds[index].id}`);
         section?.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth' });
         setActiveIndex(index);
+        // IntersectionObserver on mobile re-fires scroll completion — release after browser finishes.
+        window.setTimeout(
+          () => {
+            isScrolling.current = false;
+          },
+          reducedMotion ? 0 : 500,
+        );
       } else {
         isScrolling.current = true;
         const totalScroll = (trackRef.current?.scrollWidth ?? 0) - window.innerWidth;
         const targetScroll = (index / (worlds.length - 1)) * totalScroll;
 
         gsap.to(window, {
-          scrollTo: { y: targetScroll },
+          scrollTo: { y: targetScroll, autoKill: false },
           duration: reducedMotion ? 0 : 0.8,
           ease: 'power2.inOut',
+          overwrite: 'auto',
           onComplete: () => {
             isScrolling.current = false;
           },
@@ -113,6 +134,9 @@ export default function HubCarousel() {
     },
     [isMobile, reducedMotion],
   );
+
+  const navPrev = useCallback(() => navigateTo(activeIndexRef.current - 1), [navigateTo]);
+  const navNext = useCallback(() => navigateTo(activeIndexRef.current + 1), [navigateTo]);
 
   // Keyboard navigation — use refs to avoid stale closures
   useEffect(() => {
@@ -221,12 +245,7 @@ export default function HubCarousel() {
       </div>
 
       {/* Navigation */}
-      <HubNav
-        activeIndex={activeIndex}
-        onNavigate={navigateTo}
-        onPrev={() => navigateTo(activeIndex - 1)}
-        onNext={() => navigateTo(activeIndex + 1)}
-      />
+      <HubNav activeIndex={activeIndex} onNavigate={navigateTo} onPrev={navPrev} onNext={navNext} />
 
       {/* Social / contact buttons */}
       <HubSocials accentColor={activeWorld.color} accentRgb={activeWorld.colorRgb} />
@@ -270,19 +289,7 @@ export default function HubCarousel() {
         </div>
       )}
 
-      {loaded && !transitioning && <HubIntro />}
-
-      <WorldTransition
-        active={!!transitioning}
-        color={transitioning?.color ?? '#000'}
-        colorRgb={transitioning?.colorRgb ?? '0,0,0'}
-        onComplete={() => {
-          if (transitioning) {
-            router.push(transitioning.slug);
-          }
-          setTransitioning(null);
-        }}
-      />
+      {loaded && <HubIntro />}
     </div>
   );
 }

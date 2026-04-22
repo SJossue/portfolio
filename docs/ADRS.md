@@ -9,3 +9,4 @@ ADRs capture decisions that change architecture, tooling, performance posture, o
 - [0003: Post-Processing Bloom](./adr/0003-postprocessing-bloom.md)
 - [0004: Lenis for Smooth Scroll](./adr/0004-lenis-smooth-scroll.md)
 - [0005: Space Grotesk Typography](./adr/0005-space-grotesk-typography.md)
+- [0006: Hyperspeed World Loader](./adr/0006-hyperspeed-world-loader.md)
