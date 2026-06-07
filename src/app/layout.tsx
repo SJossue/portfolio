@@ -26,27 +26,29 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteConfig.url),
   title: {
-    default: siteConfig.name,
+    default: siteConfig.title,
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
   keywords: siteConfig.keywords,
-  authors: [{ name: siteConfig.author }],
+  authors: [{ name: siteConfig.author, url: siteConfig.url }],
   creator: siteConfig.author,
   openGraph: {
     type: 'website',
     locale: 'en_US',
     url: siteConfig.url,
     siteName: siteConfig.name,
-    title: siteConfig.name,
+    title: siteConfig.title,
     description: siteConfig.description,
   },
   twitter: {
     card: 'summary_large_image',
-    title: siteConfig.name,
+    title: siteConfig.title,
     description: siteConfig.description,
     creator: siteConfig.twitterHandle,
+    site: siteConfig.twitterHandle,
   },
   alternates: {
     canonical: siteConfig.url,

@@ -2,6 +2,8 @@ export interface ResearchEntry {
   id: string;
   title: string;
   heroImage?: string;
+  /** Path to the downloadable PDF of the full paper (under /public). */
+  pdfUrl?: string;
   /** Body text in markdown format */
   body: string;
 }
@@ -11,6 +13,7 @@ export const researchData: ResearchEntry[] = [
     id: 'future-of-flight',
     title: 'The Future of Flight',
     heroImage: '/research/hybrid-air/plane-diagram.jpeg',
+    pdfUrl: '/research/hybrid-air/the-future-of-flight.pdf',
     body: `# The Future of Flight
 **By Jossue Sarango**
 
@@ -78,6 +81,7 @@ The shift towards electrified skies is happening sooner than we know it, slowly 
     id: 'hybrid-air-white-paper',
     title: 'Integration of Electric Aircraft Systems',
     heroImage: '/research/hybrid-air/comparisson-table.jpeg',
+    pdfUrl: '/research/hybrid-air/white-paper.pdf',
     body: `# A White Paper on the Integration of Electric Aircraft Systems
 **By Jossue Sarango**
 
@@ -175,6 +179,7 @@ The technologies required to charge these systems must also be explored as diffe
     id: 'urban-maglev',
     title: "Urban Integration of Shanghai's Maglev Technology",
     heroImage: '/research/maglev/maglev-inforgraphic.jpeg',
+    pdfUrl: '/research/maglev/study-on-urban-maglev-tech.pdf',
     body: `# Study on the Urban Integration of Shanghai's Maglev Technology
 **By Jossue Sarango**
 

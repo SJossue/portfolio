@@ -13,6 +13,20 @@ describe('JsonLd', () => {
     const script = container.querySelector('script[type="application/ld+json"]');
     const data = JSON.parse(script!.textContent!);
     expect(data['@type']).toBe('Person');
-    expect(data.name).toBe('Jossue');
+    expect(data.name).toBe('Jossue Sarango');
+  });
+
+  it('links GitHub and LinkedIn via sameAs', () => {
+    const { container } = render(<JsonLd />);
+    const script = container.querySelector('script[type="application/ld+json"]');
+    const data = JSON.parse(script!.textContent!);
+    expect(data.sameAs).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining('github.com'),
+        expect.stringContaining('linkedin.com'),
+      ]),
+    );
+    // mailto: links must not appear in sameAs
+    expect(data.sameAs.some((url: string) => url.startsWith('mailto:'))).toBe(false);
   });
 });

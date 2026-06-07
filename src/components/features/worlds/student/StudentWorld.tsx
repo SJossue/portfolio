@@ -2,10 +2,11 @@
 
 import { useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
+import Image from 'next/image';
 import Link from 'next/link';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { researchData } from '@/content/research';
+import { researchData, type ResearchEntry } from '@/content/research';
 import { aboutData } from '@/content/about';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -261,7 +262,8 @@ function EducationSection() {
   );
 }
 
-function ResearchCard({ title, body, index }: { title: string; body: string; index: number }) {
+function ResearchCard({ entry, index }: { entry: ResearchEntry; index: number }) {
+  const { title, body, heroImage, pdfUrl } = entry;
   const abstract = extractAbstract(body);
   const topics = extractTopics(body);
 
@@ -274,6 +276,26 @@ function ResearchCard({ title, body, index }: { title: string; body: string; ind
         background: 'rgba(248,250,252,0.03)',
       }}
     >
+      {/* Hero image */}
+      {heroImage && (
+        <div className="relative aspect-[16/7] w-full overflow-hidden">
+          <Image
+            src={heroImage}
+            alt={`Figure from "${title}"`}
+            fill
+            sizes="(max-width: 768px) 100vw, 768px"
+            className="object-cover opacity-80 transition-opacity duration-300 group-hover:opacity-100"
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                'linear-gradient(to top, rgba(5,5,16,0.95), rgba(5,5,16,0.25) 60%, transparent)',
+            }}
+          />
+        </div>
+      )}
+
       {/* Number badge */}
       <div className="absolute right-6 top-6">
         <span
@@ -330,6 +352,34 @@ function ResearchCard({ title, body, index }: { title: string; body: string; ind
             background: 'linear-gradient(to right, rgba(6,182,212,0.2), transparent)',
           }}
         />
+
+        {/* Read full paper */}
+        {pdfUrl && (
+          <a
+            href={pdfUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-6 inline-flex items-center gap-2 rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-4 py-2 font-mono text-xs text-cyan-300 transition-colors hover:border-cyan-400/60 hover:bg-cyan-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/60"
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+              <line x1="12" y1="18" x2="12" y2="12" />
+              <polyline points="9 15 12 18 15 15" />
+            </svg>
+            Read full paper (PDF)
+          </a>
+        )}
       </div>
     </article>
   );
@@ -384,7 +434,7 @@ function ResearchSection() {
 
       <div className="mx-auto flex max-w-3xl flex-col gap-8">
         {researchData.map((entry, i) => (
-          <ResearchCard key={entry.id} title={entry.title} body={entry.body} index={i} />
+          <ResearchCard key={entry.id} entry={entry} index={i} />
         ))}
       </div>
     </section>

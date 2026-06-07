@@ -325,7 +325,7 @@ export default function RealMeWorld() {
           </p>
         </div>
 
-        <div data-reveal className="grid gap-4 sm:grid-cols-3">
+        <div data-reveal className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {contactLinks.map((link) => (
             <a
               key={link.id}

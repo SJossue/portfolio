@@ -32,7 +32,7 @@ export const worlds: WorldData[] = [
     particleColors: ['#f97316', '#fb923c', '#ffffff'],
     stats: [
       { label: 'Projects', value: 6 },
-      { label: 'Tools', value: 12 },
+      { label: 'Technologies', value: 14 },
     ],
     highlights: [
       { title: 'DataCool: AI Optimization', tech: 'Python · scikit-learn · Streamlit' },
@@ -95,7 +95,7 @@ export const worlds: WorldData[] = [
     particleColors: ['#10b981', '#34d399', '#ffffff'],
     stats: [
       { label: 'Skills', value: 16 },
-      { label: 'Links', value: 5 },
+      { label: 'Links', value: 4 },
     ],
     highlights: [
       { title: 'Product Engineer', tech: 'Salvadoran & Ecuadorian' },

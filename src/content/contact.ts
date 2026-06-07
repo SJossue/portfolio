@@ -19,6 +19,12 @@ export const contactLinks: ContactLink[] = [
     icon: 'LI',
   },
   {
+    id: 'x',
+    label: 'X',
+    href: 'https://x.com/JossueAI',
+    icon: 'X',
+  },
+  {
     id: 'email',
     label: 'Email',
     href: 'mailto:jossuesarango1@gmail.com',
