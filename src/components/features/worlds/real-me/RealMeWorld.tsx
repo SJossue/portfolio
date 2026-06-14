@@ -358,6 +358,41 @@ export default function RealMeWorld() {
             </a>
           ))}
         </div>
+
+        <div data-reveal className="mt-10 flex flex-col items-center gap-3 text-center">
+          <p
+            data-reveal-child
+            className="font-mono text-xs uppercase tracking-[0.2em] text-slate-500"
+          >
+            Prefer to talk?
+          </p>
+          <Link
+            href="/book"
+            data-reveal-child
+            className="group inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-sm font-semibold transition-all duration-300 hover:-translate-y-0.5"
+            style={{
+              background: EMERALD_DIM,
+              color: EMERALD,
+              boxShadow: `0 0 0 1px ${EMERALD_GLOW}`,
+            }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLElement).style.boxShadow =
+                `0 8px 32px ${EMERALD_DIM}, 0 0 0 1px ${EMERALD}`;
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLElement).style.boxShadow = `0 0 0 1px ${EMERALD_GLOW}`;
+            }}
+          >
+            <span aria-hidden>📅</span>
+            Book a call
+            <span
+              aria-hidden
+              className="transition-transform duration-300 group-hover:translate-x-0.5"
+            >
+              →
+            </span>
+          </Link>
+        </div>
       </section>
 
       {/* ── Personal Touch ── */}
