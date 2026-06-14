@@ -71,3 +71,42 @@ export async function sendConfirmationEmails(i: ConfirmInput): Promise<void> {
     attachments,
   });
 }
+
+interface CancelInput {
+  meetingTypeName: string;
+  start: Date;
+  inviteeName: string;
+  inviteeEmail: string;
+  inviteeTimezone: string;
+}
+
+export async function sendCancellationEmails(i: CancelInput): Promise<void> {
+  const apiKey = process.env.RESEND_API_KEY;
+  const owner = process.env.OWNER_EMAIL;
+  if (!apiKey || !owner) throw new Error('RESEND_API_KEY or OWNER_EMAIL not set');
+  const resend = new Resend(apiKey);
+
+  await resend.emails.send({
+    from: FROM,
+    to: i.inviteeEmail,
+    subject: `Cancelled: ${i.meetingTypeName} with ${siteConfig.author}`,
+    text: [
+      `Your ${i.meetingTypeName} has been cancelled.`,
+      ``,
+      `Was: ${fmt(i.start, i.inviteeTimezone)} (${i.inviteeTimezone})`,
+      ``,
+      `Want to rebook? ${siteConfig.url}/book`,
+    ].join('\n'),
+  });
+
+  await resend.emails.send({
+    from: FROM,
+    to: owner,
+    subject: `Cancelled: ${i.meetingTypeName} — ${i.inviteeName}`,
+    text: [
+      `${i.inviteeName} (${i.inviteeEmail}) cancelled their ${i.meetingTypeName}.`,
+      ``,
+      `Was: ${fmt(i.start, process.env.OWNER_TIMEZONE ?? 'America/New_York')}`,
+    ].join('\n'),
+  });
+}

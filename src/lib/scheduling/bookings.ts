@@ -54,3 +54,35 @@ export async function reserve(input: {
 export function isOverlapError(e: unknown): boolean {
   return e instanceof Error && /no_overlap|exclusion|conflicting key/i.test(e.message);
 }
+
+/** Attach the Google event id after a successful calendar write. */
+export async function setGoogleEventId(id: string, eventId: string): Promise<void> {
+  const sql = getSql();
+  await sql`UPDATE bookings SET google_event_id = ${eventId} WHERE id = ${id}`;
+}
+
+/** Hard-delete a booking row — used to roll back a failed reservation. */
+export async function remove(id: string): Promise<void> {
+  const sql = getSql();
+  await sql`DELETE FROM bookings WHERE id = ${id}`;
+}
+
+/** Look up a confirmed booking by its cancel token. */
+export async function findByToken(token: string): Promise<BookingRow | null> {
+  const sql = getSql();
+  const rows = (await sql`
+    SELECT * FROM bookings WHERE cancel_token = ${token} LIMIT 1
+  `) as BookingRow[];
+  return rows[0] ?? null;
+}
+
+/** Mark a booking cancelled (frees the slot via the partial exclusion index). */
+export async function cancelByToken(token: string): Promise<BookingRow | null> {
+  const sql = getSql();
+  const rows = (await sql`
+    UPDATE bookings SET status = 'cancelled'
+    WHERE cancel_token = ${token} AND status = 'confirmed'
+    RETURNING *
+  `) as BookingRow[];
+  return rows[0] ?? null;
+}

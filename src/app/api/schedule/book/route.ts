@@ -1,15 +1,33 @@
 import { addMinutes } from 'date-fns';
 import { NextRequest, NextResponse } from 'next/server';
 import { meetingTypeById } from '@/content/scheduling';
-import { isOverlapError, reserve } from '@/lib/scheduling/bookings';
+import { isOverlapError, remove, reserve, setGoogleEventId } from '@/lib/scheduling/bookings';
 import { sendConfirmationEmails } from '@/lib/scheduling/email';
+import { createEvent, isGoogleConfigured } from '@/lib/scheduling/google';
+import { checkRateLimit } from '@/lib/rate-limit';
+import { siteConfig } from '@/lib/site';
 import type { BookingInput } from '@/lib/scheduling/types';
 
 export const runtime = 'nodejs';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+function clientIp(req: NextRequest): string {
+  return req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+}
+
 export async function POST(req: NextRequest) {
+  const limit = checkRateLimit(clientIp(req));
+  if (!limit.allowed) {
+    return NextResponse.json(
+      { error: 'too many requests' },
+      {
+        status: 429,
+        headers: { 'retry-after': String(Math.ceil((limit.retryAfterMs ?? 60_000) / 1000)) },
+      },
+    );
+  }
+
   let body: BookingInput;
   try {
     body = (await req.json()) as BookingInput;
@@ -37,6 +55,25 @@ export async function POST(req: NextRequest) {
       timezone: body.timezone || 'UTC',
       notes: body.notes?.trim(),
     });
+
+    // Write the event onto the owner's calendar. If it fails, roll the
+    // reservation back so the slot frees up — no phantom bookings.
+    if (isGoogleConfigured()) {
+      try {
+        const eventId = await createEvent({
+          summary: `${type.name} with ${siteConfig.author}`,
+          description: row.notes ?? '',
+          start,
+          end,
+          attendeeEmail: row.invitee_email,
+          attendeeName: row.invitee_name,
+        });
+        await setGoogleEventId(row.id, eventId);
+      } catch {
+        await remove(row.id).catch(() => {});
+        return NextResponse.json({ error: 'could not reach calendar, try again' }, { status: 503 });
+      }
+    }
 
     try {
       await sendConfirmationEmails({

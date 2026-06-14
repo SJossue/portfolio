@@ -3,6 +3,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { availabilityRules, meetingTypeById } from '@/content/scheduling';
 import { getAvailableSlots } from '@/lib/scheduling/availability';
 import { findConfirmedBetween } from '@/lib/scheduling/bookings';
+import { getBusy, isGoogleConfigured } from '@/lib/scheduling/google';
+import type { Interval } from '@/lib/scheduling/types';
 
 export const runtime = 'nodejs';
 
@@ -16,7 +18,14 @@ export async function GET(req: NextRequest) {
   const to = addDays(from, availabilityRules.horizonDays);
 
   try {
-    const busy = await findConfirmedBetween(from, to);
+    // Busy = confirmed DB bookings + (if configured) the owner's Google calendar.
+    const sources: Promise<Interval[]>[] = [findConfirmedBetween(from, to)];
+    if (isGoogleConfigured()) {
+      // A Google outage must not take down booking; degrade to DB-only.
+      sources.push(getBusy(from, to).catch(() => []));
+    }
+    const busy = (await Promise.all(sources)).flat();
+
     const slots = getAvailableSlots({
       durationMin: type.durationMin,
       rules: availabilityRules,
