@@ -33,7 +33,7 @@
     ]
   },
   "dependencies": {
-    "@ai-sdk/anthropic": "^3.0.58",
+    "@ai-sdk/openai-compatible": "^2.0.51",
     "@ai-sdk/react": "^3.0.118",
     "@neondatabase/serverless": "^1.1.0",
     "@react-three/a11y": "^3.0.0",

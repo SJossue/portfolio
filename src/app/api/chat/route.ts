@@ -1,4 +1,4 @@
-import { createAnthropic } from '@ai-sdk/anthropic';
+import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
 import { streamText } from 'ai';
 import { aboutData } from '@/content/about';
 import { contactLinks } from '@/content/contact';
@@ -10,7 +10,15 @@ const ALLOWED_ORIGINS = new Set(
   (process.env.ALLOWED_CHAT_ORIGINS ?? '').split(',').filter(Boolean),
 );
 
-const anthropic = createAnthropic();
+// Nebius AI Studio exposes an OpenAI-compatible API. The model is overridable
+// via NEBIUS_MODEL so the chat persona can be retuned without a code change.
+const nebius = createOpenAICompatible({
+  name: 'nebius',
+  baseURL: process.env.NEBIUS_BASE_URL ?? 'https://api.studio.nebius.com/v1',
+  apiKey: process.env.NEBIUS_API_KEY ?? '',
+});
+
+const CHAT_MODEL = process.env.NEBIUS_MODEL ?? 'meta-llama/Meta-Llama-3.1-8B-Instruct';
 
 const MAX_MESSAGE_LENGTH = 500;
 const MAX_CONVERSATION_TURNS = 20;
@@ -78,7 +86,7 @@ interface ChatMessage {
 
 /** GET /api/chat — lightweight status check for client fallback. */
 export async function GET() {
-  if (!process.env.ANTHROPIC_API_KEY) {
+  if (!process.env.NEBIUS_API_KEY) {
     return jsonResponse({ available: false, reason: 'not_configured' }, 200);
   }
   if (isGlobalBudgetExhausted()) {
@@ -89,7 +97,7 @@ export async function GET() {
 
 export async function POST(req: Request) {
   // --- Kill switch: no API key = disabled ---
-  if (!process.env.ANTHROPIC_API_KEY) {
+  if (!process.env.NEBIUS_API_KEY) {
     return jsonResponse({ error: 'Chat is currently unavailable.' }, 503);
   }
 
@@ -169,7 +177,7 @@ export async function POST(req: Request) {
 
   // --- Stream response ---
   const result = streamText({
-    model: anthropic('claude-haiku-4-5'),
+    model: nebius(CHAT_MODEL),
     system: systemPrompt,
     messages: normalized,
     maxOutputTokens: 300,
