@@ -1,9 +1,10 @@
 import { addMinutes } from 'date-fns';
 import { NextRequest, NextResponse } from 'next/server';
 import { meetingTypeById } from '@/content/scheduling';
-import { isOverlapError, remove, reserve, setGoogleEventId } from '@/lib/scheduling/bookings';
+import { isOverlapError, remove, reserve, setEventDetails } from '@/lib/scheduling/bookings';
 import { sendConfirmationEmails } from '@/lib/scheduling/email';
 import { createEvent, isGoogleConfigured } from '@/lib/scheduling/google';
+import { createZoomMeeting, deleteZoomMeeting, isZoomConfigured } from '@/lib/scheduling/zoom';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { siteConfig } from '@/lib/site';
 import type { BookingInput } from '@/lib/scheduling/types';
@@ -56,24 +57,51 @@ export async function POST(req: NextRequest) {
       notes: body.notes?.trim(),
     });
 
+    // Create the Zoom meeting first so its link can ride along on the event +
+    // email. Non-fatal: a Zoom hiccup shouldn't sink the booking.
+    let videoUrl: string | undefined;
+    let videoMeetingId: string | undefined;
+    if (isZoomConfigured()) {
+      try {
+        const meeting = await createZoomMeeting({
+          topic: `${type.name} with ${siteConfig.author}`,
+          start,
+          durationMin: type.durationMin,
+          timezone: row.invitee_timezone,
+        });
+        videoUrl = meeting.joinUrl;
+        videoMeetingId = meeting.id;
+      } catch {
+        // proceed without a link
+      }
+    }
+
     // Write the event onto the owner's calendar. If it fails, roll the
-    // reservation back so the slot frees up — no phantom bookings.
+    // reservation (and any Zoom meeting) back — no phantom bookings.
+    let eventId: string | undefined;
     if (isGoogleConfigured()) {
       try {
-        const eventId = await createEvent({
+        eventId = await createEvent({
           summary: `${type.name} with ${siteConfig.author}`,
-          description: row.notes ?? '',
+          description: [row.notes, videoUrl ? `Join: ${videoUrl}` : '']
+            .filter(Boolean)
+            .join('\n\n'),
           start,
           end,
           attendeeEmail: row.invitee_email,
           attendeeName: row.invitee_name,
+          location: videoUrl,
         });
-        await setGoogleEventId(row.id, eventId);
       } catch {
+        if (videoMeetingId) await deleteZoomMeeting(videoMeetingId).catch(() => {});
         await remove(row.id).catch(() => {});
         return NextResponse.json({ error: 'could not reach calendar, try again' }, { status: 503 });
       }
     }
+
+    await setEventDetails(row.id, { googleEventId: eventId, videoUrl, videoMeetingId }).catch(
+      () => {},
+    );
 
     try {
       await sendConfirmationEmails({
@@ -86,12 +114,13 @@ export async function POST(req: NextRequest) {
         notes: row.notes ?? undefined,
         bookingId: row.id,
         cancelToken: row.cancel_token,
+        videoUrl,
       });
     } catch {
       // Booking is saved; an email failure shouldn't 500 the visitor.
     }
 
-    return NextResponse.json({ ok: true, id: row.id }, { status: 201 });
+    return NextResponse.json({ ok: true, id: row.id, videoUrl }, { status: 201 });
   } catch (e) {
     if (isOverlapError(e))
       return NextResponse.json({ error: 'slot just got taken' }, { status: 409 });

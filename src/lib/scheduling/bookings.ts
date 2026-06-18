@@ -11,6 +11,8 @@ export interface BookingRow {
   invitee_timezone: string;
   notes: string | null;
   google_event_id: string | null;
+  video_url: string | null;
+  video_meeting_id: string | null;
   status: string;
   cancel_token: string;
 }
@@ -55,10 +57,23 @@ export function isOverlapError(e: unknown): boolean {
   return e instanceof Error && /no_overlap|exclusion|conflicting key/i.test(e.message);
 }
 
-/** Attach the Google event id after a successful calendar write. */
-export async function setGoogleEventId(id: string, eventId: string): Promise<void> {
+/** Attach the Google event id + (optional) video link after the writes succeed. */
+export async function setEventDetails(
+  id: string,
+  details: {
+    googleEventId?: string | null;
+    videoUrl?: string | null;
+    videoMeetingId?: string | null;
+  },
+): Promise<void> {
   const sql = getSql();
-  await sql`UPDATE bookings SET google_event_id = ${eventId} WHERE id = ${id}`;
+  await sql`
+    UPDATE bookings
+    SET google_event_id = ${details.googleEventId ?? null},
+        video_url = ${details.videoUrl ?? null},
+        video_meeting_id = ${details.videoMeetingId ?? null}
+    WHERE id = ${id}
+  `;
 }
 
 /** Hard-delete a booking row — used to roll back a failed reservation. */

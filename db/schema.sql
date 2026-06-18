@@ -12,6 +12,8 @@ CREATE TABLE IF NOT EXISTS bookings (
   invitee_timezone text NOT NULL,
   notes            text,
   google_event_id  text,
+  video_url        text,
+  video_meeting_id text,
   status           text NOT NULL DEFAULT 'confirmed',
   cancel_token     text NOT NULL DEFAULT encode(gen_random_bytes(16), 'hex'),
   created_at       timestamptz NOT NULL DEFAULT now(),
@@ -19,3 +21,7 @@ CREATE TABLE IF NOT EXISTS bookings (
     tstzrange(start_utc, end_utc) WITH &&
   ) WHERE (status = 'confirmed')
 );
+
+-- Migration for databases created before video links were added:
+ALTER TABLE bookings ADD COLUMN IF NOT EXISTS video_url text;
+ALTER TABLE bookings ADD COLUMN IF NOT EXISTS video_meeting_id text;

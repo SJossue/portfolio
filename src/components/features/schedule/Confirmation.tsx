@@ -8,16 +8,23 @@ import { buildIcs } from '@/lib/scheduling/ics';
 import { siteConfig } from '@/lib/site';
 import type { MeetingType } from '@/lib/scheduling/types';
 import { longDayLabel, timeLabel } from './format';
-import { CalendarIcon, CheckIcon, ClockIcon } from './icons';
+import { CalendarIcon, CheckIcon, ClockIcon, VideoIcon } from './icons';
 
 interface ConfirmationProps {
   meetingType: MeetingType;
   startUtc: string;
   timezone: string;
+  videoUrl?: string | null;
   onReset: () => void;
 }
 
-export function Confirmation({ meetingType, startUtc, timezone, onReset }: ConfirmationProps) {
+export function Confirmation({
+  meetingType,
+  startUtc,
+  timezone,
+  videoUrl,
+  onReset,
+}: ConfirmationProps) {
   const reduce = useReducedMotion();
   const start = new Date(startUtc);
   const end = addMinutes(start, meetingType.durationMin);
@@ -66,6 +73,17 @@ export function Confirmation({ meetingType, startUtc, timezone, onReset }: Confi
           <ClockIcon className="h-4 w-4 text-slate-500" />
           {timeLabel(startUtc, timezone)} · {meetingType.durationMin} min
         </div>
+        {videoUrl ? (
+          <a
+            href={videoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 break-all text-cyan-300 transition-colors hover:text-cyan-200"
+          >
+            <VideoIcon className="h-4 w-4 shrink-0 text-cyan-400" />
+            Join the Zoom call
+          </a>
+        ) : null}
       </div>
 
       <div className="mt-6 flex w-full flex-col gap-3 sm:flex-row sm:justify-center">

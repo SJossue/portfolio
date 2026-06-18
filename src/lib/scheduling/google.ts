@@ -80,6 +80,7 @@ interface CreateEventInput {
   end: Date;
   attendeeEmail: string;
   attendeeName?: string;
+  location?: string;
 }
 
 /** Create an event on the owner's calendar; returns the Google event id. */
@@ -101,6 +102,7 @@ export async function createEvent(input: CreateEventInput): Promise<string> {
       body: JSON.stringify({
         summary: input.summary,
         description,
+        location: input.location,
         start: { dateTime: input.start.toISOString() },
         end: { dateTime: input.end.toISOString() },
       }),

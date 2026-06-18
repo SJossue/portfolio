@@ -57,3 +57,10 @@ export const CheckIcon = ({ className }: P) => (
     <path d="M20 6L9 17l-5-5" />
   </svg>
 );
+
+export const VideoIcon = ({ className }: P) => (
+  <svg {...base(className)}>
+    <rect x="2" y="6" width="14" height="12" rx="2" />
+    <path d="M22 8l-6 4 6 4V8z" />
+  </svg>
+);

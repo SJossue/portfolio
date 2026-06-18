@@ -40,6 +40,7 @@ export function BookingWidget() {
   const [slots, setSlots] = useState<Slot[]>([]);
   const [loading, setLoading] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
+  const [videoUrl, setVideoUrl] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
@@ -205,7 +206,10 @@ export function BookingWidget() {
               meetingTypeId={selectedType.id}
               startUtc={slotUtc}
               timezone={timezone}
-              onConfirmed={complete}
+              onConfirmed={(url) => {
+                setVideoUrl(url ?? null);
+                complete();
+              }}
               onSlotTaken={handleSlotTaken}
             />
           </div>
@@ -217,8 +221,10 @@ export function BookingWidget() {
             meetingType={selectedType}
             startUtc={slotUtc}
             timezone={timezone}
+            videoUrl={videoUrl}
             onReset={() => {
               setSlots([]);
+              setVideoUrl(null);
               reset();
             }}
           />

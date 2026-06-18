@@ -10,7 +10,7 @@ interface BookingFormProps {
   meetingTypeId: string;
   startUtc: string;
   timezone: string;
-  onConfirmed: () => void;
+  onConfirmed: (videoUrl?: string) => void;
   onSlotTaken: () => void;
 }
 
@@ -44,7 +44,8 @@ export function BookingForm({
       });
 
       if (res.status === 201) {
-        onConfirmed();
+        const data = (await res.json().catch(() => ({}))) as { videoUrl?: string };
+        onConfirmed(data.videoUrl);
         return;
       }
       if (res.status === 409) {

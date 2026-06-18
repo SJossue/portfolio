@@ -3,6 +3,7 @@ import { meetingTypeById } from '@/content/scheduling';
 import { cancelByToken, findByToken } from '@/lib/scheduling/bookings';
 import { sendCancellationEmails } from '@/lib/scheduling/email';
 import { deleteEvent, isGoogleConfigured } from '@/lib/scheduling/google';
+import { deleteZoomMeeting, isZoomConfigured } from '@/lib/scheduling/zoom';
 
 export const runtime = 'nodejs';
 
@@ -45,6 +46,9 @@ export async function POST(req: NextRequest) {
 
     if (row.google_event_id && isGoogleConfigured()) {
       await deleteEvent(row.google_event_id).catch(() => {});
+    }
+    if (row.video_meeting_id && isZoomConfigured()) {
+      await deleteZoomMeeting(row.video_meeting_id).catch(() => {});
     }
 
     const type = meetingTypeById(row.meeting_type_id);
