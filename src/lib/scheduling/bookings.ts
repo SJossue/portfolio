@@ -97,6 +97,26 @@ export async function findByToken(token: string): Promise<BookingRow | null> {
   return rows[0] ?? null;
 }
 
+/**
+ * Move a confirmed booking to a new time. Guarded by the overlap exclusion
+ * constraint (throws on conflict → caller returns 409). Returns the updated
+ * row, or null if the token doesn't match a confirmed booking.
+ */
+export async function rescheduleByToken(
+  token: string,
+  newStartUtc: string,
+  newEndUtc: string,
+): Promise<BookingRow | null> {
+  const sql = getSql();
+  const rows = (await sql`
+    UPDATE bookings
+    SET start_utc = ${newStartUtc}, end_utc = ${newEndUtc}
+    WHERE cancel_token = ${token} AND status = 'confirmed'
+    RETURNING *
+  `) as BookingRow[];
+  return rows[0] ?? null;
+}
+
 /** Mark a booking cancelled (frees the slot via the partial exclusion index). */
 export async function cancelByToken(token: string): Promise<BookingRow | null> {
   const sql = getSql();

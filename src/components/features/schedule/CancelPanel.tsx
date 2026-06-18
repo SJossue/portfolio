@@ -93,6 +93,12 @@ export function CancelPanel({ token }: { token: string }) {
               Keep it
             </Button>
           </div>
+          <Link
+            href={`/book/reschedule?token=${encodeURIComponent(token)}`}
+            className="text-sm text-cyan-300 transition-colors hover:text-cyan-200"
+          >
+            Or reschedule to a new time instead
+          </Link>
         </div>
       ) : null}
 

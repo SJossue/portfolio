@@ -114,6 +114,22 @@ export async function createEvent(input: CreateEventInput): Promise<string> {
   return json.id;
 }
 
+/** Move an existing event to a new time. */
+export async function updateEventTime(eventId: string, start: Date, end: Date): Promise<void> {
+  const res = await fetch(
+    `${CAL_BASE}/calendars/${encodeURIComponent(calendarId())}/events/${encodeURIComponent(eventId)}?sendUpdates=none`,
+    {
+      method: 'PATCH',
+      headers: { 'content-type': 'application/json', ...(await authHeader()) },
+      body: JSON.stringify({
+        start: { dateTime: start.toISOString() },
+        end: { dateTime: end.toISOString() },
+      }),
+    },
+  );
+  if (!res.ok) throw new Error(`event patch failed: ${res.status}`);
+}
+
 /** Delete an event by id. Swallows 404/410 (already gone). */
 export async function deleteEvent(eventId: string): Promise<void> {
   const res = await fetch(

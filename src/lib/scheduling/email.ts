@@ -74,6 +74,7 @@ interface ConfirmInput {
 /** Pure: the invitee confirmation email HTML. Exported for previews/tests. */
 export function renderInviteeConfirmation(i: ConfirmInput): string {
   const cancelUrl = `${siteConfig.url}/book/cancel?token=${i.cancelToken}`;
+  const rescheduleUrl = `${siteConfig.url}/book/reschedule?token=${i.cancelToken}`;
   const body = `
 <p style="margin:0 0 6px;color:${ACCENT};font-size:13px;font-weight:600;letter-spacing:0.06em;">YOU&rsquo;RE BOOKED</p>
 <h1 style="margin:0 0 8px;color:${INK};font-size:24px;">See you soon, ${i.inviteeName.split(' ')[0]}.</h1>
@@ -85,7 +86,7 @@ ${detailsTable([
   ['Timezone', i.inviteeTimezone.replace(/_/g, ' ')],
 ])}
 ${i.videoUrl ? joinButton(i.videoUrl) : ''}
-<p style="margin:18px 0 0;color:${MUTED};font-size:13px;border-top:1px solid #e2e8f0;padding-top:16px;">Need to cancel or reschedule? <a href="${cancelUrl}" style="color:${ACCENT};">Manage your booking</a>.</p>`;
+<p style="margin:18px 0 0;color:${MUTED};font-size:13px;border-top:1px solid #e2e8f0;padding-top:16px;">Need to change something? <a href="${rescheduleUrl}" style="color:${ACCENT};">Reschedule</a> or <a href="${cancelUrl}" style="color:${ACCENT};">cancel</a>.</p>`;
   return shell(`Your ${i.meetingType.name} is confirmed`, body);
 }
 
@@ -199,5 +200,85 @@ ${detailsTable([
       body(fmt(i.start, ownerTz), `${i.inviteeName} cancelled their booking.`),
     ),
     text: `${i.inviteeName} (${i.inviteeEmail}) cancelled their ${i.meetingTypeName} on ${fmt(i.start, ownerTz)}.`,
+  });
+}
+
+interface RescheduleInput {
+  meetingType: MeetingType;
+  oldStart: Date;
+  newStart: Date;
+  newEnd: Date;
+  inviteeName: string;
+  inviteeEmail: string;
+  inviteeTimezone: string;
+  bookingId: string;
+  cancelToken: string;
+  videoUrl?: string;
+}
+
+export async function sendRescheduleEmails(i: RescheduleInput): Promise<void> {
+  const apiKey = process.env.RESEND_API_KEY;
+  const owner = process.env.OWNER_EMAIL;
+  if (!apiKey || !owner) throw new Error('RESEND_API_KEY or OWNER_EMAIL not set');
+  const resend = new Resend(apiKey);
+  const ownerTz = process.env.OWNER_TIMEZONE ?? 'America/New_York';
+
+  // Same UID + METHOD:REQUEST => calendar clients treat this .ics as an update.
+  const ics = buildIcs({
+    uid: i.bookingId,
+    start: i.newStart,
+    end: i.newEnd,
+    summary: `${i.meetingType.name} with ${siteConfig.author}`,
+    description: i.videoUrl ? `Join: ${i.videoUrl}` : '',
+    organizerEmail: owner,
+    attendeeEmail: i.inviteeEmail,
+    location: i.videoUrl,
+  });
+  const attachments = [{ filename: 'invite.ics', content: Buffer.from(ics).toString('base64') }];
+  const manageUrl = `${siteConfig.url}/book/reschedule?token=${i.cancelToken}`;
+
+  const body = (newWhen: string, oldWhen: string, lead: string, manage: boolean) => `
+<p style="margin:0 0 6px;color:${ACCENT};font-size:13px;font-weight:600;letter-spacing:0.06em;">RESCHEDULED</p>
+<h1 style="margin:0 0 12px;color:${INK};font-size:22px;">${lead}</h1>
+${detailsTable([
+  ['Meeting', i.meetingType.name],
+  ['New time', newWhen],
+  ['Previously', oldWhen],
+])}
+${i.videoUrl ? joinButton(i.videoUrl) : ''}
+${manage ? `<p style="margin:18px 0 0;color:${MUTED};font-size:13px;border-top:1px solid #e2e8f0;padding-top:16px;">Need to change it again? <a href="${manageUrl}" style="color:${ACCENT};">Reschedule</a>.</p>` : ''}`;
+
+  await resend.emails.send({
+    from: FROM,
+    to: i.inviteeEmail,
+    subject: `Rescheduled: ${i.meetingType.name} with ${siteConfig.author}`,
+    html: shell(
+      `Your ${i.meetingType.name} moved to a new time`,
+      body(
+        `${fmt(i.newStart, i.inviteeTimezone)} (${i.inviteeTimezone})`,
+        fmt(i.oldStart, i.inviteeTimezone),
+        'Your booking has a new time.',
+        true,
+      ),
+    ),
+    text: `Your ${i.meetingType.name} is now ${fmt(i.newStart, i.inviteeTimezone)} (${i.inviteeTimezone}).${i.videoUrl ? `\nJoin: ${i.videoUrl}` : ''}`,
+    attachments,
+  });
+
+  await resend.emails.send({
+    from: FROM,
+    to: owner,
+    subject: `Rescheduled: ${i.meetingType.name} — ${i.inviteeName}`,
+    html: shell(
+      `${i.inviteeName} rescheduled`,
+      body(
+        fmt(i.newStart, ownerTz),
+        fmt(i.oldStart, ownerTz),
+        `${i.inviteeName} moved their booking.`,
+        false,
+      ),
+    ),
+    text: `${i.inviteeName} (${i.inviteeEmail}) moved their ${i.meetingType.name} to ${fmt(i.newStart, ownerTz)} (was ${fmt(i.oldStart, ownerTz)}).`,
+    attachments,
   });
 }

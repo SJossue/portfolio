@@ -66,6 +66,26 @@ export async function createZoomMeeting(input: CreateZoomInput): Promise<ZoomMee
   return { id: String(json.id), joinUrl: json.join_url };
 }
 
+/** Move a Zoom meeting to a new time (join URL stays the same). */
+export async function updateZoomMeeting(
+  meetingId: string,
+  start: Date,
+  durationMin: number,
+  timezone: string,
+): Promise<void> {
+  const token = await getToken();
+  const res = await fetch(`${API_BASE}/meetings/${encodeURIComponent(meetingId)}`, {
+    method: 'PATCH',
+    headers: { authorization: `Bearer ${token}`, 'content-type': 'application/json' },
+    body: JSON.stringify({
+      start_time: start.toISOString().replace(/\.\d{3}Z$/, 'Z'),
+      duration: durationMin,
+      timezone,
+    }),
+  });
+  if (!res.ok) throw new Error(`zoom update failed: ${res.status}`);
+}
+
 /** Delete a Zoom meeting by id. Swallows 404 (already gone). */
 export async function deleteZoomMeeting(meetingId: string): Promise<void> {
   const token = await getToken();
