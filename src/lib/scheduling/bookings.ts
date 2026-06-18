@@ -67,13 +67,19 @@ export async function setEventDetails(
   },
 ): Promise<void> {
   const sql = getSql();
-  await sql`
-    UPDATE bookings
-    SET google_event_id = ${details.googleEventId ?? null},
-        video_url = ${details.videoUrl ?? null},
-        video_meeting_id = ${details.videoMeetingId ?? null}
-    WHERE id = ${id}
-  `;
+  // Core field first so it always persists, even if the video columns haven't
+  // been migrated onto an older database yet.
+  await sql`UPDATE bookings SET google_event_id = ${details.googleEventId ?? null} WHERE id = ${id}`;
+  try {
+    await sql`
+      UPDATE bookings
+      SET video_url = ${details.videoUrl ?? null},
+          video_meeting_id = ${details.videoMeetingId ?? null}
+      WHERE id = ${id}
+    `;
+  } catch {
+    // video_url / video_meeting_id columns not present yet — safe to ignore.
+  }
 }
 
 /** Hard-delete a booking row — used to roll back a failed reservation. */
