@@ -2,9 +2,7 @@
 
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
+import { AnimatePresence, motion, type Variants } from 'motion/react';
 import { worlds } from '@/content/worlds';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
@@ -18,20 +16,29 @@ import HubSocials from './HubSocials';
 import IslandChat from './IslandChat';
 import IslandViewport from './IslandViewport';
 
-gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+// Horizontal slide between islands: the outgoing island exits left, the
+// incoming one enters from the right (and reverse when going back). Pure
+// translateX so each island reads as its own independent space.
+const slideVariants: Variants = {
+  enter: (dir: number) => ({ x: dir >= 0 ? '100%' : '-100%' }),
+  center: { x: '0%' },
+  exit: (dir: number) => ({ x: dir >= 0 ? '-100%' : '100%' }),
+};
 
 export default function HubCarousel() {
   const router = useRouter();
   const isMobile = useIsMobile();
   const reducedMotion = useReducedMotion();
   const startWorldLoader = useWorldLoader((s) => s.start);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [direction, setDirection] = useState(1);
   const [loaded, setLoaded] = useState(false);
   const enteringRef = useRef(false);
   const activeIndexRef = useRef(0);
-  const isScrolling = useRef(false);
+  // Friction: while locked, further scroll/swipe/keys are ignored so one
+  // gesture lands exactly one island.
+  const navLock = useRef(false);
 
   // Keep ref in sync
   activeIndexRef.current = activeIndex;
@@ -73,85 +80,80 @@ export default function HubCarousel() {
     return () => window.clearTimeout(t);
   }, [reducedMotion]);
 
-  // Horizontal scroll via GSAP ScrollTrigger (desktop only)
-  useEffect(() => {
-    if (isMobile || !trackRef.current || !containerRef.current) return;
-
-    const track = trackRef.current;
-    const totalWidth = track.scrollWidth - window.innerWidth;
-
-    const tween = gsap.to(track, {
-      x: -totalWidth,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: 'top top',
-        end: () => `+=${totalWidth}`,
-        pin: true,
-        scrub: 0.8,
-        invalidateOnRefresh: true,
-        snap: {
-          snapTo: 1 / (worlds.length - 1),
-          duration: { min: 0.3, max: 0.6 },
-          ease: 'power2.inOut',
-          // Snap to nearest world only — no direction/velocity projection.
-          // Prevents programmatic scroll (click/arrow/keyboard) from overshooting by 1 world.
-          directional: false,
-          inertia: false,
-        },
-        onUpdate: (self) => {
-          const newIndex = Math.round(self.progress * (worlds.length - 1));
-          if (newIndex !== activeIndexRef.current) {
-            setActiveIndex(newIndex);
-          }
-        },
-      },
-    });
-
-    return () => {
-      tween.scrollTrigger?.kill();
-      tween.kill();
-    };
-  }, [isMobile]);
-
   const navigateTo = useCallback(
     (index: number) => {
-      if (index < 0 || index >= worlds.length || isScrolling.current) return;
-      if (index === activeIndexRef.current) return;
+      if (index < 0 || index >= worlds.length) return;
+      if (index === activeIndexRef.current || navLock.current) return;
+
+      setDirection(index > activeIndexRef.current ? 1 : -1);
 
       if (isMobile) {
-        isScrolling.current = true;
+        // Mobile keeps native vertical scroll; just glide to the section.
+        navLock.current = true;
         const section = document.getElementById(`island-${worlds[index].id}`);
         section?.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth' });
         setActiveIndex(index);
-        // IntersectionObserver on mobile re-fires scroll completion — release after browser finishes.
         window.setTimeout(
           () => {
-            isScrolling.current = false;
+            navLock.current = false;
           },
           reducedMotion ? 0 : 500,
         );
-      } else {
-        isScrolling.current = true;
-        const totalScroll = (trackRef.current?.scrollWidth ?? 0) - window.innerWidth;
-        const targetScroll = (index / (worlds.length - 1)) * totalScroll;
-
-        gsap.to(window, {
-          scrollTo: { y: targetScroll, autoKill: false },
-          duration: reducedMotion ? 0 : 0.8,
-          ease: 'power2.inOut',
-          overwrite: 'auto',
-          onComplete: () => {
-            isScrolling.current = false;
-          },
-        });
+        return;
       }
+
+      // Desktop: slide to the next island, then hold the lock through the
+      // transition + a short cooldown so momentum scrolling can't overshoot.
+      setActiveIndex(index);
+      navLock.current = true;
+      window.setTimeout(
+        () => {
+          navLock.current = false;
+        },
+        reducedMotion ? 0 : 850,
+      );
     },
     [isMobile, reducedMotion],
   );
 
   const navPrev = useCallback(() => navigateTo(activeIndexRef.current - 1), [navigateTo]);
   const navNext = useCallback(() => navigateTo(activeIndexRef.current + 1), [navigateTo]);
+
+  // Desktop: translate a vertical wheel / swipe gesture into one-island-at-a-
+  // time paging. The lock inside navigateTo provides the "friction".
+  useEffect(() => {
+    if (isMobile) return;
+    const el = stageRef.current;
+    if (!el) return;
+
+    const onWheel = (e: WheelEvent) => {
+      e.preventDefault(); // fixed full-screen stage — nothing to scroll
+      if (navLock.current) return;
+      const delta = Math.abs(e.deltaY) >= Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+      if (Math.abs(delta) < 16) return; // ignore trackpad jitter
+      navigateTo(activeIndexRef.current + (delta > 0 ? 1 : -1));
+    };
+
+    let touchStartY = 0;
+    const onTouchStart = (e: TouchEvent) => {
+      touchStartY = e.touches[0]?.clientY ?? 0;
+    };
+    const onTouchEnd = (e: TouchEvent) => {
+      if (navLock.current) return;
+      const dy = (e.changedTouches[0]?.clientY ?? touchStartY) - touchStartY;
+      if (Math.abs(dy) < 48) return;
+      navigateTo(activeIndexRef.current + (dy < 0 ? 1 : -1)); // swipe up → next
+    };
+
+    el.addEventListener('wheel', onWheel, { passive: false });
+    el.addEventListener('touchstart', onTouchStart, { passive: true });
+    el.addEventListener('touchend', onTouchEnd, { passive: true });
+    return () => {
+      el.removeEventListener('wheel', onWheel);
+      el.removeEventListener('touchstart', onTouchStart);
+      el.removeEventListener('touchend', onTouchEnd);
+    };
+  }, [isMobile, navigateTo]);
 
   // Keyboard navigation — use refs to avoid stale closures
   useEffect(() => {
@@ -206,7 +208,7 @@ export default function HubCarousel() {
       className="relative bg-[#030318]"
       style={
         {
-          minHeight: isMobile ? 'auto' : `${worlds.length * 100}vh`,
+          minHeight: isMobile ? 'auto' : '100dvh',
           '--world-color-rgb': activeWorld.colorRgb,
         } as React.CSSProperties
       }
@@ -333,19 +335,31 @@ export default function HubCarousel() {
           ))}
         </div>
       ) : (
-        <div ref={containerRef} className="relative z-10">
-          <div ref={trackRef} className="flex">
-            {worlds.map((world, i) => (
+        <div ref={stageRef} className="relative z-10 h-dvh w-full overflow-hidden">
+          <AnimatePresence initial={false} custom={direction}>
+            <motion.div
+              key={activeIndex}
+              custom={direction}
+              variants={slideVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={
+                reducedMotion
+                  ? { duration: 0 }
+                  : { x: { duration: 0.55, ease: [0.32, 0.72, 0, 1] } }
+              }
+              className="absolute inset-0"
+            >
               <IslandViewport
-                key={world.id}
-                world={world}
-                index={i}
+                world={worlds[activeIndex]}
+                index={activeIndex}
                 total={worlds.length}
-                isActive={activeIndex === i}
-                onEnter={() => enterWorld(world)}
+                isActive
+                onEnter={() => enterWorld(worlds[activeIndex])}
               />
-            ))}
-          </div>
+            </motion.div>
+          </AnimatePresence>
         </div>
       )}
 
