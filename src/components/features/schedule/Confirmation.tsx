@@ -8,6 +8,7 @@ import { buildIcs } from '@/lib/scheduling/ics';
 import { siteConfig } from '@/lib/site';
 import type { MeetingType } from '@/lib/scheduling/types';
 import { longDayLabel, timeLabel } from './format';
+import { CalendarIcon, CheckIcon, ClockIcon } from './icons';
 
 interface ConfirmationProps {
   meetingType: MeetingType;
@@ -40,78 +41,43 @@ export function Confirmation({ meetingType, startUtc, timezone, onReset }: Confi
   }
 
   return (
-    <div className="flex flex-col items-center px-2 py-4 text-center">
-      <motion.svg
-        width="64"
-        height="64"
-        viewBox="0 0 64 64"
-        fill="none"
-        initial={reduce ? false : { scale: 0.8, opacity: 0 }}
+    <div className="mx-auto flex max-w-md flex-col items-center px-2 py-8 text-center">
+      <motion.span
+        className="flex h-14 w-14 items-center justify-center rounded-full bg-cyan-500/15 text-cyan-300"
+        initial={reduce ? false : { scale: 0.7, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.4 }}
-        aria-hidden
+        transition={{ duration: 0.35 }}
       >
-        <circle
-          cx="32"
-          cy="32"
-          r="29"
-          stroke="var(--accent, #22d3ee)"
-          strokeWidth="2"
-          opacity="0.4"
-        />
-        <motion.path
-          d="M20 33 L29 42 L45 24"
-          stroke="var(--accent, #22d3ee)"
-          strokeWidth="3"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          initial={reduce ? false : { pathLength: 0 }}
-          animate={{ pathLength: 1 }}
-          transition={{ duration: 0.5, delay: 0.2, ease: 'easeOut' }}
-        />
-      </motion.svg>
+        <CheckIcon className="h-7 w-7" />
+      </motion.span>
 
-      <div className="mt-5 font-mono text-[0.65rem] uppercase tracking-[0.3em] text-[color:var(--accent,#22d3ee)]">
-        Booking confirmed
-      </div>
-      <h2 className="mt-2 text-2xl font-semibold text-white">You&apos;re on the calendar.</h2>
-
-      <div className="mt-6 w-full max-w-sm space-y-2 rounded-xl border border-white/[0.07] bg-white/[0.02] p-5 text-left font-mono text-sm">
-        <Row label="Meeting" value={meetingType.name} />
-        <Row label="Date" value={longDayLabel(startUtc, timezone)} />
-        <Row
-          label="Time"
-          value={`${timeLabel(startUtc, timezone)} · ${meetingType.durationMin}m`}
-        />
-        <Row label="Zone" value={timezone.replace(/_/g, ' ')} />
-      </div>
-
-      <p className="mt-5 max-w-sm text-xs leading-relaxed text-slate-400">
+      <h2 className="mt-5 text-2xl font-semibold text-white">You&apos;re booked</h2>
+      <p className="mt-2 text-sm text-slate-400">
         A confirmation and calendar invite are on the way to your inbox.
       </p>
 
-      <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+      <div className="mt-6 w-full space-y-3 rounded-xl border border-white/10 bg-white/[0.03] p-5 text-left text-sm">
+        <div className="font-medium text-white">{meetingType.name}</div>
+        <div className="flex items-center gap-2 text-slate-300">
+          <CalendarIcon className="h-4 w-4 text-slate-500" />
+          {longDayLabel(startUtc, timezone)}
+        </div>
+        <div className="flex items-center gap-2 text-slate-300">
+          <ClockIcon className="h-4 w-4 text-slate-500" />
+          {timeLabel(startUtc, timezone)} · {meetingType.durationMin} min
+        </div>
+      </div>
+
+      <div className="mt-6 flex w-full flex-col gap-3 sm:flex-row sm:justify-center">
         <Button onClick={addToCalendar}>Add to calendar</Button>
-        <Button variant="ghost" onClick={onReset}>
-          Book another
+        <Button variant="secondary" onClick={onReset}>
+          Book another time
         </Button>
       </div>
 
-      <Link
-        href="/"
-        className="mt-6 font-mono text-[0.7rem] uppercase tracking-[0.2em] text-slate-500 transition-colors hover:text-slate-300"
-      >
-        ‹ Return to base
+      <Link href="/" className="mt-6 text-sm text-slate-500 transition-colors hover:text-slate-300">
+        Back to jossue.dev
       </Link>
-    </div>
-  );
-}
-
-function Row({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex items-baseline justify-between gap-4">
-      <span className="text-[0.6rem] uppercase tracking-[0.2em] text-slate-500">{label}</span>
-      <span className="text-right text-slate-100">{value}</span>
     </div>
   );
 }

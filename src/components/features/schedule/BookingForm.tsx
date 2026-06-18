@@ -62,13 +62,15 @@ export function BookingForm({
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
+      <h2 className="text-lg font-semibold text-white">Enter your details</h2>
+
       <Input
-        label="Your name"
+        label="Name"
         value={name}
         onChange={(e) => setName(e.target.value)}
         autoComplete="name"
         required
-        placeholder="Ada Lovelace"
+        placeholder="Your name"
       />
       <Input
         label="Email"
@@ -78,23 +80,23 @@ export function BookingForm({
         autoComplete="email"
         required
         placeholder="you@example.com"
-        hint="Your calendar invite + confirmation land here."
+        hint="Your confirmation and calendar invite go here."
       />
       <Textarea
-        label="What's this about? (optional)"
+        label="Anything I should know? (optional)"
         value={notes}
         onChange={(e) => setNotes(e.target.value)}
-        placeholder="A sentence or two of context helps."
+        placeholder="A sentence of context helps me prepare."
       />
 
       {status === 'error' ? (
-        <p role="alert" className="font-mono text-xs text-rose-400">
+        <p role="alert" className="text-sm text-rose-400">
           {error}
         </p>
       ) : null}
 
-      <Button type="submit" disabled={status === 'submitting'} className="mt-1">
-        {status === 'submitting' ? 'Confirming…' : 'Confirm booking'}
+      <Button type="submit" disabled={status === 'submitting'} className="mt-1 w-full sm:w-auto">
+        {status === 'submitting' ? 'Scheduling…' : 'Schedule meeting'}
       </Button>
     </form>
   );

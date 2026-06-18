@@ -7,7 +7,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   hint?: string;
 }
 
-/** Accessible labelled text input in the console aesthetic. */
+/** Labelled text input with a plain, familiar look. */
 export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
   { label, hint, id, className = '', ...props },
   ref,
@@ -18,21 +18,18 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
 
   return (
     <div className="flex flex-col gap-1.5">
-      <label
-        htmlFor={inputId}
-        className="font-mono text-[0.65rem] uppercase tracking-[0.2em] text-slate-400"
-      >
+      <label htmlFor={inputId} className="text-sm font-medium text-slate-300">
         {label}
       </label>
       <input
         ref={ref}
         id={inputId}
         aria-describedby={hintId}
-        className={`focus-visible:border-[color:var(--accent,#22d3ee)]/60 focus-visible:ring-[color:var(--accent,#22d3ee)]/40 rounded-lg border border-white/10 bg-white/[0.02] px-4 py-3 text-sm text-white transition-colors placeholder:text-slate-600 focus-visible:outline-none focus-visible:ring-1 ${className}`}
+        className={`border-white/12 rounded-lg border bg-white/[0.04] px-3.5 py-2.5 text-sm text-white transition-colors placeholder:text-slate-500 focus-visible:border-cyan-400/70 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400/40 ${className}`}
         {...props}
       />
       {hint ? (
-        <span id={hintId} className="font-mono text-[0.65rem] text-slate-500">
+        <span id={hintId} className="text-xs text-slate-500">
           {hint}
         </span>
       ) : null}

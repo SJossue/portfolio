@@ -1,53 +1,42 @@
 'use client';
 
 import { meetingTypes } from '@/content/scheduling';
+import { ChevronRight, ClockIcon } from './icons';
 
 interface MeetingTypePickerProps {
-  selectedId: string | null;
   onSelect: (id: string) => void;
 }
 
-export function MeetingTypePicker({ selectedId, onSelect }: MeetingTypePickerProps) {
+/** A simple, scannable list of meeting types — the familiar "pick an event"
+ *  step. Each row reads like a menu item: name, duration, short description. */
+export function MeetingTypePicker({ onSelect }: MeetingTypePickerProps) {
   return (
-    <div className="grid gap-3" role="radiogroup" aria-label="Meeting type">
-      {meetingTypes.map((type) => {
-        const selected = type.id === selectedId;
-        return (
+    <ul className="flex flex-col gap-3">
+      {meetingTypes.map((type) => (
+        <li key={type.id}>
           <button
-            key={type.id}
-            role="radio"
-            aria-checked={selected}
             onClick={() => onSelect(type.id)}
-            style={{ ['--accent' as string]: type.accent }}
-            className={`group relative overflow-hidden rounded-xl border p-4 text-left transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[#050510] ${
-              selected
-                ? 'border-[color:var(--accent)]/60 bg-[color:var(--accent)]/[0.06] shadow-[0_0_30px_-10px_var(--accent)]'
-                : 'hover:border-[color:var(--accent)]/40 border-white/[0.07] bg-white/[0.01] hover:-translate-y-px'
-            }`}
+            className="group flex w-full items-center gap-4 rounded-xl border border-white/10 bg-white/[0.02] p-4 text-left transition-colors hover:border-cyan-400/40 hover:bg-white/[0.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/70"
           >
-            <div className="flex items-center justify-between gap-3">
-              <div className="flex items-center gap-3">
-                <span
-                  className="h-9 w-1 rounded-full transition-all duration-200 group-hover:h-10"
-                  style={{
-                    background: 'var(--accent)',
-                    boxShadow: selected ? '0 0 12px var(--accent)' : 'none',
-                  }}
-                />
-                <div>
-                  <div className="font-sans text-base font-semibold text-white">{type.name}</div>
-                  <p className="mt-0.5 max-w-sm text-xs leading-relaxed text-slate-400">
-                    {type.description}
-                  </p>
-                </div>
-              </div>
-              <span className="shrink-0 font-mono text-[0.7rem] uppercase tracking-[0.15em] text-[color:var(--accent)]">
-                {type.durationMin}m
+            <span
+              className="h-10 w-1.5 shrink-0 rounded-full"
+              style={{ background: type.accent }}
+              aria-hidden
+            />
+            <span className="min-w-0 flex-1">
+              <span className="block font-medium text-white">{type.name}</span>
+              <span className="mt-1 flex items-center gap-1.5 text-xs text-slate-400">
+                <ClockIcon className="h-3.5 w-3.5 text-slate-500" />
+                {type.durationMin} min
               </span>
-            </div>
+              <span className="mt-1.5 block text-sm leading-relaxed text-slate-400">
+                {type.description}
+              </span>
+            </span>
+            <ChevronRight className="h-5 w-5 shrink-0 text-slate-600 transition-colors group-hover:text-cyan-300" />
           </button>
-        );
-      })}
-    </div>
+        </li>
+      ))}
+    </ul>
   );
 }

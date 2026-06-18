@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-export type BookingStep = 'type' | 'date' | 'time' | 'details' | 'done';
+export type BookingStep = 'type' | 'schedule' | 'details' | 'done';
 
 interface BookingState {
   step: BookingStep;
@@ -28,8 +28,8 @@ export const useBooking = create<BookingState>((set) => ({
   timezone: 'UTC',
 
   setTimezone: (timezone) => set({ timezone }),
-  selectType: (id) => set({ meetingTypeId: id, step: 'date', dayKey: null, slotUtc: null }),
-  selectDay: (dayKey) => set({ dayKey, slotUtc: null, step: 'time' }),
+  selectType: (id) => set({ meetingTypeId: id, step: 'schedule', dayKey: null, slotUtc: null }),
+  selectDay: (dayKey) => set({ dayKey, slotUtc: null }),
   selectSlot: (slotUtc) => set({ slotUtc, step: 'details' }),
   goTo: (step) => set({ step }),
   complete: () => set({ step: 'done' }),
