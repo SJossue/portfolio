@@ -203,6 +203,45 @@ ${detailsTable([
   });
 }
 
+interface ReminderInput {
+  meetingType: MeetingType;
+  start: Date;
+  inviteeName: string;
+  inviteeEmail: string;
+  inviteeTimezone: string;
+  cancelToken: string;
+  videoUrl?: string;
+}
+
+export async function sendReminderEmail(i: ReminderInput): Promise<void> {
+  const apiKey = process.env.RESEND_API_KEY;
+  const owner = process.env.OWNER_EMAIL;
+  if (!apiKey || !owner) throw new Error('RESEND_API_KEY or OWNER_EMAIL not set');
+  const resend = new Resend(apiKey);
+  const rescheduleUrl = `${siteConfig.url}/book/reschedule?token=${i.cancelToken}`;
+  const cancelUrl = `${siteConfig.url}/book/cancel?token=${i.cancelToken}`;
+
+  const body = `
+<p style="margin:0 0 6px;color:${ACCENT};font-size:13px;font-weight:600;letter-spacing:0.06em;">REMINDER</p>
+<h1 style="margin:0 0 8px;color:${INK};font-size:24px;">Your call with ${siteConfig.author} is coming up.</h1>
+<p style="margin:0 0 16px;color:${MUTED};font-size:14px;line-height:1.6;">Just a heads-up — here are the details again.</p>
+${detailsTable([
+  ['Meeting', i.meetingType.name],
+  ['When', fmt(i.start, i.inviteeTimezone)],
+  ['Duration', `${i.meetingType.durationMin} minutes`],
+])}
+${i.videoUrl ? joinButton(i.videoUrl) : ''}
+<p style="margin:18px 0 0;color:${MUTED};font-size:13px;border-top:1px solid #e2e8f0;padding-top:16px;">Can&rsquo;t make it? <a href="${rescheduleUrl}" style="color:${ACCENT};">Reschedule</a> or <a href="${cancelUrl}" style="color:${ACCENT};">cancel</a>.</p>`;
+
+  await resend.emails.send({
+    from: FROM,
+    to: i.inviteeEmail,
+    subject: `Reminder: ${i.meetingType.name} with ${siteConfig.author}`,
+    html: shell(`Reminder: your ${i.meetingType.name} is coming up`, body),
+    text: `Reminder — your ${i.meetingType.name} with ${siteConfig.author} is ${fmt(i.start, i.inviteeTimezone)} (${i.inviteeTimezone}).${i.videoUrl ? `\nJoin: ${i.videoUrl}` : ''}\n\nReschedule or cancel: ${rescheduleUrl}`,
+  });
+}
+
 interface RescheduleInput {
   meetingType: MeetingType;
   oldStart: Date;

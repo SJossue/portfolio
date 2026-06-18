@@ -13,6 +13,7 @@ export interface BookingRow {
   google_event_id: string | null;
   video_url: string | null;
   video_meeting_id: string | null;
+  reminded_at: string | null;
   status: string;
   cancel_token: string;
 }
@@ -55,6 +56,29 @@ export async function reserve(input: {
 
 export function isOverlapError(e: unknown): boolean {
   return e instanceof Error && /no_overlap|exclusion|conflicting key/i.test(e.message);
+}
+
+/**
+ * Confirmed bookings starting within the next 48h that haven't been reminded.
+ * A 48h lookahead means a once-daily cron reminds every booking at least ~24h
+ * ahead (and never twice, thanks to the reminded_at guard).
+ */
+export async function findDueForReminder(): Promise<BookingRow[]> {
+  const sql = getSql();
+  return (await sql`
+    SELECT * FROM bookings
+    WHERE status = 'confirmed'
+      AND reminded_at IS NULL
+      AND start_utc > now()
+      AND start_utc <= now() + interval '48 hours'
+    ORDER BY start_utc
+  `) as BookingRow[];
+}
+
+/** Stamp a booking as reminded so the next cron run skips it. */
+export async function markReminded(id: string): Promise<void> {
+  const sql = getSql();
+  await sql`UPDATE bookings SET reminded_at = now() WHERE id = ${id}`;
 }
 
 /** Attach the Google event id + (optional) video link after the writes succeed. */

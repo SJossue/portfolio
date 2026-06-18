@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS bookings (
   google_event_id  text,
   video_url        text,
   video_meeting_id text,
+  reminded_at      timestamptz,
   status           text NOT NULL DEFAULT 'confirmed',
   cancel_token     text NOT NULL DEFAULT encode(gen_random_bytes(16), 'hex'),
   created_at       timestamptz NOT NULL DEFAULT now(),
@@ -25,3 +26,5 @@ CREATE TABLE IF NOT EXISTS bookings (
 -- Migration for databases created before video links were added:
 ALTER TABLE bookings ADD COLUMN IF NOT EXISTS video_url text;
 ALTER TABLE bookings ADD COLUMN IF NOT EXISTS video_meeting_id text;
+-- Migration for the 24h reminder feature:
+ALTER TABLE bookings ADD COLUMN IF NOT EXISTS reminded_at timestamptz;
