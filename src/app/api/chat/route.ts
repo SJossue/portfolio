@@ -18,7 +18,7 @@ const nebius = createOpenAICompatible({
   apiKey: process.env.NEBIUS_API_KEY ?? '',
 });
 
-const CHAT_MODEL = process.env.NEBIUS_MODEL ?? 'meta-llama/Meta-Llama-3.1-8B-Instruct';
+const CHAT_MODEL = process.env.NEBIUS_MODEL ?? 'meta-llama/Llama-3.3-70B-Instruct';
 
 const MAX_MESSAGE_LENGTH = 500;
 const MAX_CONVERSATION_TURNS = 20;
