@@ -84,6 +84,15 @@ interface CreateEventInput {
 
 /** Create an event on the owner's calendar; returns the Google event id. */
 export async function createEvent(input: CreateEventInput): Promise<string> {
+  // NOTE: we intentionally do NOT set `attendees`. A service account cannot
+  // invite attendees without domain-wide delegation (403 forbiddenForService
+  // Accounts), and we don't need it to — Resend emails the .ics invite to the
+  // visitor. The booker's identity goes in the description so the owner sees it.
+  const guest = input.attendeeName
+    ? `${input.attendeeName} <${input.attendeeEmail}>`
+    : input.attendeeEmail;
+  const description = [input.description, `Booked by: ${guest}`].filter(Boolean).join('\n\n');
+
   const res = await fetch(
     `${CAL_BASE}/calendars/${encodeURIComponent(calendarId())}/events?sendUpdates=none`,
     {
@@ -91,10 +100,9 @@ export async function createEvent(input: CreateEventInput): Promise<string> {
       headers: { 'content-type': 'application/json', ...(await authHeader()) },
       body: JSON.stringify({
         summary: input.summary,
-        description: input.description,
+        description,
         start: { dateTime: input.start.toISOString() },
         end: { dateTime: input.end.toISOString() },
-        attendees: [{ email: input.attendeeEmail, displayName: input.attendeeName }],
       }),
     },
   );
