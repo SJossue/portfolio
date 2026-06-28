@@ -2,12 +2,14 @@
 
 import dynamic from 'next/dynamic';
 
-const HubCarousel = dynamic(() => import('@/components/features/hub/HubCarousel'), { ssr: false });
+const TrifoldHub = dynamic(() => import('@/components/features/hub/trifold/TrifoldHub'), {
+  ssr: false,
+});
 
 export default function Home() {
   return (
     <main id="main-content">
-      <HubCarousel />
+      <TrifoldHub />
     </main>
   );
 }
