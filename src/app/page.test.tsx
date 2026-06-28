@@ -2,9 +2,9 @@ import { render, screen } from '@testing-library/react';
 
 import Home from './page';
 
-// Mock the TrifoldHub (dynamically imported client component).
-vi.mock('@/components/features/hub/trifold/TrifoldHub', () => ({
-  default: () => <div data-testid="trifold-hub" />,
+// Mock the HubCarousel (dynamically imported client component).
+vi.mock('@/components/features/hub/HubCarousel', () => ({
+  default: () => <div data-testid="hub-carousel" />,
 }));
 
 describe('Home page', () => {
