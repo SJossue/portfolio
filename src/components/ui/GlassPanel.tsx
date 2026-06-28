@@ -1,15 +1,10 @@
-import { createElement, type ElementType, type ReactNode } from 'react';
+import { createElement, type ElementType, type HTMLAttributes } from 'react';
 
-interface GlassPanelProps {
-  /** Extra Tailwind classes for layout (grid, padding, sizing). */
-  className?: string;
+interface GlassPanelProps extends HTMLAttributes<HTMLElement> {
   /** Adds the per-world accent edge ring (reads --world-color-rgb). */
   accent?: boolean;
   /** Render as a different element (e.g. 'section', 'aside'). Defaults to div. */
   as?: ElementType;
-  /** Accessible label for landmark elements. */
-  'aria-label'?: string;
-  children?: ReactNode;
 }
 
 /**

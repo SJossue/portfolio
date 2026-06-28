@@ -16,6 +16,12 @@ import IslandDetailsPanel from './IslandDetailsPanel';
 import IslandListPanel from './IslandListPanel';
 import IslandStagePanel from './IslandStagePanel';
 
+/**
+ * Trifold spatial hub: orchestrates the island list, stage, and details glass
+ * panels. Owns the selected-island state, drives the per-world accent
+ * (`--world-color-rgb`) and the reduced-motion panel crossfade, and runs the
+ * `enterWorld` deep-dive flow (WorldLoader → world route).
+ */
 export default function TrifoldHub() {
   const router = useRouter();
   const isMobile = useIsMobile();
@@ -55,12 +61,12 @@ export default function TrifoldHub() {
       className="relative min-h-dvh bg-[#0f3d2e]"
       style={{ '--world-color-rgb': selectedWorld.colorRgb } as React.CSSProperties}
     >
-      {/* Skip link — visually hidden until focused */}
+      {/* Skip link — jumps past the island nav to the selected-island stage. */}
       <a
-        href="#main-content"
+        href="#hub-stage"
         className="sr-only fixed left-4 top-4 z-[100] rounded bg-cyan-400 px-4 py-2 font-mono text-sm text-black focus:not-sr-only"
       >
-        Skip to content
+        Skip to island content
       </a>
 
       <HubBackground />
@@ -78,9 +84,11 @@ export default function TrifoldHub() {
 
         <GlassPanel
           as="section"
+          id="hub-stage"
+          tabIndex={-1}
           aria-label="Selected island"
           accent
-          className="overflow-hidden lg:h-full"
+          className="overflow-hidden focus-visible:outline-none lg:h-full"
         >
           <AnimatePresence mode="wait" initial={false}>
             <motion.div key={selectedWorld.id} className="h-full" {...fade}>

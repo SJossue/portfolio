@@ -3,6 +3,7 @@
 // an <Image>/CSS background pointing at the room asset.
 const BG = '#0f3d2e';
 
+/** Full-bleed background layer for the trifold hub (plain-green placeholder). */
 export default function HubBackground() {
   return (
     <div

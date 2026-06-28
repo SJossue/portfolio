@@ -9,6 +9,10 @@ interface IslandDetailsPanelProps {
   total: number;
 }
 
+/**
+ * Right panel: the selected island's details — accent header with world number,
+ * highlights, "+N more inside", stats, and (for `real-me`) contact links.
+ */
 export default function IslandDetailsPanel({ world, index, total }: IslandDetailsPanelProps) {
   const num = String(index + 1).padStart(2, '0');
   const totalNum = String(total).padStart(2, '0');
@@ -81,7 +85,7 @@ export default function IslandDetailsPanel({ world, index, total }: IslandDetail
               href={link.href}
               target={link.href.startsWith('http') ? '_blank' : undefined}
               rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-              className="rounded-full border px-3 py-1.5 text-xs text-white/80 transition-colors focus-visible:outline-none"
+              className="rounded-full border px-3 py-1.5 text-xs text-white/80 transition-colors"
               style={{
                 background: `rgba(${world.colorRgb}, 0.08)`,
                 borderColor: `rgba(${world.colorRgb}, 0.25)`,

@@ -38,27 +38,35 @@ test('selecting an island updates the center + details panels', async ({ page })
   await expect(details.getByText(/MLT Tech Prep Fellow/i)).toBeVisible();
 });
 
-test('Enter navigates into the selected world', async ({ page }) => {
+test('Enter honors the selected island', async ({ page }) => {
   await page.goto('/');
 
+  // Select a non-default island first, so this proves selection-driven
+  // navigation rather than a hardcoded /garage path.
+  await page
+    .getByRole('complementary', { name: /islands/i })
+    .getByRole('button', { name: /my timeline/i })
+    .click();
+
   const stage = page.getByRole('region', { name: /selected island/i });
+  await expect(stage.getByRole('heading', { name: /my timeline/i })).toBeVisible();
+
   // Both the floating island visual and the explicit Enter button carry the
   // same accessible name; click the explicit button (last, and not animated).
   await stage
-    .getByRole('button', { name: /enter my garage/i })
+    .getByRole('button', { name: /enter my timeline/i })
     .last()
     .click();
 
-  // Existing WorldLoader flow fires immediately (status overlay), then
-  // router.push('/garage'). The route is compiled on demand in dev, so give
-  // the URL change a generous timeout.
+  // WorldLoader status overlay fires immediately, then router.push('/timeline').
+  // The route compiles on demand in dev, so give the URL change a generous timeout.
   await expect(page.getByRole('status').filter({ hasText: /entering/i })).toBeVisible({
     timeout: 10000,
   });
-  await expect(page).toHaveURL(/\/garage/, { timeout: 30000 });
+  await expect(page).toHaveURL(/\/timeline/, { timeout: 30000 });
 });
 
-test('panels stack into one column on mobile', async ({ page }) => {
+test('panels stack into one vertical column on mobile', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/');
 
@@ -66,10 +74,18 @@ test('panels stack into one column on mobile', async ({ page }) => {
   const stage = page.getByRole('region', { name: /selected island/i });
   const details = page.getByRole('region', { name: /island details/i });
 
-  await expect(list).toBeVisible();
-  await expect(stage).toBeVisible();
+  const [listBox, stageBox, detailsBox] = await Promise.all([
+    list.boundingBox(),
+    stage.boundingBox(),
+    details.boundingBox(),
+  ]);
+  if (!listBox || !stageBox || !detailsBox) throw new Error('panel bounding boxes unavailable');
 
-  // The details panel sits below the fold — reachable by scrolling.
-  await details.scrollIntoViewIfNeeded();
-  await expect(details).toBeVisible();
+  // Single column: panels are ordered top-to-bottom (list → stage → details)…
+  expect(listBox.y + listBox.height).toBeLessThanOrEqual(stageBox.y + 1);
+  expect(stageBox.y + stageBox.height).toBeLessThanOrEqual(detailsBox.y + 1);
+  // …and each panel spans (near) the full viewport width — not side-by-side columns.
+  for (const box of [listBox, stageBox, detailsBox]) {
+    expect(box.width).toBeGreaterThan(390 * 0.8);
+  }
 });

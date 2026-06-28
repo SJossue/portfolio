@@ -1,6 +1,6 @@
 'use client';
 
-import type { KeyboardEvent } from 'react';
+import { type KeyboardEvent, useRef } from 'react';
 
 import type { WorldData } from '@/content/worlds';
 
@@ -14,6 +14,12 @@ interface IslandListPanelProps {
   accentRgb: string;
 }
 
+/**
+ * Left panel: a keyboard-navigable list of all islands. The selected row is
+ * highlighted with the world accent (`aria-current`); ArrowUp/Down move the
+ * selection and keep DOM focus on the newly selected island. Footer carries the
+ * social links and a "Book a call" CTA.
+ */
 export default function IslandListPanel({
   worlds,
   selectedIndex,
@@ -21,14 +27,20 @@ export default function IslandListPanel({
   accentColor,
   accentRgb,
 }: IslandListPanelProps) {
-  // ArrowUp/Down move the selection within the list (roving through worlds).
+  const buttonsRef = useRef<(HTMLButtonElement | null)[]>([]);
+
+  // ArrowUp/Down move the selection AND focus together, so the highlighted
+  // island and the keyboard target never diverge.
   const onKeyDown = (e: KeyboardEvent<HTMLElement>) => {
-    if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      onSelect(Math.min(selectedIndex + 1, worlds.length - 1));
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      onSelect(Math.max(selectedIndex - 1, 0));
+    let next = selectedIndex;
+    if (e.key === 'ArrowDown') next = Math.min(selectedIndex + 1, worlds.length - 1);
+    else if (e.key === 'ArrowUp') next = Math.max(selectedIndex - 1, 0);
+    else return;
+
+    e.preventDefault();
+    if (next !== selectedIndex) {
+      onSelect(next);
+      buttonsRef.current[next]?.focus();
     }
   };
 
@@ -45,10 +57,13 @@ export default function IslandListPanel({
           return (
             <button
               key={world.id}
+              ref={(el) => {
+                buttonsRef.current[i] = el;
+              }}
               type="button"
               aria-current={selected ? 'true' : undefined}
               onClick={() => onSelect(i)}
-              className="group flex items-center gap-3 rounded-2xl border p-2.5 text-left transition-colors focus-visible:outline-none"
+              className="group flex items-center gap-3 rounded-2xl border p-2.5 text-left transition-colors"
               style={{
                 background: selected ? `rgba(${accentRgb}, 0.12)` : 'rgba(255,255,255,0.02)',
                 borderColor: selected ? `rgba(${accentRgb}, 0.45)` : 'rgba(255,255,255,0.08)',
@@ -80,7 +95,7 @@ export default function IslandListPanel({
         <HubSocials accentColor={accentColor} accentRgb={accentRgb} layout="inline" />
         <a
           href="/book"
-          className="inline-flex items-center justify-center rounded-full border px-4 py-2 text-sm font-medium text-white/85 transition-colors focus-visible:outline-none"
+          className="inline-flex items-center justify-center rounded-full border px-4 py-2 text-sm font-medium text-white/85 transition-colors"
           style={{
             background: `rgba(${accentRgb}, 0.12)`,
             borderColor: `rgba(${accentRgb}, 0.4)`,

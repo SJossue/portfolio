@@ -9,6 +9,10 @@ interface IslandStagePanelProps {
   onEnter: () => void;
 }
 
+/**
+ * Center panel: the selected island's visual (reused `IslandScene`), its name,
+ * subtitle, description, stat pills, and the primary Enter call-to-action.
+ */
 export default function IslandStagePanel({ world, onEnter }: IslandStagePanelProps) {
   return (
     <div className="flex h-full flex-col items-center justify-center gap-6 p-8 text-center">
@@ -53,7 +57,7 @@ export default function IslandStagePanel({ world, onEnter }: IslandStagePanelPro
       <button
         type="button"
         onClick={onEnter}
-        className="inline-flex items-center justify-center rounded-full px-7 py-2.5 text-sm font-semibold text-[#06060c] transition-transform hover:scale-[1.03] focus-visible:outline-none"
+        className="inline-flex items-center justify-center rounded-full px-7 py-2.5 text-sm font-semibold text-[#06060c] transition-transform hover:scale-[1.03]"
         style={{ background: world.color }}
       >
         Enter {world.name}
