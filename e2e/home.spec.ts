@@ -1,126 +1,91 @@
 import { expect, test } from '@playwright/test';
 
-test('homepage loads fullscreen scene', async ({ page }) => {
+test('homepage renders the trifold hub', async ({ page }) => {
   await page.goto('/');
 
-  // Page has a main landmark
+  // Page has a main landmark.
   await expect(page.locator('main')).toBeVisible();
+
+  // Three glass panels are present (left list, center stage, right details).
+  await expect(page.getByRole('complementary', { name: /islands/i })).toBeVisible();
+  await expect(page.getByRole('region', { name: /selected island/i })).toBeVisible();
+  await expect(page.getByRole('region', { name: /island details/i })).toBeVisible();
 });
 
-test('home loads and shows intro controls', async ({ page }) => {
+test('homepage ships no WebGL/canvas', async ({ page }) => {
   await page.goto('/');
+  await expect(page.locator('main')).toBeVisible();
 
-  // Terminal boot sequence plays before the AIR OUT button appears (~5s)
-  await expect(page.getByRole('button', { name: /air out/i })).toBeVisible({ timeout: 15000 });
-
-  await expect(page.getByRole('button', { name: /skip intro/i })).toBeVisible();
+  // The trifold hub replaced the WebGL Aurora/Particles background — nothing
+  // on the homepage should mount a <canvas>.
+  await expect(page.locator('canvas')).toHaveCount(0);
 });
 
-test('skip intro shows garage UI shell', async ({ page }) => {
+test('selecting an island updates the center + details panels', async ({ page }) => {
   await page.goto('/');
 
-  await page.getByRole('button', { name: /skip intro/i }).click();
+  const list = page.getByRole('complementary', { name: /islands/i });
+  const stage = page.getByRole('region', { name: /selected island/i });
+  const details = page.getByRole('region', { name: /island details/i });
 
-  await expect(page.getByTestId('garage-shell')).toBeVisible();
+  // Default selection is the first island (Garage).
+  await expect(stage.getByRole('heading', { name: /my garage/i })).toBeVisible();
+
+  // Select Timeline from the left list.
+  await list.getByRole('button', { name: /my timeline/i }).click();
+
+  await expect(stage.getByRole('heading', { name: /my timeline/i })).toBeVisible();
+  await expect(details.getByText(/MLT Tech Prep Fellow/i)).toBeVisible();
 });
 
-test('air out triggers animation and shows garage shell', async ({ page }) => {
+test('Enter honors the selected island', async ({ page }) => {
   await page.goto('/');
 
-  // Wait for terminal boot sequence to finish before clicking
-  await expect(page.getByRole('button', { name: /air out/i })).toBeVisible({ timeout: 15000 });
-  await page.getByRole('button', { name: /air out/i }).click();
+  // Select a non-default island first, so this proves selection-driven
+  // navigation rather than a hardcoded /garage path.
+  await page
+    .getByRole('complementary', { name: /islands/i })
+    .getByRole('button', { name: /my timeline/i })
+    .click();
 
-  // Garage shell should appear after animation completes
-  // GSAP animation + camera lerp — very generous timeout for CI
-  await expect(page.getByTestId('garage-shell')).toBeVisible({ timeout: 15000 });
+  const stage = page.getByRole('region', { name: /selected island/i });
+  await expect(stage.getByRole('heading', { name: /my timeline/i })).toBeVisible();
+
+  // Both the floating island visual and the explicit Enter button carry the
+  // same accessible name; click the explicit button (last, and not animated).
+  await stage
+    .getByRole('button', { name: /enter my timeline/i })
+    .last()
+    .click();
+
+  // WorldLoader status overlay fires immediately, then router.push('/timeline').
+  // The route compiles on demand in dev, so give the URL change a generous timeout.
+  await expect(page.getByRole('status').filter({ hasText: /entering/i })).toBeVisible({
+    timeout: 10000,
+  });
+  await expect(page).toHaveURL(/\/timeline/, { timeout: 30000 });
 });
 
-test('escape key skips intro', async ({ page }) => {
+test('panels stack into one vertical column on mobile', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/');
 
-  // Wait for terminal boot to finish
-  await expect(page.getByRole('button', { name: /air out/i })).toBeVisible({ timeout: 15000 });
+  const list = page.getByRole('complementary', { name: /islands/i });
+  const stage = page.getByRole('region', { name: /selected island/i });
+  const details = page.getByRole('region', { name: /island details/i });
 
-  await page.keyboard.press('Escape');
+  const [listBox, stageBox, detailsBox] = await Promise.all([
+    list.boundingBox(),
+    stage.boundingBox(),
+    details.boundingBox(),
+  ]);
+  if (!listBox || !stageBox || !detailsBox) throw new Error('panel bounding boxes unavailable');
 
-  await expect(page.getByTestId('garage-shell')).toBeVisible();
-});
-
-test('clicking Projects in HUD opens overlay panel', async ({ page }) => {
-  await page.goto('/');
-
-  // Skip to garage
-  await page.getByRole('button', { name: /skip intro/i }).click();
-  await expect(page.getByTestId('garage-shell')).toBeVisible();
-
-  // Click Projects in HUD
-  await page.getByRole('button', { name: /projects/i }).click();
-
-  // Panel opens with Projects heading
-  await expect(page.getByTestId('overlay-panel')).toBeVisible();
-  await expect(page.getByRole('heading', { name: /projects/i })).toBeVisible();
-
-  // Wait for GSAP mount animation (0.4s) to settle
-  await page.waitForTimeout(1000);
-
-  // Close panel via Escape (bypasses GSAP close animation timing issues)
-  await page.keyboard.press('Escape');
-  await expect(page.getByTestId('overlay-panel')).not.toBeVisible({ timeout: 5000 });
-});
-
-test('clicking About in HUD opens overlay panel', async ({ page }) => {
-  await page.goto('/');
-  await page.getByRole('button', { name: /skip intro/i }).click();
-  await expect(page.getByTestId('garage-shell')).toBeVisible();
-
-  await page.getByRole('button', { name: /about/i }).click();
-
-  await expect(page.getByTestId('overlay-panel')).toBeVisible();
-  await expect(page.getByRole('heading', { name: /about/i })).toBeVisible();
-
-  // Wait for GSAP mount animation to settle
-  await page.waitForTimeout(1000);
-
-  await page.keyboard.press('Escape');
-  await expect(page.getByTestId('overlay-panel')).not.toBeVisible({ timeout: 5000 });
-});
-
-test('clicking Contact in HUD opens overlay panel', async ({ page }) => {
-  await page.goto('/');
-  await page.getByRole('button', { name: /skip intro/i }).click();
-  await expect(page.getByTestId('garage-shell')).toBeVisible();
-
-  await page.getByRole('button', { name: /contact/i }).click();
-
-  await expect(page.getByTestId('overlay-panel')).toBeVisible();
-  await expect(page.getByRole('heading', { name: /contact/i })).toBeVisible();
-
-  // Wait for GSAP mount animation to settle
-  await page.waitForTimeout(1000);
-
-  await page.keyboard.press('Escape');
-  await expect(page.getByTestId('overlay-panel')).not.toBeVisible({ timeout: 5000 });
-});
-
-test('Escape key closes overlay panel', async ({ page }) => {
-  await page.goto('/');
-  await page.getByRole('button', { name: /skip intro/i }).click();
-
-  await page.getByRole('button', { name: /projects/i }).click();
-  await expect(page.getByTestId('overlay-panel')).toBeVisible();
-
-  // Wait for GSAP mount animation to settle
-  await page.waitForTimeout(1000);
-
-  await page.keyboard.press('Escape');
-  await expect(page.getByTestId('overlay-panel')).not.toBeVisible({ timeout: 5000 });
-});
-
-test('HUD bar has toolbar role for accessibility', async ({ page }) => {
-  await page.goto('/');
-  await page.getByRole('button', { name: /skip intro/i }).click();
-
-  const toolbar = page.getByRole('toolbar', { name: /navigation/i });
-  await expect(toolbar).toBeVisible();
+  // Single column: panels are ordered top-to-bottom (list → stage → details)…
+  expect(listBox.y + listBox.height).toBeLessThanOrEqual(stageBox.y + 1);
+  expect(stageBox.y + stageBox.height).toBeLessThanOrEqual(detailsBox.y + 1);
+  // …and each panel spans (near) the full viewport width — not side-by-side columns.
+  for (const box of [listBox, stageBox, detailsBox]) {
+    expect(box.width).toBeGreaterThan(390 * 0.8);
+  }
 });
