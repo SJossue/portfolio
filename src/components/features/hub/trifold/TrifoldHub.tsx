@@ -15,7 +15,6 @@ import HubBackground from './HubBackground';
 import IslandDetailsPanel from './IslandDetailsPanel';
 import IslandListPanel from './IslandListPanel';
 import IslandSelector from './IslandSelector';
-import IslandStagePanel from './IslandStagePanel';
 import StageHero from './StageHero';
 
 /**
@@ -97,31 +96,19 @@ export default function TrifoldHub() {
           className="overflow-hidden focus-visible:outline-none lg:h-full"
         >
           <div className="flex h-full flex-col">
-            {/* Constant hero — Jossue's photo + name, fixed while islands change. */}
+            {/* Constant hero — Jossue's photo + name. */}
             <StageHero />
-            {/* Island selector sits directly under the hero. */}
+            {/* The island list fills the rest of the center. Selecting drives the
+                right panel + accent + background; clicking the selected island
+                enters that world. */}
             <IslandSelector
               worlds={worlds}
               selectedIndex={selectedIndex}
               onSelect={setSelectedIndex}
+              onEnter={enterWorld}
               accentColor={selectedWorld.color}
               accentRgb={selectedWorld.colorRgb}
             />
-            {/* Per-island content crossfades below the selector on selection. */}
-            <div className="relative min-h-0 flex-1">
-              <AnimatePresence mode="wait" initial={false}>
-                <motion.div
-                  key={selectedWorld.id}
-                  className="absolute inset-0 overflow-y-auto"
-                  {...fade}
-                >
-                  <IslandStagePanel
-                    world={selectedWorld}
-                    onEnter={() => enterWorld(selectedWorld)}
-                  />
-                </motion.div>
-              </AnimatePresence>
-            </div>
           </div>
         </GlassPanel>
 
