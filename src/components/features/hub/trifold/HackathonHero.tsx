@@ -68,14 +68,13 @@ export default function HackathonHero() {
         />
       </div>
 
-      {/* Respective hackathon — icon on the left, cycling name on the right. */}
-      <div className="flex items-center gap-3 px-6 pt-4 text-white">
-        <TrophyIcon />
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.span key={hack.id} className="text-base font-semibold" {...fade}>
-            {hack.name}
-          </motion.span>
-        </AnimatePresence>
+      {/* Respective hackathon — icon + name, with the location beneath. */}
+      <div className="px-6 pt-4 text-white">
+        <div className="flex items-center gap-3">
+          <TrophyIcon />
+          <span className="text-base font-semibold">{hack.name}</span>
+        </div>
+        <p className="mt-0.5 pl-8 text-sm text-white/50">{hack.location}</p>
       </div>
     </div>
   );
