@@ -1,5 +1,6 @@
 'use client';
 
+import type { ReactNode } from 'react';
 import Link from 'next/link';
 
 import HubSocials from '../HubSocials';
@@ -7,6 +8,8 @@ import HubSocials from '../HubSocials';
 interface IslandListPanelProps {
   accentColor: string;
   accentRgb: string;
+  /** Slot filling the rail's middle — the chat lives here. */
+  children?: ReactNode;
 }
 
 function HomeIcon({ className }: { className?: string }) {
@@ -33,9 +36,13 @@ function HomeIcon({ className }: { className?: string }) {
  * Left rail: a horizontal "Home" nav item at the top, social links and a
  * "Book a call" CTA at the bottom.
  */
-export default function IslandListPanel({ accentColor, accentRgb }: IslandListPanelProps) {
+export default function IslandListPanel({
+  accentColor,
+  accentRgb,
+  children,
+}: IslandListPanelProps) {
   return (
-    <div className="flex h-full flex-col gap-6 p-6">
+    <div className="flex h-full flex-col gap-5 p-6">
       <nav aria-label="Primary">
         <Link
           href="/"
@@ -51,7 +58,10 @@ export default function IslandListPanel({ accentColor, accentRgb }: IslandListPa
         </Link>
       </nav>
 
-      <div className="mt-auto flex flex-col gap-4 pt-2">
+      {/* Chat fills the middle of the rail. */}
+      <div className="min-h-0 flex-1">{children}</div>
+
+      <div className="flex flex-col gap-4 pt-2">
         <HubSocials accentColor={accentColor} accentRgb={accentRgb} layout="inline" />
         <a
           href="/book"

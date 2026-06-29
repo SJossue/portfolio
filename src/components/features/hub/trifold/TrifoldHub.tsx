@@ -84,7 +84,14 @@ export default function TrifoldHub() {
               : { transform: 'perspective(1600px) rotateY(13deg)', transformOrigin: 'right center' }
           }
         >
-          <IslandListPanel accentColor={selectedWorld.color} accentRgb={selectedWorld.colorRgb} />
+          <IslandListPanel accentColor={selectedWorld.color} accentRgb={selectedWorld.colorRgb}>
+            <IslandChat
+              accentColor={selectedWorld.color}
+              accentRgb={selectedWorld.colorRgb}
+              isMobile={isMobile}
+              defaultMinimized={isMobile}
+            />
+          </IslandListPanel>
         </GlassPanel>
 
         <GlassPanel
@@ -133,17 +140,6 @@ export default function TrifoldHub() {
             </motion.div>
           </AnimatePresence>
         </GlassPanel>
-      </div>
-
-      {/* Universal chat — floats over the panels, anchored bottom-right so it
-          never covers the centered Enter CTA. */}
-      <div className="pointer-events-none fixed bottom-6 right-4 z-30 flex justify-end">
-        <IslandChat
-          accentColor={selectedWorld.color}
-          accentRgb={selectedWorld.colorRgb}
-          isMobile={isMobile}
-          defaultMinimized={isMobile}
-        />
       </div>
     </div>
   );

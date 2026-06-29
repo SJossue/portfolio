@@ -51,7 +51,7 @@ export default function IslandSelector({
     <nav
       aria-label="Islands"
       onKeyDown={onKeyDown}
-      className="flex min-h-0 flex-1 items-stretch gap-3 overflow-x-auto p-5"
+      className="flex min-h-0 flex-1 flex-col justify-center gap-3 overflow-y-auto p-5"
     >
       {worlds.map((world, i) => {
         const selected = i === selectedIndex;
@@ -64,7 +64,7 @@ export default function IslandSelector({
             type="button"
             aria-current={selected ? 'true' : undefined}
             onClick={() => (selected ? onEnter(world) : onSelect(i))}
-            className="group flex min-w-[8rem] flex-1 flex-col overflow-hidden rounded-2xl border text-left transition-all duration-200 hover:-translate-y-0.5"
+            className="group flex items-stretch gap-4 overflow-hidden rounded-2xl border text-left transition-all duration-200 hover:translate-x-0.5"
             style={{
               background: selected ? `rgba(${accentRgb}, 0.1)` : 'rgba(255,255,255,0.02)',
               borderColor: selected ? `rgba(${accentRgb}, 0.5)` : 'rgba(255,255,255,0.07)',
@@ -72,30 +72,29 @@ export default function IslandSelector({
             }}
           >
             <span
-              className="relative min-h-0 flex-1 bg-cover bg-center"
+              className="h-[4.75rem] w-32 flex-shrink-0 bg-cover bg-center"
               style={{
                 backgroundImage: `url(/islands/${world.id}.webp)`,
                 backgroundColor: `rgba(${world.colorRgb}, 0.15)`,
               }}
-            >
-              {selected ? (
-                <span
-                  className="absolute bottom-2 right-2 rounded-full px-2.5 py-1 text-[0.7rem] font-semibold text-[#06060c]"
-                  style={{ background: accentColor }}
-                >
-                  Enter →
-                </span>
-              ) : null}
-            </span>
-            <span className="flex flex-col gap-0.5 p-3">
+            />
+            <span className="flex min-w-0 flex-1 flex-col justify-center gap-1 py-3 pr-4">
               <span
-                className="truncate text-sm font-semibold"
+                className="truncate text-base font-semibold"
                 style={{ color: selected ? accentColor : 'rgba(255,255,255,0.9)' }}
               >
                 {world.name}
               </span>
-              <span className="truncate text-xs text-white/50">{world.subtitle}</span>
+              <span className="truncate text-sm text-white/50">{world.subtitle}</span>
             </span>
+            {selected ? (
+              <span
+                className="m-3 flex flex-shrink-0 items-center self-center rounded-full px-3.5 py-1.5 text-xs font-semibold text-[#06060c]"
+                style={{ background: accentColor }}
+              >
+                Enter →
+              </span>
+            ) : null}
           </button>
         );
       })}
