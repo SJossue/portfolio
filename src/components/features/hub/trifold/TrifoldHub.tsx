@@ -14,6 +14,7 @@ import IslandChat from '../IslandChat';
 import HubBackground from './HubBackground';
 import IslandDetailsPanel from './IslandDetailsPanel';
 import IslandListPanel from './IslandListPanel';
+import IslandSelector from './IslandSelector';
 import IslandStagePanel from './IslandStagePanel';
 import StageHero from './StageHero';
 
@@ -75,7 +76,7 @@ export default function TrifoldHub() {
       <div className="relative z-10 flex flex-col gap-4 p-4 lg:grid lg:h-dvh lg:grid-cols-[minmax(0,20rem)_1.5fr_minmax(0,22rem)] lg:gap-5 lg:p-6">
         <GlassPanel
           as="aside"
-          aria-label="Islands"
+          aria-label="Profile"
           accent
           className="overflow-y-auto lg:h-full"
           style={
@@ -84,13 +85,7 @@ export default function TrifoldHub() {
               : { transform: 'perspective(1600px) rotateY(13deg)', transformOrigin: 'right center' }
           }
         >
-          <IslandListPanel
-            worlds={worlds}
-            selectedIndex={selectedIndex}
-            onSelect={setSelectedIndex}
-            accentColor={selectedWorld.color}
-            accentRgb={selectedWorld.colorRgb}
-          />
+          <IslandListPanel accentColor={selectedWorld.color} accentRgb={selectedWorld.colorRgb} />
         </GlassPanel>
 
         <GlassPanel
@@ -104,7 +99,15 @@ export default function TrifoldHub() {
           <div className="flex h-full flex-col">
             {/* Constant hero — Jossue's photo + name, fixed while islands change. */}
             <StageHero />
-            {/* Per-island content crossfades below the hero on selection. */}
+            {/* Island selector sits directly under the hero. */}
+            <IslandSelector
+              worlds={worlds}
+              selectedIndex={selectedIndex}
+              onSelect={setSelectedIndex}
+              accentColor={selectedWorld.color}
+              accentRgb={selectedWorld.colorRgb}
+            />
+            {/* Per-island content crossfades below the selector on selection. */}
             <div className="relative min-h-0 flex-1">
               <AnimatePresence mode="wait" initial={false}>
                 <motion.div

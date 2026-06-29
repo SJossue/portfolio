@@ -26,7 +26,7 @@ export default function StageHero() {
             'linear-gradient(to top, rgba(7,7,11,0.96) 0%, rgba(7,7,11,0.55) 26%, transparent 58%)',
         }}
       />
-      <div className="absolute bottom-5 left-7 right-7">
+      <div className="absolute bottom-5 left-7 right-7 text-right">
         <p className="font-mono text-[0.65rem] uppercase tracking-[0.3em] text-white/55">
           Portfolio
         </p>
