@@ -2,37 +2,29 @@
 
 import type { WorldData } from '@/content/worlds';
 
-import IslandScene from '../IslandScene';
-
 interface IslandStagePanelProps {
   world: WorldData;
   onEnter: () => void;
 }
 
 /**
- * Center panel: the selected island's visual (reused `IslandScene`), its name,
- * subtitle, description, stat pills, and the primary Enter call-to-action.
+ * The per-island content shown below the constant hero in the center panel:
+ * the selected island's name, subtitle, description, stat pills, and the
+ * primary Enter call-to-action. Updates on selection.
  */
 export default function IslandStagePanel({ world, onEnter }: IslandStagePanelProps) {
   return (
-    <div className="flex h-full flex-col items-center justify-center gap-6 p-8 text-center">
-      <IslandScene
-        worldId={world.id}
-        worldName={world.name}
-        color={world.color}
-        colorRgb={world.colorRgb}
-        isActive
-        onEnter={onEnter}
-      />
-
-      <div className="flex flex-col items-center gap-3">
+    <div className="flex h-full flex-col items-center justify-center gap-5 px-8 py-7 text-center">
+      <div className="flex flex-col items-center gap-2.5">
+        <p className="font-mono text-xs uppercase tracking-[0.3em] text-white/45">
+          {world.subtitle}
+        </p>
         <h2
-          className="text-3xl font-bold tracking-[2px] 3xl:text-4xl"
+          className="text-3xl font-bold tracking-[1px] 3xl:text-4xl"
           style={{ color: world.color }}
         >
           {world.name}
         </h2>
-        <p className="text-sm uppercase tracking-[3px] text-white/50">{world.subtitle}</p>
         <p className="max-w-md text-sm leading-relaxed text-white/70">{world.description}</p>
       </div>
 
