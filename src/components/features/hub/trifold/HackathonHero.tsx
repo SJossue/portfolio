@@ -7,9 +7,28 @@ import { AnimatePresence, motion } from 'motion/react';
 import { hackathons } from '@/content/hackathons';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 
+function TrophyIcon() {
+  return (
+    <svg
+      aria-hidden
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.8}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="h-5 w-5 flex-shrink-0"
+    >
+      <path d="M7 4h10v5a5 5 0 0 1-10 0V4Z" />
+      <path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3" />
+      <path d="M10 14.5V18M14 14.5V18M8 20h8M9 18h6v2H9z" />
+    </svg>
+  );
+}
+
 /**
- * Right-panel hero: cycles through hackathon photos, with that event's logo in
- * a rectangle straddling the bottom edge of the photo (half on, half off).
+ * Right-panel hero: cycles through hackathon photos, with the respective event's
+ * name (and a trophy icon) labeled beneath the photo.
  */
 export default function HackathonHero() {
   const reduced = useReducedMotion();
@@ -44,13 +63,19 @@ export default function HackathonHero() {
           aria-hidden
           className="absolute inset-0"
           style={{
-            background:
-              'linear-gradient(to top, rgba(7,7,11,0.65) 0%, transparent 38%), linear-gradient(to bottom, rgba(7,7,11,0.5) 0%, transparent 30%)',
+            background: 'linear-gradient(to top, rgba(7,7,11,0.55) 0%, transparent 32%)',
           }}
         />
-        <p className="absolute left-6 top-5 font-mono text-[0.6rem] uppercase tracking-[0.3em] text-white/55">
-          Hackathons
-        </p>
+      </div>
+
+      {/* Respective hackathon — icon on the left, cycling name on the right. */}
+      <div className="flex items-center gap-3 px-6 pt-4 text-white">
+        <TrophyIcon />
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.span key={hack.id} className="text-base font-semibold" {...fade}>
+            {hack.name}
+          </motion.span>
+        </AnimatePresence>
       </div>
     </div>
   );
