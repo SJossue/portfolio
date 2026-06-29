@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
-import WorldLayout from '@/components/features/worlds/shared/WorldLayout';
-import RealMeWorld from '@/components/features/worlds/real-me/RealMeWorld';
+
+import IslandAside from '@/components/features/worlds/shared/IslandAside';
+import IslandShell from '@/components/features/worlds/shared/IslandShell';
+import RealMeIsland, { sections } from '@/components/features/worlds/real-me/RealMeIsland';
 
 export const metadata: Metadata = {
   title: 'About Me',
@@ -9,8 +11,12 @@ export const metadata: Metadata = {
 
 export default function RealMePage() {
   return (
-    <WorldLayout worldId="real-me">
-      <RealMeWorld />
-    </WorldLayout>
+    <IslandShell
+      worldId="real-me"
+      sections={sections}
+      aside={<IslandAside worldId="real-me" linkIds={['github', 'linkedin', 'x', 'email']} />}
+    >
+      <RealMeIsland />
+    </IslandShell>
   );
 }

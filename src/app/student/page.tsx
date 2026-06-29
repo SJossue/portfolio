@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
-import WorldLayout from '@/components/features/worlds/shared/WorldLayout';
-import StudentWorld from '@/components/features/worlds/student/StudentWorld';
+
+import IslandAside from '@/components/features/worlds/shared/IslandAside';
+import IslandShell from '@/components/features/worlds/shared/IslandShell';
+import StudentIsland, { sections } from '@/components/features/worlds/student/StudentIsland';
 
 export const metadata: Metadata = {
   title: 'The Student',
@@ -9,8 +11,12 @@ export const metadata: Metadata = {
 
 export default function StudentPage() {
   return (
-    <WorldLayout worldId="student">
-      <StudentWorld />
-    </WorldLayout>
+    <IslandShell
+      worldId="student"
+      sections={sections}
+      aside={<IslandAside worldId="student" linkIds={['github', 'linkedin', 'email']} />}
+    >
+      <StudentIsland />
+    </IslandShell>
   );
 }

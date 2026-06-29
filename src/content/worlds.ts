@@ -74,7 +74,7 @@ export const worlds: WorldData[] = [
     particleColors: ['#06b6d4', '#22d3ee', '#ffffff'],
     stats: [
       { label: 'Papers', value: 3 },
-      { label: 'Topics', value: 5 },
+      { label: 'Topics', value: 7 },
     ],
     highlights: [
       { title: 'AV Ethics Research', tech: 'Autonomous Systems · Ethics' },

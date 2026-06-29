@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 
-import TimelineWorld from '@/components/features/worlds/timeline/TimelineWorld';
-import WorldLayout from '@/components/features/worlds/shared/WorldLayout';
+import IslandAside from '@/components/features/worlds/shared/IslandAside';
+import IslandShell from '@/components/features/worlds/shared/IslandShell';
+import TimelineIsland, { sections } from '@/components/features/worlds/timeline/TimelineIsland';
 
 export const metadata: Metadata = {
   title: 'My Timeline',
@@ -10,8 +11,12 @@ export const metadata: Metadata = {
 
 export default function TimelinePage() {
   return (
-    <WorldLayout worldId="timeline">
-      <TimelineWorld />
-    </WorldLayout>
+    <IslandShell
+      worldId="timeline"
+      sections={sections}
+      aside={<IslandAside worldId="timeline" linkIds={['linkedin', 'email']} />}
+    >
+      <TimelineIsland />
+    </IslandShell>
   );
 }
