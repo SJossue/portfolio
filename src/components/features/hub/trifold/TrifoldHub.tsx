@@ -2,32 +2,28 @@
 
 import { useCallback, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { AnimatePresence, motion } from 'motion/react';
 
 import { GlassPanel } from '@/components/ui/GlassPanel';
 import { worlds } from '@/content/worlds';
 import { useIsMobile } from '@/hooks/useIsMobile';
-import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { useWorldLoader } from '@/lib/world-loader-store';
 
 import IslandChat from '../IslandChat';
 import HackathonHero from './HackathonHero';
 import HubBackground from './HubBackground';
-import IslandDetailsPanel from './IslandDetailsPanel';
 import IslandListPanel from './IslandListPanel';
 import IslandSelector from './IslandSelector';
 import StageHero from './StageHero';
 
 /**
- * Trifold spatial hub: orchestrates the island list, stage, and details glass
+ * Trifold spatial hub: orchestrates the island list, stage, and hackathon glass
  * panels. Owns the selected-island state, drives the per-world accent
- * (`--world-color-rgb`) and the reduced-motion panel crossfade, and runs the
- * `enterWorld` deep-dive flow (WorldLoader → world route).
+ * (`--world-color-rgb`), and runs the `enterWorld` deep-dive flow
+ * (WorldLoader → world route).
  */
 export default function TrifoldHub() {
   const router = useRouter();
   const isMobile = useIsMobile();
-  const reducedMotion = useReducedMotion();
   const startWorldLoader = useWorldLoader((s) => s.start);
   const enteringRef = useRef(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -47,16 +43,6 @@ export default function TrifoldHub() {
     },
     [router, startWorldLoader],
   );
-
-  // Crossfade the center + right panels when the selection changes.
-  const fade = reducedMotion
-    ? { initial: false as const, animate: { opacity: 1 }, transition: { duration: 0 } }
-    : {
-        initial: { opacity: 0 },
-        animate: { opacity: 1 },
-        exit: { opacity: 0 },
-        transition: { duration: 0.3 },
-      };
 
   return (
     <div
@@ -132,18 +118,8 @@ export default function TrifoldHub() {
           }
         >
           <div className="flex min-h-full flex-col">
-            {/* Constant cycling hackathon hero at the top of the right panel. */}
+            {/* Cycling hackathon hero — fills the right panel. */}
             <HackathonHero />
-            {/* Per-island details crossfade below it. */}
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.div key={selectedWorld.id} className="flex-1" {...fade}>
-                <IslandDetailsPanel
-                  world={selectedWorld}
-                  index={selectedIndex}
-                  total={worlds.length}
-                />
-              </motion.div>
-            </AnimatePresence>
           </div>
         </GlassPanel>
       </div>
