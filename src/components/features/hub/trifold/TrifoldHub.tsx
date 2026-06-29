@@ -11,6 +11,7 @@ import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { useWorldLoader } from '@/lib/world-loader-store';
 
 import IslandChat from '../IslandChat';
+import HackathonHero from './HackathonHero';
 import HubBackground from './HubBackground';
 import IslandDetailsPanel from './IslandDetailsPanel';
 import IslandListPanel from './IslandListPanel';
@@ -130,15 +131,20 @@ export default function TrifoldHub() {
               : { transform: 'perspective(1600px) rotateY(-13deg)', transformOrigin: 'left center' }
           }
         >
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.div key={selectedWorld.id} className="h-full" {...fade}>
-              <IslandDetailsPanel
-                world={selectedWorld}
-                index={selectedIndex}
-                total={worlds.length}
-              />
-            </motion.div>
-          </AnimatePresence>
+          <div className="flex min-h-full flex-col">
+            {/* Constant cycling hackathon hero at the top of the right panel. */}
+            <HackathonHero />
+            {/* Per-island details crossfade below it. */}
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div key={selectedWorld.id} className="flex-1" {...fade}>
+                <IslandDetailsPanel
+                  world={selectedWorld}
+                  index={selectedIndex}
+                  total={worlds.length}
+                />
+              </motion.div>
+            </AnimatePresence>
+          </div>
         </GlassPanel>
       </div>
     </div>
