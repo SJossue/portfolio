@@ -31,13 +31,9 @@ export default function HackathonHero() {
   };
 
   return (
-    <div className="relative mb-14 px-5 pt-5">
-      <p className="mb-3 font-mono text-[0.6rem] uppercase tracking-[0.3em] text-white/45">
-        Hackathons
-      </p>
-
-      {/* Cycling photo */}
-      <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
+    <div className="relative mb-14">
+      {/* Cycling photo — full-bleed to the panel edge, like the center hero. */}
+      <div className="relative aspect-[4/3] w-full overflow-hidden">
         <AnimatePresence initial={false}>
           <motion.div key={hack.id} className="absolute inset-0" {...fade}>
             <Image src={hack.image} alt={hack.name} fill sizes="22rem" className="object-cover" />
@@ -47,21 +43,26 @@ export default function HackathonHero() {
           aria-hidden
           className="absolute inset-0"
           style={{
-            background: 'linear-gradient(to top, rgba(7,7,11,0.65) 0%, transparent 45%)',
+            background:
+              'linear-gradient(to top, rgba(7,7,11,0.65) 0%, transparent 38%), linear-gradient(to bottom, rgba(7,7,11,0.5) 0%, transparent 30%)',
           }}
         />
+        <p className="absolute left-6 top-5 font-mono text-[0.6rem] uppercase tracking-[0.3em] text-white/55">
+          Hackathons
+        </p>
       </div>
 
-      {/* Event logo — a rectangle straddling the photo's bottom edge. */}
-      <div className="absolute bottom-0 left-1/2 z-10 aspect-[2/1] w-[64%] -translate-x-1/2 translate-y-1/2 overflow-hidden rounded-xl bg-[#0e0e14] shadow-[0_18px_40px_-12px_rgba(0,0,0,0.8)] ring-1 ring-white/20">
+      {/* Event logo — a consistent narrow rectangle straddling the photo's
+          bottom edge; object-contain keeps every logo the same scale. */}
+      <div className="absolute bottom-0 left-1/2 z-10 aspect-[2/1] w-[46%] -translate-x-1/2 translate-y-1/2 overflow-hidden rounded-xl bg-[#0e0e14] shadow-[0_18px_40px_-12px_rgba(0,0,0,0.8)] ring-1 ring-white/20">
         <AnimatePresence initial={false} mode="popLayout">
           <motion.div key={hack.id} className="absolute inset-0" {...fade}>
             <Image
               src={hack.logo}
               alt={`${hack.name} logo`}
               fill
-              sizes="14rem"
-              className="object-contain p-2"
+              sizes="10rem"
+              className="object-contain p-2.5"
             />
           </motion.div>
         </AnimatePresence>
