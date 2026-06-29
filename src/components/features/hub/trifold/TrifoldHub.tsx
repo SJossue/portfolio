@@ -58,7 +58,7 @@ export default function TrifoldHub() {
 
   return (
     <div
-      className="relative min-h-dvh bg-[#0f3d2e]"
+      className="relative min-h-dvh bg-[#07070b]"
       style={{ '--world-color-rgb': selectedWorld.colorRgb } as React.CSSProperties}
     >
       {/* Skip link — jumps past the island nav to the selected-island stage. */}
@@ -69,10 +69,20 @@ export default function TrifoldHub() {
         Skip to island content
       </a>
 
-      <HubBackground />
+      <HubBackground colorRgb={selectedWorld.colorRgb} worldId={selectedWorld.id} />
 
       <div className="relative z-10 flex flex-col gap-4 p-4 lg:grid lg:h-dvh lg:grid-cols-[minmax(0,20rem)_1.5fr_minmax(0,22rem)] lg:gap-5 lg:p-6">
-        <GlassPanel as="aside" aria-label="Islands" accent className="overflow-y-auto lg:h-full">
+        <GlassPanel
+          as="aside"
+          aria-label="Islands"
+          accent
+          className="overflow-y-auto lg:h-full"
+          style={
+            isMobile
+              ? undefined
+              : { transform: 'perspective(1600px) rotateY(13deg)', transformOrigin: 'right center' }
+          }
+        >
           <IslandListPanel
             worlds={worlds}
             selectedIndex={selectedIndex}
@@ -102,6 +112,11 @@ export default function TrifoldHub() {
           aria-label="Island details"
           accent
           className="overflow-y-auto lg:h-full"
+          style={
+            isMobile
+              ? undefined
+              : { transform: 'perspective(1600px) rotateY(-13deg)', transformOrigin: 'left center' }
+          }
         >
           <AnimatePresence mode="wait" initial={false}>
             <motion.div key={selectedWorld.id} className="h-full" {...fade}>
