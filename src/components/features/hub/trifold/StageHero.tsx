@@ -7,7 +7,7 @@ import Image from 'next/image';
  */
 export default function StageHero() {
   return (
-    <div className="relative aspect-[1600/863] w-full shrink-0 overflow-hidden">
+    <div className="relative aspect-[1600/863] w-full shrink-0 overflow-hidden lg:aspect-auto lg:h-[45dvh]">
       <Image
         src="/jossue/hero.png"
         alt="Jossue Sarango"
