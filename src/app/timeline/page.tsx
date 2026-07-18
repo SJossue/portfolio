@@ -11,11 +11,7 @@ export const metadata: Metadata = {
 
 export default function TimelinePage() {
   return (
-    <IslandShell
-      worldId="timeline"
-      sections={sections}
-      aside={<IslandAside worldId="timeline" linkIds={['linkedin', 'email']} />}
-    >
+    <IslandShell worldId="timeline" sections={sections} aside={<IslandAside worldId="timeline" />}>
       <TimelineIsland />
     </IslandShell>
   );

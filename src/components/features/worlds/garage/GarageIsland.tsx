@@ -3,26 +3,88 @@
 import { useState } from 'react';
 import Image from 'next/image';
 
+import type { IconType } from 'react-icons';
+import {
+  SiEspressif,
+  SiNextdotjs,
+  SiNvidia,
+  SiPlatformio,
+  SiPython,
+  SiReact,
+  SiRos,
+  SiScikitlearn,
+  SiStreamlit,
+  SiSupabase,
+  SiTailwindcss,
+  SiThreedotjs,
+  SiTypescript,
+} from 'react-icons/si';
+
+import HubSocials from '@/components/features/hub/HubSocials';
 import IslandSection from '@/components/features/worlds/shared/IslandSection';
-import { aboutData } from '@/content/about';
 import { projects } from '@/content/projects';
+import { worlds } from '@/content/worlds';
 import type { IslandSectionRef } from '@/components/features/worlds/shared/IslandShell';
 
 const ACCENT = '249, 115, 22';
 
-export const sections: IslandSectionRef[] = [
-  { id: 'overview', label: 'Overview' },
-  { id: 'projects', label: 'Projects' },
-  { id: 'toolbox', label: 'Toolbox' },
-  { id: 'numbers', label: 'By the Numbers' },
+/** Left-rail directory — one entry per featured project, anchored to its card in
+ *  the middle panel (scroll-spy + click-to-scroll via the shared TOC). */
+export const sections: IslandSectionRef[] = projects.map((p) => ({
+  id: p.id,
+  label: p.title.split(':')[0],
+}));
+
+const TALLY = [
+  { label: 'Projects', value: 6 },
+  { label: 'Technologies', value: 14 },
+  { label: 'Simulations', value: 50 },
+  { label: 'Years Building', value: 3 },
 ];
+
+/** SolidWorks isn't in Simple Icons (pulled over trademark) — a small local mark. */
+function SolidWorksMark(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden {...props}>
+      <path d="M16.7 6.6c-1.2-1-2.9-1.6-4.8-1.6-3 0-5.2 1.5-5.2 3.9 0 2 1.5 3.1 4.3 3.7l1.6.35c1.4.3 2 .7 2 1.4 0 .9-1 1.5-2.6 1.5-1.9 0-3.4-.6-4.6-1.7L5.9 17c1.4 1.1 3.4 1.7 5.6 1.7 3.3 0 5.6-1.6 5.6-4 0-2-1.3-3.2-4.2-3.8l-1.6-.34c-1.4-.3-2.1-.6-2.1-1.35 0-.85.9-1.4 2.4-1.4 1.6 0 3 .55 4.1 1.45z" />
+    </svg>
+  );
+}
+
+/** Curated toolbox — real, named industry programs & tools only (each with a
+ *  recognizable logo). Generic skills (CAD, FEA, welding, embedded, integration)
+ *  are intentionally excluded; they still live in `about.ts` for the chat. */
+const TOOLS: { label: string; Icon: IconType; color: string }[] = [
+  { label: 'SolidWorks', Icon: SolidWorksMark, color: '#E31E24' },
+  { label: 'ROS 2', Icon: SiRos, color: '#E6ECF3' },
+  { label: 'Jetson', Icon: SiNvidia, color: '#76B900' },
+  { label: 'ESP32', Icon: SiEspressif, color: '#E7352C' },
+  { label: 'PlatformIO', Icon: SiPlatformio, color: '#FF7F00' },
+  { label: 'TypeScript', Icon: SiTypescript, color: '#3178C6' },
+  { label: 'React', Icon: SiReact, color: '#61DAFB' },
+  { label: 'Next.js', Icon: SiNextdotjs, color: '#FFFFFF' },
+  { label: 'Tailwind', Icon: SiTailwindcss, color: '#38BDF8' },
+  { label: 'Three.js', Icon: SiThreedotjs, color: '#FFFFFF' },
+  { label: 'Supabase', Icon: SiSupabase, color: '#3ECF8E' },
+  { label: 'Python', Icon: SiPython, color: '#5A9FD4' },
+  { label: 'scikit-learn', Icon: SiScikitlearn, color: '#F7931E' },
+  { label: 'Streamlit', Icon: SiStreamlit, color: '#FF4B4B' },
+];
+
+/** Short garage blurb — rendered in the left rail (via the shell's `intro`),
+ *  so the middle panel opens straight on the featured projects. */
+export const intro =
+  'The workshop where projects, tools, and ideas come together. Six builds spanning mechanical systems, AI infrastructure, and product UX — each a different way to think through a problem, break it down, and refine it until it feels correct.';
 
 function ProjectCard({ project, index }: { project: (typeof projects)[number]; index: number }) {
   const [open, setOpen] = useState(false);
   const hasStudy = Boolean(project.situation || project.task || project.action || project.solution);
 
   return (
-    <article className="border-white/8 overflow-hidden rounded-2xl border bg-white/[0.03]">
+    <article
+      id={project.id}
+      className="border-white/8 scroll-mt-6 overflow-hidden rounded-2xl border bg-white/[0.03]"
+    >
       {project.heroImage ? (
         <div className="relative aspect-[16/9] w-full overflow-hidden">
           <Image
@@ -129,65 +191,52 @@ function ProjectCard({ project, index }: { project: (typeof projects)[number]; i
 }
 
 /**
- * My Garage — projects & craft. Primary (middle-panel) content: an overview, the
- * project case studies, the toolbox, and the numbers. Rebuilt fresh from
- * `projects` + `about` content.
+ * My Garage — projects & craft. The middle panel is the featured-project case
+ * studies; the toolbox and tally live in the right panel (see `GarageAside`).
  */
 export default function GarageIsland() {
   return (
     <div className="text-white">
-      <IslandSection id="overview" eyebrow="Where ideas become real" title="My Garage">
-        <p className="max-w-prose text-base leading-relaxed text-white/70">
-          The workshop where projects, tools, and ideas come together. Six builds spanning
-          mechanical systems, AI infrastructure, and product UX — each a different way to think
-          through a problem, break it down, and refine it until it feels correct.
-        </p>
-      </IslandSection>
-
-      <IslandSection id="projects" eyebrow="Case Studies" title="Featured Projects">
+      <IslandSection id="projects" title="Featured Projects">
         <div className="space-y-6">
           {projects.map((project, i) => (
             <ProjectCard key={project.id} project={project} index={i} />
           ))}
         </div>
       </IslandSection>
+    </div>
+  );
+}
 
-      <IslandSection id="toolbox" eyebrow="The Toolbox" title="Tools & Skills">
-        <div className="grid gap-4 sm:grid-cols-2">
-          {aboutData.skills.map((group) => (
-            <div
-              key={group.category}
-              className="border-white/8 rounded-2xl border bg-white/[0.02] p-5"
-            >
-              <h3
-                className="mb-3 font-mono text-xs font-bold uppercase tracking-wider"
-                style={{ color: `rgb(${ACCENT})` }}
-              >
-                {group.category}
-              </h3>
-              <ul className="flex flex-wrap gap-1.5">
-                {group.items.map((skill) => (
-                  <li
-                    key={skill}
-                    className="border-white/8 rounded-lg border bg-white/[0.03] px-2.5 py-1 text-xs text-white/75"
-                  >
-                    {skill}
-                  </li>
-                ))}
-              </ul>
-            </div>
+/**
+ * Garage right panel: the toolbox (tools & skills) and the tally, with the
+ * social links centered at the bottom.
+ */
+export function GarageAside() {
+  const world = worlds.find((w) => w.id === 'garage') ?? worlds[0];
+
+  return (
+    <div className="flex h-full flex-col gap-8 p-6 text-white">
+      <section>
+        <p className="mb-3 font-mono text-[0.6rem] uppercase tracking-[0.3em] text-white/45">
+          Tools &amp; Software
+        </p>
+        <ul className="grid grid-cols-2 gap-x-4 gap-y-3">
+          {TOOLS.map(({ label, Icon, color }) => (
+            <li key={label} title={label} className="flex items-center gap-2.5">
+              <Icon aria-hidden className="h-[18px] w-[18px] flex-shrink-0" style={{ color }} />
+              <span className="truncate text-sm text-white/85">{label}</span>
+            </li>
           ))}
-        </div>
-      </IslandSection>
+        </ul>
+      </section>
 
-      <IslandSection id="numbers" eyebrow="By the Numbers" title="The Tally">
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-          {[
-            { label: 'Projects', value: 6 },
-            { label: 'Technologies', value: 14 },
-            { label: 'Simulations', value: 50 },
-            { label: 'Years Building', value: 3 },
-          ].map((stat) => (
+      <section>
+        <p className="mb-3 font-mono text-[0.6rem] uppercase tracking-[0.3em] text-white/45">
+          The Tally
+        </p>
+        <div className="grid grid-cols-2 gap-3">
+          {TALLY.map((stat) => (
             <div
               key={stat.label}
               className="border-white/8 rounded-2xl border bg-white/[0.02] p-4 text-center"
@@ -202,7 +251,11 @@ export default function GarageIsland() {
             </div>
           ))}
         </div>
-      </IslandSection>
+      </section>
+
+      <div className="mt-auto flex justify-center pt-2">
+        <HubSocials accentColor={world.color} accentRgb={world.colorRgb} layout="inline" />
+      </div>
     </div>
   );
 }

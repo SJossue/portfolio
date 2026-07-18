@@ -1,24 +1,21 @@
 import type { ReactNode } from 'react';
 
-import { contactLinks } from '@/content/contact';
+import HubSocials from '@/components/features/hub/HubSocials';
 import { worlds } from '@/content/worlds';
 
 interface IslandAsideProps {
   worldId: string;
-  /** Which contact links to surface (by id). Defaults to all. */
-  linkIds?: string[];
-  /** Optional island-specific block, rendered between stats and links. */
+  /** Optional island-specific block, rendered between stats and the socials. */
   children?: ReactNode;
 }
 
 /**
  * Right-panel complement for an island: the world's highlights, key stats, an
- * optional island-specific block, and the contact links. Derived from
- * `worlds.ts` + `contact.ts`, so each island just passes its id.
+ * optional island-specific block, and the social links. Derived from
+ * `worlds.ts`, so each island just passes its id.
  */
-export default function IslandAside({ worldId, linkIds, children }: IslandAsideProps) {
+export default function IslandAside({ worldId, children }: IslandAsideProps) {
   const world = worlds.find((w) => w.id === worldId) ?? worlds[0];
-  const links = linkIds ? contactLinks.filter((l) => linkIds.includes(l.id)) : contactLinks;
 
   return (
     <div className="flex h-full flex-col gap-8 p-6">
@@ -65,28 +62,10 @@ export default function IslandAside({ worldId, linkIds, children }: IslandAsideP
 
       {children}
 
-      <section className="mt-auto">
-        <p className="mb-3 font-mono text-[0.6rem] uppercase tracking-[0.3em] text-white/45">
-          Connect
-        </p>
-        <ul className="space-y-1.5">
-          {links.map((l) => (
-            <li key={l.id}>
-              <a
-                href={l.href}
-                target={l.href.startsWith('http') ? '_blank' : undefined}
-                rel={l.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                className="flex items-center justify-between rounded-lg border border-white/5 bg-white/[0.02] px-3 py-2 text-sm text-white/70 transition-colors hover:border-white/15 hover:text-white"
-              >
-                {l.label}
-                <span aria-hidden className="text-white/30">
-                  &rarr;
-                </span>
-              </a>
-            </li>
-          ))}
-        </ul>
-      </section>
+      {/* Social links — centered at the bottom of the right panel. */}
+      <div className="mt-auto flex justify-center pt-2">
+        <HubSocials accentColor={world.color} accentRgb={world.colorRgb} layout="inline" />
+      </div>
     </div>
   );
 }

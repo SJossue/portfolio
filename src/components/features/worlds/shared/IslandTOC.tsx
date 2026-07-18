@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
-import HubSocials from '@/components/features/hub/HubSocials';
 import { worlds } from '@/content/worlds';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
@@ -13,6 +12,8 @@ import type { IslandSectionRef } from './IslandShell';
 interface IslandTOCProps {
   worldId: string;
   sections: IslandSectionRef[];
+  /** Optional short blurb shown above the section nav. */
+  intro?: React.ReactNode;
   scrollRef: React.RefObject<HTMLDivElement | null>;
 }
 
@@ -21,7 +22,7 @@ interface IslandTOCProps {
  * view (scroll-spy) and scrolls the middle panel to a section on click. Vertical
  * on desktop, a horizontal chip strip on mobile.
  */
-export default function IslandTOC({ worldId, sections, scrollRef }: IslandTOCProps) {
+export default function IslandTOC({ worldId, sections, intro, scrollRef }: IslandTOCProps) {
   const isMobile = useIsMobile();
   const reduced = useReducedMotion();
   const world = worlds.find((w) => w.id === worldId) ?? worlds[0];
@@ -63,13 +64,12 @@ export default function IslandTOC({ worldId, sections, scrollRef }: IslandTOCPro
       </Link>
 
       <div>
-        <p className="font-mono text-[0.6rem] uppercase tracking-[0.3em] text-white/45">
-          {world.subtitle}
-        </p>
-        <p className="mt-1 text-lg font-bold tracking-tight" style={{ color: world.color }}>
+        <p className="text-lg font-bold tracking-tight" style={{ color: world.color }}>
           {world.name}
         </p>
       </div>
+
+      {intro ? <p className="text-sm leading-relaxed text-white/60">{intro}</p> : null}
 
       <nav
         aria-label="On this page"
@@ -95,10 +95,6 @@ export default function IslandTOC({ worldId, sections, scrollRef }: IslandTOCPro
           );
         })}
       </nav>
-
-      <div className="mt-auto hidden pt-4 lg:block">
-        <HubSocials accentColor={world.color} accentRgb={world.colorRgb} layout="inline" />
-      </div>
     </div>
   );
 }

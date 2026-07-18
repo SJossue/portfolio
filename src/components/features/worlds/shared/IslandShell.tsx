@@ -19,6 +19,8 @@ interface IslandShellProps {
   worldId: string;
   /** Section anchors for the left-rail nav / scroll-spy. */
   sections: IslandSectionRef[];
+  /** Optional short blurb shown in the left rail, above the section nav. */
+  intro?: React.ReactNode;
   /** Right-panel content (highlights / links / contact). */
   aside: React.ReactNode;
   /** The primary, scrollable middle-panel content. */
@@ -31,7 +33,13 @@ interface IslandShellProps {
  * complementary aside. Sets the per-world accent, paints the themed background,
  * and signals the WorldLoader to dismiss once mounted.
  */
-export default function IslandShell({ worldId, sections, aside, children }: IslandShellProps) {
+export default function IslandShell({
+  worldId,
+  sections,
+  intro,
+  aside,
+  children,
+}: IslandShellProps) {
   const markReady = useWorldLoader((s) => s.markReady);
   const dismiss = useWorldLoader((s) => s.dismiss);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -71,7 +79,9 @@ export default function IslandShell({ worldId, sections, aside, children }: Isla
       left={{
         as: 'nav',
         panelProps: { 'aria-label': `${world.name} sections` },
-        children: <IslandTOC worldId={world.id} sections={sections} scrollRef={scrollRef} />,
+        children: (
+          <IslandTOC worldId={world.id} sections={sections} intro={intro} scrollRef={scrollRef} />
+        ),
       }}
       center={{
         as: 'section',

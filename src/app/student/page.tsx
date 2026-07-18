@@ -11,11 +11,7 @@ export const metadata: Metadata = {
 
 export default function StudentPage() {
   return (
-    <IslandShell
-      worldId="student"
-      sections={sections}
-      aside={<IslandAside worldId="student" linkIds={['github', 'linkedin', 'email']} />}
-    >
+    <IslandShell worldId="student" sections={sections} aside={<IslandAside worldId="student" />}>
       <StudentIsland />
     </IslandShell>
   );

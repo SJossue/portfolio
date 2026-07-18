@@ -1,8 +1,11 @@
 import type { Metadata } from 'next';
 
-import IslandAside from '@/components/features/worlds/shared/IslandAside';
 import IslandShell from '@/components/features/worlds/shared/IslandShell';
-import GarageIsland, { sections } from '@/components/features/worlds/garage/GarageIsland';
+import GarageIsland, {
+  GarageAside,
+  intro,
+  sections,
+} from '@/components/features/worlds/garage/GarageIsland';
 
 export const metadata: Metadata = {
   title: 'My Garage',
@@ -11,11 +14,7 @@ export const metadata: Metadata = {
 
 export default function GaragePage() {
   return (
-    <IslandShell
-      worldId="garage"
-      sections={sections}
-      aside={<IslandAside worldId="garage" linkIds={['github', 'linkedin', 'email']} />}
-    >
+    <IslandShell worldId="garage" sections={sections} intro={intro} aside={<GarageAside />}>
       <GarageIsland />
     </IslandShell>
   );

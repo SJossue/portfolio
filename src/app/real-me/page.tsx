@@ -11,11 +11,7 @@ export const metadata: Metadata = {
 
 export default function RealMePage() {
   return (
-    <IslandShell
-      worldId="real-me"
-      sections={sections}
-      aside={<IslandAside worldId="real-me" linkIds={['github', 'linkedin', 'x', 'email']} />}
-    >
+    <IslandShell worldId="real-me" sections={sections} aside={<IslandAside worldId="real-me" />}>
       <RealMeIsland />
     </IslandShell>
   );
