@@ -19,8 +19,6 @@ export interface TrifoldSlot {
 }
 
 interface TrifoldLayoutProps {
-  /** Drives the themed background + accent crossfade. */
-  worldId: string;
   /** Accent as "r, g, b" — sets `--world-color-rgb`. */
   colorRgb: string;
   left: TrifoldSlot;
@@ -79,7 +77,6 @@ function Panel({
  * hands off seamlessly into its destination.
  */
 export default function TrifoldLayout({
-  worldId,
   colorRgb,
   left,
   center,
@@ -103,7 +100,7 @@ export default function TrifoldLayout({
       {...rootProps}
     >
       {lead}
-      {background ?? <HubBackground colorRgb={colorRgb} worldId={worldId} />}
+      {background ?? <HubBackground />}
 
       <div className="relative z-10 flex flex-col gap-4 p-4 lg:grid lg:h-dvh lg:grid-cols-[minmax(0,20rem)_1.5fr_minmax(0,22rem)] lg:gap-5 lg:p-6">
         <Panel slot={left} base={BASE_SIDE} style={angle(13, 'right center')} />

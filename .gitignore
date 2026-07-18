@@ -33,3 +33,4 @@ test-results/
 gh-cli-cache/
 node-compile-cache/
 .superpowers/
+.local-assets/

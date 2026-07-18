@@ -165,7 +165,6 @@ export default function WorldLoader() {
   // (hub or island) renders, so the panels stay put as the loader hands off.
   return (
     <TrifoldLayout
-      worldId={worldId ?? 'garage'}
       colorRgb={preset.accentRgb}
       background={hyperspeed}
       rootClassName="fixed inset-0 z-[300] overflow-hidden bg-black transition-opacity"

@@ -59,7 +59,6 @@ export default function IslandShell({ worldId, sections, aside, children }: Isla
 
   return (
     <TrifoldLayout
-      worldId={world.id}
       colorRgb={world.colorRgb}
       lead={
         <a
