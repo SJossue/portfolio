@@ -15,10 +15,11 @@ interface IslandSelectorProps {
 
 /**
  * The horizontal island list that fills the center panel below the hero. Each
- * island is a card with its preview + name. Clicking a card selects it (drives
- * the right details panel, accent, and background); clicking the already-
- * selected card enters that world. ArrowLeft/Right move the selection; Enter
- * dives into the selected world.
+ * island is a card with its preview + name. Hovering (or focusing) a card
+ * selects it (drives the right details panel, accent, and background) and
+ * reveals its Enter affordance; clicking dives into that world. ArrowLeft/Right
+ * move the selection; Enter dives into the selected world. On touch (no hover),
+ * the first tap selects and the next enters.
  */
 export default function IslandSelector({
   worlds,
@@ -63,6 +64,8 @@ export default function IslandSelector({
             }}
             type="button"
             aria-current={selected ? 'true' : undefined}
+            onMouseEnter={() => onSelect(i)}
+            onFocus={() => onSelect(i)}
             onClick={() => (selected ? onEnter(world) : onSelect(i))}
             className="group flex items-stretch gap-4 overflow-hidden rounded-2xl border text-left transition-all duration-200 hover:translate-x-0.5"
             style={{
