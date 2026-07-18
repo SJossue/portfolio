@@ -159,22 +159,40 @@ export default function WorldLoader() {
     );
   }
 
-  // Desktop: split across the trifold. The effect plays full-bleed behind; the
-  // transparent center frames it as the MAIN loader, while the angled frosted
-  // side panels take the cropped side pieces — the same geometry the destination
-  // (hub or island) renders, so the panels stay put as the loader hands off.
+  // Desktop: split across the trifold. The effect plays only inside the
+  // transparent center panel (clipped to its rounded frame), which reads as the
+  // MAIN loader, while the angled frosted side panels sit over the themed
+  // background — the same geometry the destination (hub or island) renders, so
+  // the panels stay put as the loader hands off.
   return (
     <TrifoldLayout
       colorRgb={preset.accentRgb}
-      background={hyperspeed}
       rootClassName="fixed inset-0 z-[300] overflow-hidden bg-black transition-opacity"
       rootStyle={fadeStyle}
       rootProps={{ role: 'status', 'aria-live': 'assertive' }}
       left={{ className: 'pointer-events-none', children: null }}
       center={{
         glass: false,
-        className: 'pointer-events-none flex items-center justify-center',
-        children: <LoaderLabel preset={preset} phase={phase} />,
+        className: 'pointer-events-none relative flex items-center justify-center overflow-hidden',
+        children: (
+          <>
+            {hyperspeed}
+            {/* Light frost tint — a softer take on the side panels' gradient so
+                the center reads cohesive with them, Hyperspeed still showing
+                through rather than sitting starkly clear. */}
+            <div
+              className="pointer-events-none absolute inset-0"
+              aria-hidden="true"
+              style={{
+                background:
+                  'linear-gradient(to bottom, rgba(28,31,42,0.32) 0%, rgba(18,20,28,0.4) 45%, rgba(10,11,17,0.5) 100%)',
+              }}
+            />
+            <div className="relative z-10 flex items-center justify-center">
+              <LoaderLabel preset={preset} phase={phase} />
+            </div>
+          </>
+        ),
       }}
       right={{ className: 'pointer-events-none', children: null }}
     />
