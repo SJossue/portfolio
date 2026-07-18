@@ -7,6 +7,7 @@ import { worlds } from '@/content/worlds';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { useWorldLoader } from '@/lib/world-loader-store';
 
+import HubSocials from '../HubSocials';
 import IslandChat from '../IslandChat';
 import HackathonHero from './HackathonHero';
 import IslandListPanel from './IslandListPanel';
@@ -45,7 +46,6 @@ export default function TrifoldHub() {
 
   return (
     <TrifoldLayout
-      worldId={selectedWorld.id}
       colorRgb={selectedWorld.colorRgb}
       lead={
         // Skip link — jumps past the island nav to the selected-island stage.
@@ -60,7 +60,7 @@ export default function TrifoldHub() {
         as: 'aside',
         panelProps: { 'aria-label': 'Profile' },
         children: (
-          <IslandListPanel accentColor={selectedWorld.color} accentRgb={selectedWorld.colorRgb}>
+          <IslandListPanel>
             <IslandChat
               accentColor={selectedWorld.color}
               accentRgb={selectedWorld.colorRgb}
@@ -99,6 +99,14 @@ export default function TrifoldHub() {
           <div className="flex min-h-full flex-col">
             {/* Cycling hackathon hero — fills the right panel. */}
             <HackathonHero />
+            {/* Social links — centered at the bottom of the right panel. */}
+            <div className="mt-auto flex justify-center pb-6">
+              <HubSocials
+                accentColor={selectedWorld.color}
+                accentRgb={selectedWorld.colorRgb}
+                layout="inline"
+              />
+            </div>
           </div>
         ),
       }}

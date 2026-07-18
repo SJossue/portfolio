@@ -3,11 +3,7 @@
 import type { ReactNode } from 'react';
 import Link from 'next/link';
 
-import HubSocials from '../HubSocials';
-
 interface IslandListPanelProps {
-  accentColor: string;
-  accentRgb: string;
   /** Slot filling the rail's middle — the chat lives here. */
   children?: ReactNode;
 }
@@ -44,13 +40,9 @@ function CalendarIcon() {
 
 /**
  * Left rail: plain "Home" and "Book a call" nav rows at the top (icon + text,
- * no background), the chat in the middle, and social links at the bottom.
+ * no background) and the chat filling the middle.
  */
-export default function IslandListPanel({
-  accentColor,
-  accentRgb,
-  children,
-}: IslandListPanelProps) {
+export default function IslandListPanel({ children }: IslandListPanelProps) {
   return (
     <div className="flex h-full flex-col gap-5 p-6">
       <nav aria-label="Primary" className="flex flex-col gap-0.5">
@@ -71,12 +63,8 @@ export default function IslandListPanel({
         </Link>
       </nav>
 
-      {/* Chat fills the middle of the rail. */}
-      <div className="min-h-0 flex-1">{children}</div>
-
-      <div className="pt-2">
-        <HubSocials accentColor={accentColor} accentRgb={accentRgb} layout="inline" />
-      </div>
+      {/* Chat anchored to the bottom of the rail. */}
+      <div className="mt-auto min-h-0">{children}</div>
     </div>
   );
 }
