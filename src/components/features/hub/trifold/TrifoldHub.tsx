@@ -58,6 +58,9 @@ export default function TrifoldHub() {
       }
       left={{
         as: 'aside',
+        // Mobile stacking order: hero+islands first, then this profile rail, then the
+        // hackathon/socials footer. Reset to source order for the desktop grid.
+        className: 'order-2 lg:order-none',
         panelProps: { 'aria-label': 'Profile' },
         children: (
           <IslandListPanel>
@@ -72,7 +75,7 @@ export default function TrifoldHub() {
       }}
       center={{
         as: 'section',
-        className: 'overflow-hidden',
+        className: 'order-1 overflow-hidden lg:order-none',
         panelProps: { id: 'hub-stage', tabIndex: -1, 'aria-label': 'Selected island' },
         children: (
           <div className="flex h-full flex-col">
@@ -94,6 +97,7 @@ export default function TrifoldHub() {
       }}
       right={{
         as: 'section',
+        className: 'order-3 lg:order-none',
         panelProps: { 'aria-label': 'Island details' },
         children: (
           <div className="flex min-h-full flex-col">

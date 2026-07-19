@@ -3,7 +3,6 @@
 import { createElement, type ElementType, type HTMLAttributes, type ReactNode } from 'react';
 
 import { GlassPanel } from '@/components/ui/GlassPanel';
-import { useIsMobile } from '@/hooks/useIsMobile';
 
 import HubBackground from './HubBackground';
 
@@ -34,24 +33,17 @@ interface TrifoldLayoutProps {
   lead?: ReactNode;
 }
 
-const BASE_SIDE = 'overflow-visible lg:h-full lg:overflow-y-auto';
+const BASE_LEFT = 'trifold-panel--left overflow-visible lg:h-full lg:overflow-y-auto';
+const BASE_RIGHT = 'trifold-panel--right overflow-visible lg:h-full lg:overflow-y-auto';
 const BASE_CENTER = 'focus-visible:outline-none lg:h-full lg:overflow-hidden';
 
-function Panel({
-  slot,
-  base,
-  style,
-}: {
-  slot: TrifoldSlot;
-  base: string;
-  style?: React.CSSProperties;
-}) {
+function Panel({ slot, base }: { slot: TrifoldSlot; base: string }) {
   const className = `${base} ${slot.className ?? ''}`.trim();
 
   if (slot.glass === false) {
     return createElement(
       slot.as ?? 'div',
-      { className: `glass-panel--frame ${className}`, style, ...slot.panelProps },
+      { className: `glass-panel--frame ${className}`, ...slot.panelProps },
       slot.children,
     );
   }
@@ -61,7 +53,6 @@ function Panel({
       as={slot.as}
       accent={slot.accent ?? true}
       className={className}
-      style={style}
       {...slot.panelProps}
     >
       {slot.children}
@@ -87,12 +78,6 @@ export default function TrifoldLayout({
   rootProps,
   lead,
 }: TrifoldLayoutProps) {
-  const isMobile = useIsMobile();
-  const angle = (deg: number, origin: string) =>
-    isMobile
-      ? undefined
-      : { transform: `perspective(1600px) rotateY(${deg}deg)`, transformOrigin: origin };
-
   return (
     <div
       className={rootClassName}
@@ -102,10 +87,10 @@ export default function TrifoldLayout({
       {lead}
       {background ?? <HubBackground />}
 
-      <div className="relative z-10 flex flex-col gap-4 p-4 lg:grid lg:h-dvh lg:grid-cols-[minmax(0,20rem)_1.5fr_minmax(0,22rem)] lg:gap-5 lg:p-6">
-        <Panel slot={left} base={BASE_SIDE} style={angle(13, 'right center')} />
+      <div className="trifold-frame relative z-10 flex flex-col gap-4 lg:grid lg:h-dvh lg:grid-cols-[minmax(0,20rem)_1.5fr_minmax(0,22rem)] lg:gap-5">
+        <Panel slot={left} base={BASE_LEFT} />
         <Panel slot={center} base={BASE_CENTER} />
-        <Panel slot={right} base={BASE_SIDE} style={angle(-13, 'left center')} />
+        <Panel slot={right} base={BASE_RIGHT} />
       </div>
     </div>
   );

@@ -71,9 +71,10 @@ test('panels stack into one vertical column on mobile', async ({ page }) => {
     throw new Error('panel bounding boxes unavailable');
   }
 
-  // Single column: panels are ordered top-to-bottom (profile → stage → details)…
-  expect(profileBox.y + profileBox.height).toBeLessThanOrEqual(stageBox.y + 1);
-  expect(stageBox.y + stageBox.height).toBeLessThanOrEqual(detailsBox.y + 1);
+  // Single column: on mobile the stage (hero + islands) leads, then the profile rail,
+  // then the details footer — the primary content is first, not the nav/chat rail.
+  expect(stageBox.y + stageBox.height).toBeLessThanOrEqual(profileBox.y + 1);
+  expect(profileBox.y + profileBox.height).toBeLessThanOrEqual(detailsBox.y + 1);
   // …and each panel spans (near) the full viewport width — not side-by-side columns.
   for (const box of [profileBox, stageBox, detailsBox]) {
     expect(box.width).toBeGreaterThan(390 * 0.8);
