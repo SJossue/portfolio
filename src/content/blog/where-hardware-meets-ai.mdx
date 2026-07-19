@@ -1,0 +1,53 @@
+---
+title: 'Where Hardware Meets AI'
+date: '2026-06-18'
+excerpt: 'Notes from wiring an ESP32 to an LLM — latency, context windows, and the glue that makes embedded AI feel responsive.'
+tags: ['Hardware', 'AI']
+---
+
+Putting a language model behind a physical device changes what you optimize for.
+On the web you can hide a second of latency behind a spinner. On a device with a
+button and an LED, a second of silence reads as _broken_.
+
+Here's what I learned wiring an **ESP32** up to a hosted model for [Forge](/garage).
+
+## The loop is the product
+
+The microcontroller doesn't talk to the model directly — it talks to a thin edge
+function that owns the prompt, the auth, and the rate limiting. The device just
+sends intent and renders a response:
+
+```cpp
+// ESP32 — keep the firmware dumb, keep the glue smart
+void onPress() {
+  led(PULSE);                 // acknowledge instantly
+  String reply = ask(buffer); // round-trip to the edge
+  render(reply);
+  led(reply.length() ? OK : ERR);
+}
+```
+
+That `led(PULSE)` before the network call is the whole trick: **acknowledge the
+input in hardware immediately**, then fill in the answer when it arrives. The user
+never sees dead air.
+
+## Three things that mattered
+
+1. **Trim the context.** Every token you send is latency. Ship the device a tight
+   system prompt and only the state that changed.
+2. **Stream if you can.** Even printing the first few characters early makes the
+   whole exchange feel twice as fast.
+3. **Fail loud, fail local.** When the network drops, the device should say so on
+   its own — not hang waiting for a response that isn't coming.
+
+| Layer     | Owns                    |
+| --------- | ----------------------- |
+| Firmware  | Input, feedback, render |
+| Edge glue | Prompt, auth, limits    |
+| Model     | The actual reasoning    |
+
+## The takeaway
+
+Embedded AI isn't about cramming a model onto a chip. It's about drawing the line
+in the right place — dumb, responsive firmware on one side; smart, replaceable
+glue on the other — so the physical thing always feels alive.
