@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
+import IslandChat from '@/components/features/hub/IslandChat';
 import { worlds } from '@/content/worlds';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
@@ -14,6 +15,8 @@ interface IslandTOCProps {
   sections: IslandSectionRef[];
   /** Optional short blurb shown above the section nav. */
   intro?: React.ReactNode;
+  /** When true, pins the AI assistant to the bottom of the rail. */
+  chat?: boolean;
   scrollRef: React.RefObject<HTMLDivElement | null>;
 }
 
@@ -22,7 +25,7 @@ interface IslandTOCProps {
  * view (scroll-spy) and scrolls the middle panel to a section on click. Vertical
  * on desktop, a horizontal chip strip on mobile.
  */
-export default function IslandTOC({ worldId, sections, intro, scrollRef }: IslandTOCProps) {
+export default function IslandTOC({ worldId, sections, intro, chat, scrollRef }: IslandTOCProps) {
   const isMobile = useIsMobile();
   const reduced = useReducedMotion();
   const world = worlds.find((w) => w.id === worldId) ?? worlds[0];
@@ -95,6 +98,17 @@ export default function IslandTOC({ worldId, sections, intro, scrollRef }: Islan
           );
         })}
       </nav>
+
+      {chat ? (
+        <div className="mt-auto pt-2">
+          <IslandChat
+            accentColor={world.color}
+            accentRgb={world.colorRgb}
+            isMobile={isMobile}
+            defaultMinimized={isMobile}
+          />
+        </div>
+      ) : null}
     </div>
   );
 }

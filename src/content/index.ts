@@ -2,6 +2,8 @@ export { aboutData } from './about';
 export type { AboutData, Highlight, SkillGroup } from './about';
 export { contactLinks } from './contact';
 export type { ContactLink } from './contact';
+export { educationData } from './education';
+export type { EducationData } from './education';
 export { experienceData } from './experience';
 export type { ExperienceEntry } from './experience';
 export { projects } from './projects';

@@ -21,6 +21,8 @@ interface IslandShellProps {
   sections: IslandSectionRef[];
   /** Optional short blurb shown in the left rail, above the section nav. */
   intro?: React.ReactNode;
+  /** When true, pins the AI assistant to the bottom of the left rail. */
+  chat?: boolean;
   /** Right-panel content (highlights / links / contact). */
   aside: React.ReactNode;
   /** The primary, scrollable middle-panel content. */
@@ -37,6 +39,7 @@ export default function IslandShell({
   worldId,
   sections,
   intro,
+  chat,
   aside,
   children,
 }: IslandShellProps) {
@@ -80,7 +83,13 @@ export default function IslandShell({
         as: 'nav',
         panelProps: { 'aria-label': `${world.name} sections` },
         children: (
-          <IslandTOC worldId={world.id} sections={sections} intro={intro} scrollRef={scrollRef} />
+          <IslandTOC
+            worldId={world.id}
+            sections={sections}
+            intro={intro}
+            chat={chat}
+            scrollRef={scrollRef}
+          />
         ),
       }}
       center={{

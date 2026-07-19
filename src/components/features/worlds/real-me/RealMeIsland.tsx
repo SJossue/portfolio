@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 
 import IslandSection from '@/components/features/worlds/shared/IslandSection';
 import { aboutData } from '@/content/about';
@@ -13,6 +14,11 @@ export const sections: IslandSectionRef[] = [
   { id: 'gallery', label: 'Gallery' },
   { id: 'connect', label: "Let's Connect" },
 ];
+
+/** Left-rail blurb — points at the two ways to reach me: the chat below and the
+ *  booking CTA in the connect section. */
+export const intro =
+  'The human behind the code — I build things, cars, robots, and apps, and I like talking about all of it. Look around, then ask me anything below or book a time to talk.';
 
 /** Descriptive alt text for the gallery photos (keyed by image path). */
 const GALLERY_ALT: Record<string, string> = {
@@ -106,8 +112,18 @@ export default function RealMeIsland() {
       <IslandSection id="connect" eyebrow="Reach out" title="Let's Connect">
         <p className="max-w-prose text-base leading-relaxed text-white/70">
           I am always happy to talk shop — engineering, products, or the next thing worth building.
-          Reach out through any of these and I will get back to you.
+          Grab a time on my calendar, or reach out through any of these and I will get back to you.
         </p>
+
+        {/* Primary CTA — the real scheduling flow at /book. */}
+        <Link
+          href="/book"
+          className="mt-6 inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-bold text-black transition-transform hover:scale-[1.02]"
+          style={{ background: `rgb(${ACCENT})` }}
+        >
+          Book a call
+          <span aria-hidden>&rarr;</span>
+        </Link>
 
         <div className="mt-5 flex flex-wrap gap-3">
           {contactLinks.map((link) => {

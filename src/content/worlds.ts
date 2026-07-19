@@ -31,15 +31,15 @@ export const worlds: WorldData[] = [
     auroraColors: ['#f97316', '#fb923c', '#ea580c'],
     particleColors: ['#f97316', '#fb923c', '#ffffff'],
     stats: [
-      { label: 'Projects', value: 6 },
-      { label: 'Technologies', value: 14 },
+      { label: 'Projects', value: 7 },
+      { label: 'Technologies', value: 18 },
     ],
     highlights: [
-      { title: 'DataCool: AI Optimization', tech: 'Python · scikit-learn · Streamlit' },
-      { title: 'SHPE Mobile App', tech: 'React Native · TypeScript · UI/UX' },
+      { title: 'Forge: AI Embedded Platform', tech: 'React Native · ESP32 · PlatformIO' },
+      { title: 'SHPE Mobile App', tech: 'React Native · Supabase · Live on App Store' },
       { title: 'Baja Chassis FEA', tech: 'SolidWorks · FEA · Vehicle Dynamics' },
     ],
-    moreCount: 3,
+    moreCount: 4,
   },
   {
     id: 'timeline',
@@ -52,15 +52,17 @@ export const worlds: WorldData[] = [
     auroraColors: ['#8b5cf6', '#a78bfa', '#7c3aed'],
     particleColors: ['#8b5cf6', '#a78bfa', '#ffffff'],
     stats: [
-      { label: 'Roles', value: 8 },
-      { label: 'Years', value: 2 },
+      { label: 'Roles', value: 11 },
+      { label: 'Organizations', value: 9 },
+      { label: 'Current', value: 4 },
+      { label: 'Fellowships', value: 3 },
     ],
     highlights: [
-      { title: 'MLT Tech Prep Fellow', tech: 'Leadership · Career Readiness' },
-      { title: "NJ Governor's Fellow", tech: 'Public Service · Strategy' },
-      { title: 'PSEG Public Affairs', tech: 'Outreach · Communication' },
+      { title: 'Robotics Engineering Intern', tech: 'Human Friendly Robotics · ROS 2 · Jetson' },
+      { title: 'PSEG Project Management', tech: 'Electrical T&D · Capital Projects' },
+      { title: 'SHPE Internal VP', tech: 'Chapter Ops · Engineering Team' },
     ],
-    moreCount: 5,
+    moreCount: 8,
   },
   {
     id: 'student',
@@ -75,6 +77,8 @@ export const worlds: WorldData[] = [
     stats: [
       { label: 'Papers', value: 3 },
       { label: 'Topics', value: 7 },
+      { label: 'Words', value: 6290 },
+      { label: 'Cited', value: 36 },
     ],
     highlights: [
       { title: 'AV Ethics Research', tech: 'Autonomous Systems · Ethics' },
@@ -94,8 +98,10 @@ export const worlds: WorldData[] = [
     auroraColors: ['#10b981', '#34d399', '#059669'],
     particleColors: ['#10b981', '#34d399', '#ffffff'],
     stats: [
-      { label: 'Skills', value: 16 },
-      { label: 'Links', value: 4 },
+      { label: 'Skills', value: 20 },
+      { label: 'Focus areas', value: 5 },
+      { label: 'Years building', value: 3 },
+      { label: 'Ways to connect', value: 5 },
     ],
     highlights: [
       { title: 'Product Engineer', tech: 'Salvadoran & Ecuadorian' },

@@ -20,4 +20,12 @@ describe('aboutData', () => {
       expect(h.value).toBeTruthy();
     }
   });
+
+  it('lists what I am currently doing', () => {
+    expect(Array.isArray(aboutData.currently)).toBe(true);
+    expect(aboutData.currently.length).toBeGreaterThan(0);
+    for (const item of aboutData.currently) {
+      expect(item).toBeTruthy();
+    }
+  });
 });

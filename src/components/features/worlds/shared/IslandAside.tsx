@@ -5,6 +5,8 @@ import { worlds } from '@/content/worlds';
 
 interface IslandAsideProps {
   worldId: string;
+  /** Show the "Highlights" section. Defaults to true. */
+  showHighlights?: boolean;
   /** Optional island-specific block, rendered between stats and the socials. */
   children?: ReactNode;
 }
@@ -14,29 +16,35 @@ interface IslandAsideProps {
  * optional island-specific block, and the social links. Derived from
  * `worlds.ts`, so each island just passes its id.
  */
-export default function IslandAside({ worldId, children }: IslandAsideProps) {
+export default function IslandAside({
+  worldId,
+  showHighlights = true,
+  children,
+}: IslandAsideProps) {
   const world = worlds.find((w) => w.id === worldId) ?? worlds[0];
 
   return (
     <div className="flex h-full flex-col gap-8 p-6">
-      <section>
-        <p className="mb-3 font-mono text-[0.6rem] uppercase tracking-[0.3em] text-white/45">
-          Highlights
-        </p>
-        <ul className="space-y-3">
-          {world.highlights.map((h) => (
-            <li key={h.title}>
-              <p className="text-sm font-semibold text-white">{h.title}</p>
-              <p className="text-xs text-white/50">{h.tech}</p>
-            </li>
-          ))}
-        </ul>
-        {world.moreCount > 0 ? (
-          <p className="mt-3 text-xs font-semibold" style={{ color: world.color }}>
-            +{world.moreCount} more inside &rarr;
+      {showHighlights ? (
+        <section>
+          <p className="mb-3 font-mono text-[0.6rem] uppercase tracking-[0.3em] text-white/45">
+            Highlights
           </p>
-        ) : null}
-      </section>
+          <ul className="space-y-3">
+            {world.highlights.map((h) => (
+              <li key={h.title}>
+                <p className="text-sm font-semibold text-white">{h.title}</p>
+                <p className="text-xs text-white/50">{h.tech}</p>
+              </li>
+            ))}
+          </ul>
+          {world.moreCount > 0 ? (
+            <p className="mt-3 text-xs font-semibold" style={{ color: world.color }}>
+              +{world.moreCount} more inside &rarr;
+            </p>
+          ) : null}
+        </section>
+      ) : null}
 
       <section>
         <p className="mb-3 font-mono text-[0.6rem] uppercase tracking-[0.3em] text-white/45">

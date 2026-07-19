@@ -128,7 +128,7 @@ export async function POST(req: Request) {
     return jsonResponse({ error: 'Invalid request body.' }, 400);
   }
 
-  const { messages } = body as { messages?: unknown };
+  const { messages, projectId } = body as { messages?: unknown; projectId?: unknown };
 
   if (!Array.isArray(messages) || messages.length === 0) {
     return jsonResponse({ error: 'Messages array is required.' }, 400);
@@ -175,10 +175,35 @@ export async function POST(req: Request) {
     return { role: msg.role as 'user' | 'assistant', content: text };
   });
 
+  // --- Optional per-project focus: scope the assistant to one project when the
+  //     visitor is viewing its detail view. projectId is validated against known
+  //     ids, so only trusted content is interpolated. ---
+  let system = systemPrompt;
+  if (typeof projectId === 'string') {
+    const p = projects.find((pr) => pr.id === projectId);
+    if (p) {
+      const study = [
+        p.situation && `Situation: ${p.situation}`,
+        p.task && `Task: ${p.task}`,
+        p.action && `Action: ${p.action}`,
+        p.solution && `Result: ${p.solution}`,
+        p.lessons?.length && `Lessons: ${p.lessons.join('; ')}`,
+      ]
+        .filter(Boolean)
+        .join('\n');
+      system = `${systemPrompt}
+
+## Current focus
+The visitor is viewing the "${p.title}" project. Prioritize answering about THIS project unless they ask about something else.
+Description: ${p.description}
+Tech: ${p.techStack.join(', ')}${study ? `\n${study}` : ''}`;
+    }
+  }
+
   // --- Stream response ---
   const result = streamText({
     model: nebius(CHAT_MODEL),
-    system: systemPrompt,
+    system,
     messages: normalized,
     maxOutputTokens: 300,
   });

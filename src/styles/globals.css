@@ -307,6 +307,13 @@ body {
     0 0 80px -30px rgba(var(--world-color-rgb, 0, 240, 255), 0.45);
 }
 
+/* highlight.js — the imported theme (blog layout) colors the tokens; strip its
+   own block background/padding so our styled <pre> container shows through. */
+.hljs {
+  background: transparent !important;
+  padding: 0 !important;
+}
+
 /* Gradient section divider */
 .section-divider {
   height: 1px;

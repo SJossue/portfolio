@@ -1,31 +1,117 @@
+import Image from 'next/image';
+
 import IslandSection from '@/components/features/worlds/shared/IslandSection';
-import { experienceData } from '@/content/experience';
 import type { IslandSectionRef } from '@/components/features/worlds/shared/IslandShell';
+import { experienceData } from '@/content/experience';
 
 const ACCENT = '139, 92, 246';
 
 export const sections: IslandSectionRef[] = [
-  { id: 'overview', label: 'Overview' },
   { id: 'experience', label: 'Experience' },
-  { id: 'themes', label: 'Recurring Themes' },
+  { id: 'leadership', label: 'Leadership' },
 ];
 
-function ExperienceItem({ entry }: { entry: (typeof experienceData)[number] }) {
+/** Left-rail blurb — the timeline's title lives in the left panel heading; this is its description. */
+export const intro =
+  'The roles, milestones, and moments that shaped the path. Eleven chapters across engineering teams, program management, and public-service leadership — each one a step in learning how to build, lead, and show up for the people around me.';
+
+/** A role is "current" when its period runs to the present. */
+function isCurrent(period: string): boolean {
+  return /present/i.test(period);
+}
+
+/**
+ * Fallback initials for orgs without a real logo yet — up to three letters from
+ * the significant words in the company name.
+ */
+function monogram(company: string): string {
+  // Prefer a parenthetical acronym when present, e.g. "…(SHPE)…" → "SHPE".
+  const acronym = company.match(/\(([A-Z][A-Za-z.&]{1,6})\)/);
+  if (acronym) return acronym[1].replace(/\./g, '').toUpperCase();
+
+  const stop = new Set(['at', 'of', 'the', 'and', 'for', 'a']);
+  const words = company
+    .replace(/\(.*?\)/g, ' ') // drop parentheticals
+    .split(/[\s.]+/)
+    .filter((w) => w && !stop.has(w.toLowerCase()));
+  return words
+    .slice(0, 3)
+    .map((w) => w[0]?.toUpperCase() ?? '')
+    .join('');
+}
+
+function OrgLogo({ entry }: { entry: (typeof experienceData)[number] }) {
+  if (entry.logo) {
+    return (
+      <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-lg bg-white p-1.5">
+        <Image
+          src={entry.logo}
+          alt={`${entry.company} logo`}
+          fill
+          sizes="44px"
+          className="object-contain"
+        />
+      </div>
+    );
+  }
+
   return (
-    <li className="relative pl-8">
-      {/* Timeline rail dot */}
+    <div
+      aria-hidden
+      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-sm font-bold"
+      style={{
+        background: `rgba(${ACCENT}, 0.14)`,
+        border: `1px solid rgba(${ACCENT}, 0.35)`,
+        color: `rgb(${ACCENT})`,
+      }}
+    >
+      {monogram(entry.company)}
+    </div>
+  );
+}
+
+function NowBadge() {
+  return (
+    <span
+      className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider"
+      style={{ background: `rgba(${ACCENT}, 0.16)`, color: `rgb(${ACCENT})` }}
+    >
       <span
-        aria-hidden
-        className="absolute left-[-4.5px] top-1.5 h-2.5 w-2.5 rounded-full ring-4 ring-[#07070b]"
+        className="h-1.5 w-1.5 animate-pulse rounded-full"
         style={{ background: `rgb(${ACCENT})` }}
       />
+      Now
+    </span>
+  );
+}
+
+function ExperienceItem({ entry }: { entry: (typeof experienceData)[number] }) {
+  const current = isCurrent(entry.period);
+  return (
+    <li className="relative pl-8">
+      {/* Timeline rail dot — brighter + pulsing for a current role. */}
+      <span
+        aria-hidden
+        className={`absolute left-[-4.5px] top-6 h-2.5 w-2.5 rounded-full ring-4 ring-[#07070b] ${
+          current ? 'animate-pulse' : ''
+        }`}
+        style={{ background: current ? `rgb(${ACCENT})` : `rgba(${ACCENT}, 0.55)` }}
+      />
       <div className="border-white/8 rounded-2xl border bg-white/[0.03] p-5">
-        <h3 className="text-lg font-bold text-white">{entry.role}</h3>
-        <p className="mt-1 text-sm text-white/50">
-          {entry.company}
-          {' · '}
-          <span className="font-mono text-xs">{entry.period}</span>
-        </p>
+        <div className="flex items-start gap-3">
+          <OrgLogo entry={entry} />
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+              <h3 className="text-lg font-bold text-white">{entry.role}</h3>
+              {current ? <NowBadge /> : null}
+            </div>
+            <p className="mt-1 text-sm text-white/50">
+              {entry.company}
+              {' · '}
+              <span className="font-mono text-xs">{entry.period}</span>
+            </p>
+          </div>
+        </div>
 
         <p className="mt-3 text-sm leading-relaxed text-white/60">{entry.description}</p>
 
@@ -55,43 +141,34 @@ function ExperienceItem({ entry }: { entry: (typeof experienceData)[number] }) {
   );
 }
 
+function Band({ entries }: { entries: typeof experienceData }) {
+  return (
+    <ol className="relative space-y-6 border-l border-white/10 pl-2">
+      {entries.map((entry) => (
+        <ExperienceItem key={entry.id} entry={entry} />
+      ))}
+    </ol>
+  );
+}
+
 /**
- * My Timeline — roles & milestones. Primary (middle-panel) content: an overview,
- * the full experience as a vertical timeline rail, and the recurring themes that
- * thread through the work. Built fresh from `experienceData`.
+ * My Timeline — roles & milestones. Primary (middle-panel) content: two bands,
+ * Experience then Leadership, each a vertical timeline rail. The page title and
+ * description live in the left rail; here the roles carry the story. Built from
+ * `experienceData`, ordered most-recent-first within each section.
  */
 export default function TimelineIsland() {
-  const themes = Array.from(new Set(experienceData.flatMap((e) => e.techStack)));
+  const experience = experienceData.filter((e) => e.section === 'experience');
+  const leadership = experienceData.filter((e) => e.section === 'leadership');
 
   return (
     <div className="text-white">
-      <IslandSection id="overview" eyebrow="A journey" title="My Timeline">
-        <p className="max-w-prose text-base leading-relaxed text-white/70">
-          The roles, milestones, and moments that shaped the path. Eight chapters spanning
-          engineering teams, public service fellowships, and student leadership — each one a step in
-          learning how to build, lead, and show up for the people around me.
-        </p>
-      </IslandSection>
-
       <IslandSection id="experience" eyebrow="Roles & Milestones" title="Experience">
-        <ol className="relative space-y-6 border-l border-white/10 pl-2">
-          {experienceData.map((entry) => (
-            <ExperienceItem key={entry.id} entry={entry} />
-          ))}
-        </ol>
+        <Band entries={experience} />
       </IslandSection>
 
-      <IslandSection id="themes" eyebrow="Threads" title="Recurring Themes">
-        <ul className="flex flex-wrap gap-2">
-          {themes.map((theme) => (
-            <li
-              key={theme}
-              className="border-white/8 rounded-lg border bg-white/[0.03] px-3 py-1.5 text-sm text-white/75"
-            >
-              {theme}
-            </li>
-          ))}
-        </ul>
+      <IslandSection id="leadership" eyebrow="People & Service" title="Leadership">
+        <Band entries={leadership} />
       </IslandSection>
     </div>
   );

@@ -38,9 +38,18 @@ function CalendarIcon() {
   );
 }
 
+function BlogIcon() {
+  return (
+    <svg {...iconBase} className="h-5 w-5 flex-shrink-0">
+      <path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H16l4 4v10.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5Z" />
+      <path d="M15 4v4h4M8 13h8M8 17h5" />
+    </svg>
+  );
+}
+
 /**
- * Left rail: plain "Home" and "Book a call" nav rows at the top (icon + text,
- * no background) and the chat filling the middle.
+ * Left rail: plain "Home", "Blog", and "Book a call" nav rows at the top
+ * (icon + text, no background) and the chat filling the middle.
  */
 export default function IslandListPanel({ children }: IslandListPanelProps) {
   return (
@@ -53,6 +62,13 @@ export default function IslandListPanel({ children }: IslandListPanelProps) {
         >
           <HomeIcon />
           Home
+        </Link>
+        <Link
+          href="/blog"
+          className="flex w-full items-center gap-3 rounded-xl px-2 py-2.5 text-base font-medium text-white/65 transition-colors hover:bg-white/5 hover:text-white"
+        >
+          <BlogIcon />
+          Blog
         </Link>
         <Link
           href="/book"
