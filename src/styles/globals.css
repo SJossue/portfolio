@@ -249,6 +249,71 @@ body {
   border-color: rgba(0, 240, 255, 0.15);
 }
 
+/* visionOS "liquid glass" panel — a stronger variant of .glass-card used by
+   the trifold hub. Translucent dark glass, heavy backdrop blur + saturate, a
+   specular 1px border, an inset top highlight, and a soft drop shadow. */
+.glass-panel {
+  /* Frosted liquid glass. The frost is a baked-in top-light → bottom-dark
+     gradient (a self-contained "Spotify color bleed") that reads identically in
+     EVERY browser, because it's plain painting — it does not depend on
+     backdrop-filter compositing (which Firefox and software/GPU-blocklisted
+     renderers silently drop). These stops are tuned opaque enough that the
+     wallpaper never shows sharply through the glass even with no blur, so Chrome,
+     Firefox/Zen, Safari, etc. all match. The backdrop-filter below is a pure
+     enhancement — where it composites it softens the faint wallpaper still
+     showing, but the look no longer hinges on it. Layers: specular → frost. */
+  background:
+    linear-gradient(
+      150deg,
+      rgba(255, 255, 255, 0.1) 0%,
+      rgba(255, 255, 255, 0.02) 45%,
+      rgba(255, 255, 255, 0.05) 100%
+    ),
+    linear-gradient(
+      to bottom,
+      rgba(28, 31, 42, 0.66) 0%,
+      rgba(18, 20, 28, 0.74) 42%,
+      rgba(10, 11, 17, 0.84) 100%
+    );
+  backdrop-filter: blur(80px) saturate(190%) brightness(1.05);
+  -webkit-backdrop-filter: blur(80px) saturate(190%) brightness(1.05);
+  border-radius: 34px;
+  /* No hard stroke — the edge reads from the inset specular highlight + the
+     soft float shadow. */
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.32),
+    inset 0 -1px 1px rgba(0, 0, 0, 0.22),
+    0 36px 90px -34px rgba(0, 0, 0, 0.7);
+}
+
+/* Optional per-world accent — a soft colored glow (NOT an outline) that picks
+   up --world-color-rgb from the hub root. */
+.glass-panel--accent {
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.32),
+    inset 0 -1px 1px rgba(0, 0, 0, 0.22),
+    0 0 90px -30px rgba(var(--world-color-rgb, 0, 240, 255), 0.5),
+    0 36px 90px -34px rgba(0, 0, 0, 0.7);
+}
+
+/* Transparent variant of the panel — same radius + a faint edge, but no frost.
+   Used by the loader's center so the effect behind it reads crisp as the
+   "main loader" while the angled side panels stay frosted. */
+.glass-panel--frame {
+  border-radius: 34px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.14),
+    0 0 80px -30px rgba(var(--world-color-rgb, 0, 240, 255), 0.45);
+}
+
+/* highlight.js — the imported theme (blog layout) colors the tokens; strip its
+   own block background/padding so our styled <pre> container shows through. */
+.hljs {
+  background: transparent !important;
+  padding: 0 !important;
+}
+
 /* Gradient section divider */
 .section-divider {
   height: 1px;

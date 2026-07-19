@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import WorldLayout from '@/components/features/worlds/shared/WorldLayout';
+
 import GarageWorld from '@/components/features/worlds/garage/GarageWorld';
 
 export const metadata: Metadata = {
@@ -8,9 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function GaragePage() {
-  return (
-    <WorldLayout worldId="garage">
-      <GarageWorld />
-    </WorldLayout>
-  );
+  return <GarageWorld />;
 }

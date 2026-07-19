@@ -1,590 +1,569 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
-import dynamic from 'next/dynamic';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { researchData, type ResearchEntry } from '@/content/research';
-import { aboutData } from '@/content/about';
 
-gsap.registerPlugin(ScrollTrigger);
+import HubSocials from '@/components/features/hub/HubSocials';
+import IslandChat from '@/components/features/hub/IslandChat';
+import TrifoldLayout from '@/components/features/hub/trifold/TrifoldLayout';
+import { educationData } from '@/content/education';
+import { type ResearchEntry, researchData } from '@/content/research';
+import { worlds } from '@/content/worlds';
+import { useIsMobile } from '@/hooks/useIsMobile';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { useWorldLoader } from '@/lib/world-loader-store';
 
-const StudentHero3D = dynamic(() => import('./StudentHero3D'), { ssr: false });
+const world = worlds.find((w) => w.id === 'student') ?? worlds[0];
+const ACCENT = world.colorRgb;
 
-/* ------------------------------------------------------------------ */
-/*  Helpers                                                            */
-/* ------------------------------------------------------------------ */
+const intro =
+  'The grind behind the build — curiosity that turns into late nights, citations, and the occasional breakthrough. Three papers at the intersection of sustainability, autonomy, and how new transportation technology actually fits into the world.';
 
-/** Extract a short abstract from a research body (first real paragraph). */
-function extractAbstract(body: string): string {
-  const lines = body.split('\n').filter((l) => l.trim().length > 0);
-  const para = lines.find(
-    (l) =>
-      !l.startsWith('#') &&
-      !l.startsWith('**By') &&
-      !l.startsWith('*') &&
-      !l.startsWith('>') &&
-      !l.startsWith('---') &&
-      !l.startsWith('**Index'),
-  );
-  if (!para) return '';
-  const clean = para.replace(/\*\*/g, '').replace(/\*/g, '');
-  return clean.length > 320 ? clean.slice(0, 320).trimEnd() + '...' : clean;
+const eyebrow = 'mb-3 font-mono text-[0.6rem] uppercase tracking-[0.3em] text-white/45';
+
+interface SectionRef {
+  id: string;
+  label: string;
 }
 
-/** Extract key topic headings from research body. */
-function extractTopics(body: string): string[] {
-  const headings = body
-    .split('\n')
-    .filter((l) => /^##\s/.test(l.trim()))
-    .map((l) => l.replace(/^##\s+/, '').trim())
-    .filter(
-      (h) =>
-        !h.toLowerCase().includes('references') &&
-        !h.toLowerCase().includes('abstract') &&
-        h.length < 60,
-    );
-  return headings.slice(0, 5);
-}
+const SECTIONS: SectionRef[] = [
+  { id: 'education', label: 'Education & Focus' },
+  { id: 'research', label: 'Research' },
+];
 
-/* ------------------------------------------------------------------ */
-/*  Sub-components                                                     */
-/* ------------------------------------------------------------------ */
+/** Concise, hand-written summaries — never a dump of the markdown body. */
+const PAPER_SUMMARIES: Record<string, string> = {
+  'future-of-flight':
+    'A look at how hybrid-electric propulsion can cut aviation’s carbon footprint and revive regional air travel — pairing electric motors with combustion engines for quieter, cleaner, shorter-haul flight.',
+  'hybrid-air-white-paper':
+    'A white paper weighing the feasibility of integrating electric and hybrid-electric aircraft systems — the propulsion mechanics, the economic and environmental drivers, and the battery, charging, and infrastructure barriers still in the way.',
+  'urban-maglev':
+    'A study of how Shanghai’s Transrapid maglev fits into a dense city — analyzing electromagnetic-suspension vibration, ground subsidence, and the monitoring and maintenance practices needed to replicate the line elsewhere.',
+};
 
-function HeroSection() {
-  const heroRef = useRef<HTMLDivElement>(null);
+/** The research topics chip cloud shown in Education & Focus (world stat: 7). */
+const RESEARCH_TOPICS = [
+  'Autonomous Systems',
+  'Ethics',
+  'A* Path Planning',
+  'Hybrid-Electric Aircraft',
+  'Maglev',
+  'Sustainability',
+  'Urban Mobility',
+];
 
-  useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+/** The throughlines that connect the papers — the right-rail "Focus" block. */
+const FOCUS = ['Sustainable transport', 'Autonomy & ethics', 'Urban mobility'];
 
-    const ctx = gsap.context(() => {
-      gsap.from('.student-hero-title', {
-        y: 60,
-        opacity: 0,
-        duration: 1.2,
-        ease: 'power3.out',
-        delay: 0.6,
-      });
-      gsap.from('.student-hero-subtitle', {
-        y: 40,
-        opacity: 0,
-        duration: 1,
-        ease: 'power3.out',
-        delay: 0.9,
-        stagger: 0.1,
-      });
-      gsap.from('.student-hero-line', {
-        scaleX: 0,
-        opacity: 0,
-        duration: 1.2,
-        ease: 'power3.out',
-        delay: 1.1,
-      });
-    }, heroRef);
-    return () => ctx.revert();
-  }, []);
+/** Right-rail tally — real figures drawn from the paper bodies. */
+const TALLY: { label: string; value: string }[] = [
+  { label: 'Papers', value: '3' },
+  { label: 'Research topics', value: '7' },
+  { label: 'Words written', value: '6.3K' },
+  { label: 'Works cited', value: '36' },
+];
 
+function Socials() {
   return (
-    <section
-      ref={heroRef}
-      className="relative flex min-h-dvh flex-col items-center justify-start overflow-hidden px-6 pt-24 text-center sm:pt-32 md:pt-40"
-    >
-      {/* Ambient desk-lamp glow */}
-      <div
-        className="pointer-events-none absolute left-1/2 top-1/3 -translate-x-1/2 -translate-y-1/2"
-        style={{
-          width: '800px',
-          height: '800px',
-          background:
-            'radial-gradient(ellipse at center, rgba(6,182,212,0.12) 0%, rgba(6,182,212,0.04) 40%, transparent 70%)',
-        }}
-      />
-
-      {/* 3D layer: floating books, papers, glowing laptop */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 z-0 opacity-80">
-        <StudentHero3D />
-      </div>
-
-      <div className="pointer-events-none relative z-10 text-center">
-        {/* Title */}
-        <h1 className="student-hero-title text-5xl font-black uppercase tracking-tight sm:text-7xl md:text-8xl 3xl:text-9xl 4xl:text-[12rem]">
-          <span className="block bg-gradient-to-b from-white via-white to-white/60 bg-clip-text text-transparent">
-            THE
-          </span>
-          <span className="block bg-gradient-to-r from-cyan-500 via-cyan-400 to-sky-300 bg-clip-text text-transparent">
-            STUDENT
-          </span>
-        </h1>
-
-        {/* Tagline */}
-        <p className="student-hero-subtitle mt-4 font-mono text-xs uppercase tracking-[0.3em] text-cyan-300/80">
-          Curiosity, research, late nights
-        </p>
-
-        {/* Accent line */}
-        <div
-          className="student-hero-line mx-auto mt-6 h-px w-48 origin-center sm:w-64"
-          style={{
-            background: 'linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.6), transparent)',
-          }}
-        />
-
-        {/* Scroll hint */}
-        <div className="student-hero-subtitle mt-4 flex flex-col items-center gap-2 text-white/30">
-          <span className="font-mono text-[10px] uppercase tracking-widest">Scroll</span>
-          <div className="h-6 w-px animate-pulse bg-gradient-to-b from-cyan-400/60 to-transparent" />
-        </div>
-      </div>
-
-      {/* Short description — bottom right */}
-      <div className="student-hero-subtitle pointer-events-none absolute bottom-8 right-6 z-10 max-w-[240px] text-right sm:bottom-10 sm:right-10">
-        <div className="mb-2 ml-auto h-px w-12 bg-gradient-to-l from-cyan-400/60 to-transparent" />
-        <p className="font-mono text-[11px] leading-relaxed text-white/50 sm:text-xs">
-          Where every question becomes a study session.
-        </p>
-      </div>
-    </section>
+    <div className="mt-auto flex justify-center pt-2">
+      <HubSocials accentColor={world.color} accentRgb={world.colorRgb} layout="inline" />
+    </div>
   );
 }
 
-function EducationSection() {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.from('[data-edu-card]', {
-        scrollTrigger: {
-          trigger: '[data-edu-card]',
-          start: 'top 85%',
-          toggleActions: 'play none none none',
-        },
-        y: 60,
-        opacity: 0,
-        duration: 1,
-        ease: 'power3.out',
-      });
-    }, ref);
-    return () => ctx.revert();
-  }, []);
-
+function TopicChips({ topics }: { topics: string[] }) {
   return (
-    <section ref={ref} className="relative px-6 py-32">
-      {/* Section label */}
-      <p
-        className="mb-4 text-center text-xs font-semibold uppercase tracking-[0.3em]"
-        style={{ color: 'rgba(6,182,212,0.6)' }}
-      >
-        Education
-      </p>
-      <h2 className="mb-16 text-center text-3xl font-bold text-white sm:text-4xl">
-        Academic Foundation
-      </h2>
-
-      <div data-edu-card className="mx-auto max-w-2xl">
-        <div
-          className="relative overflow-hidden rounded-2xl border p-8 sm:p-10"
-          style={{
-            borderColor: 'rgba(6,182,212,0.2)',
-            background:
-              'linear-gradient(135deg, rgba(6,182,212,0.06) 0%, rgba(6,182,212,0.02) 100%)',
-          }}
+    <ul className="flex flex-wrap gap-1.5">
+      {topics.map((t) => (
+        <li
+          key={t}
+          className="rounded-md px-2 py-0.5 font-mono text-[10px]"
+          style={{ background: `rgba(${ACCENT}, 0.12)`, color: `rgb(${ACCENT})` }}
         >
-          {/* Accent bar */}
-          <div
-            className="absolute left-0 top-0 h-full w-1 rounded-l-2xl"
-            style={{ background: 'linear-gradient(to bottom, #06b6d4, #0891b2)' }}
+          {t}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/** A selectable paper preview in the overview middle panel. */
+function PaperCard({
+  entry,
+  index,
+  onSelect,
+}: {
+  entry: ResearchEntry;
+  index: number;
+  onSelect: (e: ResearchEntry) => void;
+}) {
+  const summary = PAPER_SUMMARIES[entry.id];
+  return (
+    <button
+      type="button"
+      onClick={() => onSelect(entry)}
+      className="border-white/8 group block w-full overflow-hidden rounded-2xl border bg-white/[0.03] text-left transition-colors hover:border-[color:var(--world-color)]"
+      style={{ ['--world-color' as string]: `rgba(${ACCENT}, 0.5)` }}
+    >
+      {entry.heroImage ? (
+        <div className="relative aspect-[16/9] w-full overflow-hidden">
+          <Image
+            src={entry.heroImage}
+            alt={entry.title}
+            fill
+            sizes="(min-width: 1024px) 40vw, 100vw"
+            className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
           />
-
-          <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:gap-8">
-            {/* Icon */}
-            <div
-              className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl"
-              style={{ background: 'rgba(6,182,212,0.1)' }}
-            >
-              <svg
-                width="32"
-                height="32"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#06b6d4"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
-                <path d="M6 12v5c0 1.657 2.686 3 6 3s6-1.343 6-3v-5" />
-              </svg>
-            </div>
-
-            <div className="flex-1">
-              <h3 className="text-xl font-bold text-white sm:text-2xl">
-                Bachelor of Science in Mechanical Engineering
-              </h3>
-              <p className="mt-1 text-base font-medium" style={{ color: '#06b6d4' }}>
-                Minor in Electrical Engineering
-              </p>
-              <p className="mt-3 text-sm text-slate-400">
-                New Jersey Institute of Technology (NJIT)
-              </p>
-              <p className="mt-4 max-w-xl text-sm leading-relaxed text-slate-400">
-                {aboutData.bio.split('.').slice(1, 3).join('.').trim() + '.'}
-              </p>
-
-              {/* Highlight tags */}
-              <div className="mt-6 flex flex-wrap gap-2">
-                {[
-                  'SolidWorks',
-                  'FEA Simulation',
-                  'CAD Modeling',
-                  'HW/SW Integration',
-                  'System Testing',
-                ].map((tag) => (
-                  <span
-                    key={tag}
-                    className="rounded-full px-3 py-1 text-xs font-medium"
-                    style={{
-                      background: 'rgba(6,182,212,0.1)',
-                      color: 'rgba(6,182,212,0.85)',
-                      border: '1px solid rgba(6,182,212,0.15)',
-                    }}
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+          <div
+            className="absolute left-3 top-3 rounded-md border px-2 py-0.5 font-mono text-[10px]"
+            style={{
+              borderColor: `rgba(${ACCENT}, 0.4)`,
+              background: 'rgba(0,0,0,0.4)',
+              color: `rgb(${ACCENT})`,
+            }}
+          >
+            PAPER · {String(index + 1).padStart(2, '0')}
           </div>
         </div>
-      </div>
-    </section>
-  );
-}
+      ) : null}
 
-function ResearchCard({ entry, index }: { entry: ResearchEntry; index: number }) {
-  const { title, body, heroImage, pdfUrl } = entry;
-  const abstract = extractAbstract(body);
-  const topics = extractTopics(body);
+      <div className="p-5">
+        <h3 className="text-lg font-bold text-white">{entry.title}</h3>
+        {summary ? <p className="mt-2 text-sm leading-relaxed text-white/60">{summary}</p> : null}
 
-  return (
-    <article
-      data-research-card
-      className="group relative overflow-hidden rounded-2xl border transition-colors duration-300 hover:border-cyan-500/30"
-      style={{
-        borderColor: 'rgba(6,182,212,0.12)',
-        background: 'rgba(248,250,252,0.03)',
-      }}
-    >
-      {/* Hero image */}
-      {heroImage && (
-        <div className="relative aspect-[16/7] w-full overflow-hidden">
-          <Image
-            src={heroImage}
-            alt={`Figure from "${title}"`}
-            fill
-            sizes="(max-width: 768px) 100vw, 768px"
-            className="object-cover opacity-80 transition-opacity duration-300 group-hover:opacity-100"
-          />
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                'linear-gradient(to top, rgba(5,5,16,0.95), rgba(5,5,16,0.25) 60%, transparent)',
-            }}
-          />
-        </div>
-      )}
+        {entry.topics?.length ? (
+          <div className="mt-3">
+            <TopicChips topics={entry.topics} />
+          </div>
+        ) : null}
 
-      {/* Number badge */}
-      <div className="absolute right-6 top-6">
         <span
-          className="text-6xl font-black tabular-nums leading-none"
-          style={{ color: 'rgba(6,182,212,0.07)' }}
+          className="mt-4 inline-flex items-center gap-1 font-mono text-xs font-semibold"
+          style={{ color: `rgb(${ACCENT})` }}
         >
-          {String(index + 1).padStart(2, '0')}
+          Read paper <span aria-hidden>&rarr;</span>
         </span>
       </div>
+    </button>
+  );
+}
 
-      <div className="relative p-6 sm:p-8">
-        {/* Paper label */}
+/** Education & Focus — the degree, the credibility markers, and the topic cloud.
+ *  GPA / graduation / coursework render only once real values land in
+ *  `education.ts`, so nothing placeholder ever ships. */
+function EducationBlock() {
+  const { schoolShort, degree, minor, gpa, gradTerm, coursework, honors } = educationData;
+  return (
+    <div className="space-y-6">
+      <div className="border-white/8 rounded-2xl border bg-white/[0.03] p-5">
         <p
-          className="mb-3 text-xs font-semibold uppercase tracking-[0.2em]"
-          style={{ color: 'rgba(6,182,212,0.5)' }}
+          className="font-mono text-xs font-bold uppercase tracking-wider"
+          style={{ color: `rgb(${ACCENT})` }}
         >
-          Research Paper
+          {schoolShort}
         </p>
+        <h3 className="mt-2 text-lg font-bold text-white">{degree}</h3>
+        {minor ? (
+          <p className="mt-1 text-sm text-white/60">
+            Minor in {minor} — New Jersey Institute of Technology.
+          </p>
+        ) : null}
+        {gpa || gradTerm ? (
+          <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2">
+            {gpa ? (
+              <div>
+                <p className="text-xl font-black text-white">{gpa}</p>
+                <p className="font-mono text-[10px] uppercase tracking-wider text-white/40">GPA</p>
+              </div>
+            ) : null}
+            {gradTerm ? (
+              <div>
+                <p className="text-xl font-black text-white">{gradTerm}</p>
+                <p className="font-mono text-[10px] uppercase tracking-wider text-white/40">
+                  Expected graduation
+                </p>
+              </div>
+            ) : null}
+          </div>
+        ) : null}
+      </div>
 
-        <h3 className="text-xl font-bold leading-snug text-white sm:text-2xl">{title}</h3>
-
-        <p className="mt-1 text-xs text-slate-500">By Jossue Sarango</p>
-
-        {/* Abstract */}
-        {abstract && <p className="mt-5 text-sm leading-relaxed text-slate-400">{abstract}</p>}
-
-        {/* Topics */}
-        {topics.length > 0 && (
-          <div className="mt-6">
-            <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-slate-500">
-              Key Topics
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {topics.map((topic) => (
+      {honors.length > 0 ? (
+        <div>
+          <p className={eyebrow}>Honors &amp; Fellowships</p>
+          <ul className="space-y-2">
+            {honors.map((h) => (
+              <li key={h} className="flex gap-2.5 text-sm text-white/75">
                 <span
-                  key={topic}
-                  className="rounded-md px-2.5 py-1 text-xs font-medium"
+                  aria-hidden
+                  className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full"
+                  style={{ background: `rgb(${ACCENT})` }}
+                />
+                {h}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+
+      {coursework.length > 0 ? (
+        <div>
+          <p className={eyebrow}>Relevant Coursework</p>
+          <ul className="flex flex-wrap gap-1.5">
+            {coursework.map((c) => (
+              <li
+                key={c}
+                className="border-white/8 rounded-lg border bg-white/[0.03] px-2.5 py-1 text-xs text-white/75"
+              >
+                {c}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+
+      <div>
+        <p className={eyebrow}>Research Topics</p>
+        <ul className="flex flex-wrap gap-1.5">
+          {RESEARCH_TOPICS.map((topic) => (
+            <li
+              key={topic}
+              className="border-white/8 rounded-lg border bg-white/[0.03] px-2.5 py-1 text-xs text-white/75"
+            >
+              {topic}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+interface StudentWorldProps {
+  /** Paper bodies pre-rendered from markdown on the server, keyed by paper id. */
+  renderedPapers: Record<string, ReactNode>;
+}
+
+/**
+ * The Student — a self-contained trifold that swaps its three panels between an
+ * overview (academic summary · paper cards · education) and a per-paper reading
+ * view (hero + full rendered paper + PDF), all via client state (no route
+ * change). Renders `TrifoldLayout` directly so the panel geometry matches the
+ * world loader for a seamless handoff, mirroring the garage world.
+ */
+export default function StudentWorld({ renderedPapers }: StudentWorldProps) {
+  const markReady = useWorldLoader((s) => s.markReady);
+  const dismiss = useWorldLoader((s) => s.dismiss);
+  const isMobile = useIsMobile();
+  const reduced = useReducedMotion();
+  const [selected, setSelected] = useState<ResearchEntry | null>(null);
+  const [active, setActive] = useState(SECTIONS[0]?.id);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Signal the world loader to dismiss once the island chrome has painted.
+  useEffect(() => {
+    let cancelled = false;
+    const id = requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        if (!cancelled) markReady();
+      });
+    });
+    return () => {
+      cancelled = true;
+      cancelAnimationFrame(id);
+    };
+  }, [markReady]);
+
+  // Safety net: force-dismiss the loader if it's somehow still up after 6s.
+  useEffect(() => {
+    const t = window.setTimeout(() => dismiss(), 6000);
+    return () => window.clearTimeout(t);
+  }, [dismiss]);
+
+  // Scroll-spy for the overview TOC — only meaningful when no paper is selected.
+  useEffect(() => {
+    if (selected) return;
+    const root = isMobile ? null : scrollRef.current;
+    const els = SECTIONS.map((s) => document.getElementById(s.id)).filter(
+      (el): el is HTMLElement => el !== null,
+    );
+    if (els.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+        if (visible[0]) setActive(visible[0].target.id);
+      },
+      { root, rootMargin: '-15% 0px -65% 0px', threshold: [0, 0.25, 0.5, 1] },
+    );
+    els.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, [selected, isMobile]);
+
+  const select = (e: ResearchEntry) => {
+    setSelected(e);
+    scrollRef.current?.scrollTo({ top: 0 });
+  };
+
+  const go = (id: string) => {
+    const el = document.getElementById(id);
+    el?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
+    setActive(id);
+  };
+
+  const paperIndex = selected ? researchData.findIndex((p) => p.id === selected.id) : -1;
+
+  // ── Left panel ────────────────────────────────────────────────────────────
+  const left = selected ? (
+    <div className="flex h-full flex-col gap-5 p-6">
+      <button
+        type="button"
+        onClick={() => setSelected(null)}
+        className="inline-flex items-center gap-2 self-start text-sm font-medium text-white/65 transition-colors hover:text-white"
+      >
+        <span aria-hidden>&larr;</span> Research
+      </button>
+
+      <div>
+        <p className="font-mono text-[0.6rem] uppercase tracking-[0.3em] text-white/45">
+          Paper · {String(paperIndex + 1).padStart(2, '0')}
+        </p>
+        <h2 className="mt-1.5 text-lg font-bold tracking-tight" style={{ color: world.color }}>
+          {selected.title}
+        </h2>
+      </div>
+
+      {selected.topics?.length ? <TopicChips topics={selected.topics} /> : null}
+
+      {/* Paper-scoped assistant — ask questions about this specific paper. */}
+      <div className="mt-auto pt-2">
+        <IslandChat
+          key={selected.id}
+          projectId={selected.id}
+          projectLabel={selected.title}
+          accentColor={world.color}
+          accentRgb={world.colorRgb}
+          isMobile={isMobile}
+          defaultMinimized={isMobile}
+        />
+      </div>
+    </div>
+  ) : (
+    <div className="flex h-full flex-col gap-5 p-6">
+      <Link
+        href="/"
+        className="inline-flex items-center gap-2 self-start text-sm font-medium text-white/65 transition-colors hover:text-white"
+      >
+        <span aria-hidden>&larr;</span> Hub
+      </Link>
+      <div>
+        <p className="text-lg font-bold tracking-tight" style={{ color: world.color }}>
+          {world.name}
+        </p>
+      </div>
+      <p className="text-sm leading-relaxed text-white/60">{intro}</p>
+
+      <nav
+        aria-label="On this page"
+        className="-mx-1 flex gap-1.5 overflow-x-auto px-1 pb-1 lg:mx-0 lg:flex-col lg:overflow-visible lg:px-0 lg:pb-0"
+      >
+        {SECTIONS.map((s) => {
+          const on = s.id === active;
+          return (
+            <button
+              key={s.id}
+              type="button"
+              onClick={() => go(s.id)}
+              aria-current={on ? 'true' : undefined}
+              className="flex-shrink-0 rounded-lg px-3 py-2 text-left text-sm font-medium transition-colors lg:border-l-2"
+              style={{
+                color: on ? '#fff' : 'rgba(255,255,255,0.55)',
+                background: on && isMobile ? `rgba(${ACCENT}, 0.16)` : 'transparent',
+                borderColor: on && !isMobile ? world.color : 'transparent',
+              }}
+            >
+              {s.label}
+            </button>
+          );
+        })}
+      </nav>
+
+      {/* General assistant — pinned to the bottom of the rail. */}
+      <div className="mt-auto pt-2">
+        <IslandChat
+          accentColor={world.color}
+          accentRgb={world.colorRgb}
+          isMobile={isMobile}
+          defaultMinimized={isMobile}
+        />
+      </div>
+    </div>
+  );
+
+  // ── Center panel ──────────────────────────────────────────────────────────
+  const center = (
+    <div key={selected?.id ?? 'overview'} ref={scrollRef} className="lg:h-full lg:overflow-y-auto">
+      {selected ? (
+        <article className="text-white">
+          {selected.heroImage ? (
+            <div className="relative aspect-[16/9] w-full overflow-hidden">
+              <Image
+                src={selected.heroImage}
+                alt={selected.title}
+                fill
+                sizes="(min-width: 1024px) 55vw, 100vw"
+                className="object-cover"
+                priority
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
+            </div>
+          ) : (
+            <div className="aspect-[16/9] w-full" style={{ background: `rgba(${ACCENT}, 0.12)` }} />
+          )}
+          <div className="mx-auto max-w-2xl px-6 py-8 sm:px-8">
+            {/* Full paper body, rendered from markdown on the server. */}
+            {renderedPapers[selected.id]}
+
+            {selected.pdfUrl ? (
+              <div className="border-white/8 mt-10 border-t pt-6">
+                <a
+                  href={selected.pdfUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-lg border px-4 py-2 font-mono text-xs font-semibold transition-colors"
                   style={{
-                    background: 'rgba(6,182,212,0.08)',
-                    color: 'rgba(6,182,212,0.8)',
+                    borderColor: `rgba(${ACCENT}, 0.4)`,
+                    color: `rgb(${ACCENT})`,
                   }}
                 >
-                  {topic}
-                </span>
+                  Download the full PDF <span aria-hidden>&darr;</span>
+                </a>
+              </div>
+            ) : null}
+          </div>
+        </article>
+      ) : (
+        <div className="text-white">
+          <section id="education" data-island-section className="scroll-mt-6 px-6 py-12 sm:px-8">
+            <header className="mb-7">
+              <p className="font-mono text-[0.6rem] uppercase tracking-[0.3em] text-white/45">
+                Foundation
+              </p>
+              <h2 className="mt-1.5 text-2xl font-bold tracking-tight sm:text-3xl">
+                Education &amp; Focus
+              </h2>
+            </header>
+            <EducationBlock />
+          </section>
+
+          <section
+            id="research"
+            data-island-section
+            className="scroll-mt-6 border-t border-white/5 px-6 py-12 sm:px-8"
+          >
+            <header className="mb-7">
+              <p className="font-mono text-[0.6rem] uppercase tracking-[0.3em] text-white/45">
+                Papers
+              </p>
+              <h2 className="mt-1.5 text-2xl font-bold tracking-tight sm:text-3xl">Research</h2>
+            </header>
+            <div className="space-y-6">
+              {researchData.map((entry, i) => (
+                <PaperCard key={entry.id} entry={entry} index={i} onSelect={select} />
               ))}
             </div>
-          </div>
-        )}
+          </section>
+        </div>
+      )}
+    </div>
+  );
 
-        {/* Bottom accent line */}
-        <div
-          className="mt-8 h-px w-full"
-          style={{
-            background: 'linear-gradient(to right, rgba(6,182,212,0.2), transparent)',
-          }}
-        />
+  // ── Right panel ───────────────────────────────────────────────────────────
+  const right = selected ? (
+    <div className="flex h-full flex-col gap-8 p-6 text-white">
+      {selected.topics?.length ? (
+        <section>
+          <p className={eyebrow}>Topics</p>
+          <TopicChips topics={selected.topics} />
+        </section>
+      ) : null}
 
-        {/* Read full paper */}
-        {pdfUrl && (
+      {selected.pdfUrl ? (
+        <section>
+          <p className={eyebrow}>Full Paper</p>
           <a
-            href={pdfUrl}
+            href={selected.pdfUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-6 inline-flex items-center gap-2 rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-4 py-2 font-mono text-xs text-cyan-300 transition-colors hover:border-cyan-400/60 hover:bg-cyan-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/60"
+            className="border-white/8 flex items-center justify-between gap-2 rounded-lg border bg-white/[0.02] px-3 py-2 text-sm text-white/70 transition-colors hover:border-white/15 hover:text-white"
           >
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-              <polyline points="14 2 14 8 20 8" />
-              <line x1="12" y1="18" x2="12" y2="12" />
-              <polyline points="9 15 12 18 15 15" />
-            </svg>
-            Read full paper (PDF)
+            Download PDF
+            <span aria-hidden className="text-white/30">
+              &darr;
+            </span>
           </a>
-        )}
-      </div>
-    </article>
-  );
-}
+        </section>
+      ) : null}
 
-function ResearchSection() {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.utils.toArray<HTMLElement>('[data-research-card]').forEach((card, i) => {
-        gsap.from(card, {
-          scrollTrigger: {
-            trigger: card,
-            start: 'top 85%',
-            toggleActions: 'play none none none',
-          },
-          y: 80,
-          opacity: 0,
-          duration: 0.9,
-          delay: i * 0.15,
-          ease: 'power3.out',
-        });
-      });
-    }, ref);
-    return () => ctx.revert();
-  }, []);
-
-  return (
-    <section ref={ref} className="relative px-6 py-32">
-      {/* Background glow */}
-      <div
-        className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2"
-        style={{
-          width: '600px',
-          height: '600px',
-          background: 'radial-gradient(circle, rgba(6,182,212,0.06) 0%, transparent 70%)',
-        }}
-      />
-
-      <p
-        className="mb-4 text-center text-xs font-semibold uppercase tracking-[0.3em]"
-        style={{ color: 'rgba(6,182,212,0.6)' }}
-      >
-        Research
-      </p>
-      <h2 className="mb-6 text-center text-3xl font-bold text-white sm:text-4xl">Written Papers</h2>
-      <p className="mx-auto mb-16 max-w-lg text-center text-sm leading-relaxed text-slate-500">
-        Deep dives into the technologies shaping tomorrow &mdash; from hybrid-electric aviation to
-        maglev transportation systems.
-      </p>
-
-      <div className="mx-auto flex max-w-3xl flex-col gap-8">
-        {researchData.map((entry, i) => (
-          <ResearchCard key={entry.id} entry={entry} index={i} />
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function SkillsSection() {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.utils.toArray<HTMLElement>('[data-skill-group]').forEach((group, i) => {
-        gsap.from(group, {
-          scrollTrigger: {
-            trigger: group,
-            start: 'top 88%',
-            toggleActions: 'play none none none',
-          },
-          y: 50,
-          opacity: 0,
-          duration: 0.8,
-          delay: i * 0.12,
-          ease: 'power3.out',
-        });
-      });
-    }, ref);
-    return () => ctx.revert();
-  }, []);
-
-  return (
-    <section ref={ref} className="relative px-6 py-32">
-      <p
-        className="mb-4 text-center text-xs font-semibold uppercase tracking-[0.3em]"
-        style={{ color: 'rgba(6,182,212,0.6)' }}
-      >
-        Knowledge
-      </p>
-      <h2 className="mb-16 text-center text-3xl font-bold text-white sm:text-4xl">
-        Skills &amp; Expertise
-      </h2>
-
-      <div className="mx-auto grid max-w-4xl gap-6 sm:grid-cols-2">
-        {aboutData.skills.map((group) => (
-          <div
-            key={group.category}
-            data-skill-group
-            className="rounded-xl border p-6"
-            style={{
-              borderColor: 'rgba(6,182,212,0.1)',
-              background: 'rgba(6,182,212,0.02)',
-            }}
-          >
-            <h3
-              className="mb-4 text-sm font-bold uppercase tracking-wider"
-              style={{ color: '#06b6d4' }}
-            >
-              {group.category}
-            </h3>
-            <div className="flex flex-wrap gap-2">
-              {group.items.map((skill) => (
-                <span
-                  key={skill}
-                  className="rounded-full px-3 py-1.5 text-xs font-medium text-slate-300 transition-colors duration-200"
-                  style={{
-                    background: 'rgba(6,182,212,0.08)',
-                    border: '1px solid rgba(6,182,212,0.12)',
-                  }}
-                >
-                  {skill}
-                </span>
-              ))}
+      <Socials />
+    </div>
+  ) : (
+    <div className="flex h-full flex-col gap-8 p-6 text-white">
+      <section>
+        <p className={eyebrow}>By the Numbers</p>
+        <div className="grid grid-cols-2 gap-3">
+          {TALLY.map((stat) => (
+            <div key={stat.label} className="border-white/8 rounded-2xl border bg-white/[0.02] p-4">
+              <p className="text-2xl font-black text-white">{stat.value}</p>
+              <p className="mt-1 font-mono text-[10px] uppercase tracking-wider text-white/40">
+                {stat.label}
+              </p>
             </div>
-          </div>
-        ))}
-      </div>
-    </section>
+          ))}
+        </div>
+      </section>
+
+      <section>
+        <p className={eyebrow}>Focus</p>
+        <ul className="flex flex-wrap gap-1.5">
+          {FOCUS.map((f) => (
+            <li
+              key={f}
+              className="rounded-lg border px-2.5 py-1 text-xs text-white/75"
+              style={{ borderColor: `rgba(${ACCENT}, 0.2)`, background: `rgba(${ACCENT}, 0.07)` }}
+            >
+              {f}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <Socials />
+    </div>
   );
-}
-
-function BottomCTA() {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.from('[data-cta]', {
-        scrollTrigger: {
-          trigger: '[data-cta]',
-          start: 'top 90%',
-          toggleActions: 'play none none none',
-        },
-        y: 40,
-        opacity: 0,
-        duration: 0.8,
-        ease: 'power3.out',
-      });
-    }, ref);
-    return () => ctx.revert();
-  }, []);
 
   return (
-    <section ref={ref} className="px-6 pb-32 pt-16">
-      <div data-cta className="mx-auto flex max-w-md flex-col items-center text-center">
-        {/* Divider */}
-        <div className="mb-12 h-px w-24" style={{ background: 'rgba(6,182,212,0.25)' }} />
-
-        <p className="mb-6 text-sm text-slate-500">
-          Done studying? Head back to explore other worlds.
-        </p>
-
-        <Link
-          href="/"
-          className="group relative inline-flex items-center gap-2 rounded-full border px-8 py-3 text-sm font-semibold transition-all duration-300 hover:scale-105"
-          style={{
-            borderColor: 'rgba(6,182,212,0.3)',
-            color: '#06b6d4',
-            background: 'rgba(6,182,212,0.05)',
-          }}
+    <TrifoldLayout
+      colorRgb={world.colorRgb}
+      lead={
+        <a
+          href="#student-main"
+          className="sr-only fixed left-4 top-4 z-[100] rounded bg-cyan-400 px-4 py-2 font-mono text-sm text-black focus:not-sr-only"
         >
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="transition-transform duration-300 group-hover:-translate-x-1"
-          >
-            <path d="M19 12H5M12 19l-7-7 7-7" />
-          </svg>
-          Return to Hub
-        </Link>
-      </div>
-    </section>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/*  Main Component                                                     */
-/* ------------------------------------------------------------------ */
-
-export default function StudentWorld() {
-  return (
-    <main className="relative overflow-hidden text-white">
-      <HeroSection />
-      <EducationSection />
-      <ResearchSection />
-      <SkillsSection />
-      <BottomCTA />
-    </main>
+          Skip to content
+        </a>
+      }
+      left={{ as: 'aside', panelProps: { 'aria-label': 'Research navigation' }, children: left }}
+      center={{
+        as: 'section',
+        panelProps: { id: 'student-main', tabIndex: -1, 'aria-label': world.name },
+        children: center,
+      }}
+      right={{ as: 'aside', panelProps: { 'aria-label': 'Paper details' }, children: right }}
+    />
   );
 }

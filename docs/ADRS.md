@@ -11,3 +11,6 @@ ADRs capture decisions that change architecture, tooling, performance posture, o
 - [0005: Space Grotesk Typography](./adr/0005-space-grotesk-typography.md)
 - [0006: Hyperspeed World Loader](./adr/0006-hyperspeed-world-loader.md)
 - [0007: Self-Hosted Scheduling (`/book`)](./adr/0007-self-hosted-scheduling.md)
+- [0008: Trifold Spatial Hub](./adr/0008-trifold-hub.md)
+- [0009: react-icons for Brand Logos](./adr/0009-react-icons-brand-logos.md)
+- [0010: MDX Blog](./adr/0010-mdx-blog.md)

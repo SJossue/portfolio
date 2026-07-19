@@ -3,6 +3,7 @@
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
 import { type FormEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 import { renderChatMarkdown } from '@/lib/chat-markdown';
 
@@ -11,6 +12,10 @@ interface IslandChatProps {
   accentRgb: string;
   isMobile?: boolean;
   defaultMinimized?: boolean;
+  /** When set, scopes the assistant to a single project (sent to the API). */
+  projectId?: string;
+  /** Human-readable project name — drives the placeholder/suggestions. */
+  projectLabel?: string;
 }
 
 type ViewMode = 'default' | 'minimized' | 'fullscreen';
@@ -22,6 +27,13 @@ const SUGGESTIONS = [
   'Walk me through your experience.',
   'What are you studying?',
   'How can I get in touch?',
+];
+
+const PROJECT_SUGGESTIONS = [
+  'What problem does this solve?',
+  'What was the hardest part?',
+  'Which tools did you use?',
+  'What did you learn?',
 ];
 
 interface UIPart {
@@ -42,13 +54,16 @@ export default function IslandChat({
   accentRgb,
   isMobile = false,
   defaultMinimized = false,
+  projectId,
+  projectLabel,
 }: IslandChatProps) {
   const transport = useMemo(
     () =>
       new DefaultChatTransport({
         api: '/api/chat',
+        ...(projectId ? { body: { projectId } } : {}),
       }),
-    [],
+    [projectId],
   );
 
   const { messages, sendMessage, status, error, stop, clearError } = useChat({
@@ -136,7 +151,7 @@ export default function IslandChat({
     [busy, available, error, clearError, sendMessage],
   );
 
-  const suggestions = SUGGESTIONS;
+  const suggestions = projectId ? PROJECT_SUGGESTIONS : SUGGESTIONS;
   const accent = accentColor;
   const rgb = accentRgb;
 
@@ -154,7 +169,9 @@ export default function IslandChat({
       ? 'Chat unavailable right now'
       : hasMessages
         ? 'Keep asking…'
-        : 'Ask about Jossue…';
+        : projectLabel
+          ? `Ask about ${projectLabel}…`
+          : 'Ask about Jossue…';
 
   if (viewMode === 'minimized') {
     return (
@@ -466,7 +483,10 @@ export default function IslandChat({
   );
 
   if (isFullscreen) {
-    return (
+    // Portal to <body>: the trifold side panels use a CSS `transform`, which
+    // creates a containing block and would otherwise trap this `fixed` overlay
+    // inside its panel. Rendering at the document root escapes that.
+    return createPortal(
       <div
         role="dialog"
         aria-modal="true"
@@ -482,7 +502,8 @@ export default function IslandChat({
         onClick={() => setViewMode(closeMode)}
       >
         {panel}
-      </div>
+      </div>,
+      document.body,
     );
   }
 

@@ -1,0 +1,54 @@
+---
+title: 'Building a Trifold Portfolio'
+date: '2026-07-05'
+excerpt: 'Why I rebuilt my portfolio as three angled glass panels — and what a spatial layout buys you over a scroll.'
+tags: ['Design', 'Next.js']
+---
+
+Most portfolios are a scroll. You land at the top, thumb your way down through a
+hero, some cards, a contact form, and you're done. It works, but it's flat — the
+structure of the page never tells you anything about the structure of the work.
+
+I wanted something spatial. So the new site is a **trifold**: three glass panels,
+the outer two angled inward like a control surface, sharing one geometry across
+the hub and every world inside it.
+
+## One geometry, everywhere
+
+The trick that makes it feel cohesive is that the _same_ layout renders the hub,
+each island, and even the loading transition. The panels line up pixel-for-pixel,
+so entering a world feels like the panels stay put while their contents swap.
+
+```tsx
+<TrifoldLayout
+  colorRgb={world.colorRgb}
+  left={{ children: <Directory /> }}
+  center={{ children: <Content /> }}
+  right={{ children: <Details /> }}
+/>
+```
+
+Every surface is the same three-column grid — `20rem · 1.5fr · 22rem` — so the
+loader can hand off into its destination without a jump.
+
+## Frosted glass that survives every browser
+
+The panels look like visionOS "liquid glass," but the frost is _baked in_ — a
+top-light-to-bottom-dark gradient painted directly onto each panel:
+
+- It reads identically in Chrome, Firefox, and Safari.
+- It doesn't depend on `backdrop-filter` compositing, which some browsers and
+  GPUs silently drop.
+- `backdrop-filter` still layers on top as a bonus where it works.
+
+> Design for the renderer you _have_, not the one you wish you had. Progressive
+> enhancement beats a beautiful effect that only shows up on your machine.
+
+## What the layout buys you
+
+Splitting content across three panels forces a hierarchy: navigation on the left,
+the thing you're looking at in the center, the supporting detail on the right.
+It's the same discipline a good workshop has — tools on the wall, the piece on
+the bench, the reference pinned where you can see it.
+
+More on the individual worlds soon.
