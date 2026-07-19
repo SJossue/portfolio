@@ -28,6 +28,49 @@ header {
   padding-right: max(env(safe-area-inset-right), 0px);
 }
 
+/* Trifold frame: honour the notch / home indicator under `viewport-fit: cover`.
+   Mirrors the old `p-4` (1rem) but never lets a panel slide under a safe area. */
+.trifold-frame {
+  padding: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right))
+    max(1rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
+}
+
+/* The side panels angle inward only on the desktop grid (>=1024px), where they sit
+   side by side. Below that the panels stack into one column, so the perspective skew
+   is dropped entirely — this is what keeps the 768-1023px range from rendering tilted.
+   Driven by CSS (not JS) so it can never desync from the grid breakpoint. */
+@media (min-width: 1024px) {
+  .trifold-frame {
+    padding: 1.5rem;
+  }
+  .trifold-panel--left {
+    transform: perspective(1600px) rotateY(13deg);
+    transform-origin: right center;
+  }
+  .trifold-panel--right {
+    transform: perspective(1600px) rotateY(-13deg);
+    transform-origin: left center;
+  }
+}
+
+/* Island card "enter" affordance, resolved by pointer type in CSS so it's correct on
+   the first paint with no hydration flash: a light chevron on touch (every card enters
+   on a single tap), the full Enter pill on fine pointers (hover-selected card only). */
+.island-enter-chevron {
+  display: flex;
+}
+.island-enter-pill {
+  display: none;
+}
+@media (pointer: fine) {
+  .island-enter-chevron {
+    display: none;
+  }
+  .island-enter-pill {
+    display: flex;
+  }
+}
+
 /* Lock viewport for 3D immersive mode */
 .mode-3d,
 .mode-3d body {

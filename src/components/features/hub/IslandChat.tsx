@@ -5,6 +5,7 @@ import { DefaultChatTransport } from 'ai';
 import { type FormEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
+import { useCoarsePointer } from '@/hooks/useCoarsePointer';
 import { renderChatMarkdown } from '@/lib/chat-markdown';
 
 interface IslandChatProps {
@@ -76,8 +77,20 @@ export default function IslandChat({
   const [viewMode, setViewMode] = useState<ViewMode>(defaultMinimized ? 'minimized' : 'default');
   const closeMode: ViewMode = isMobile ? 'minimized' : 'default';
   const openMode: ViewMode = isMobile ? 'fullscreen' : 'default';
+  const touch = useCoarsePointer();
   const threadRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // On mobile the chat rests as a FAB, opening to fullscreen on tap. `isMobile` is
+  // correct on the first client render, but `viewMode` is seeded during the
+  // server-snapshot pass (when it's still false), so bridge them once after mount —
+  // only from the untouched `default` state, so a user who has opened it stays open.
+  const bridgedRef = useRef(false);
+  useEffect(() => {
+    if (bridgedRef.current || !isMobile) return;
+    bridgedRef.current = true;
+    setViewMode((m) => (m === 'default' ? 'minimized' : m));
+  }, [isMobile]);
 
   useEffect(() => {
     if (available !== null) return;
@@ -248,7 +261,9 @@ export default function IslandChat({
             type="button"
             onClick={() => setViewMode('minimized')}
             aria-label="Minimize chat"
-            className="flex h-6 w-6 items-center justify-center rounded-md transition-colors hover:bg-white/10"
+            className={`flex items-center justify-center rounded-md transition-colors hover:bg-white/10 ${
+              touch ? 'h-11 w-11' : 'h-6 w-6'
+            }`}
             style={{ color: accent }}
           >
             <svg
@@ -268,7 +283,9 @@ export default function IslandChat({
             type="button"
             onClick={() => setViewMode(isFullscreen ? closeMode : 'fullscreen')}
             aria-label={isFullscreen ? 'Exit fullscreen' : 'Expand chat'}
-            className="flex h-6 w-6 items-center justify-center rounded-md transition-colors hover:bg-white/10"
+            className={`flex items-center justify-center rounded-md transition-colors hover:bg-white/10 ${
+              touch ? 'h-11 w-11' : 'h-6 w-6'
+            }`}
             style={{ color: accent }}
           >
             {isFullscreen ? (
@@ -431,7 +448,9 @@ export default function IslandChat({
             type="button"
             onClick={() => stop()}
             aria-label="Stop response"
-            className="flex h-7 w-7 items-center justify-center rounded-full transition-colors"
+            className={`flex items-center justify-center rounded-full transition-colors ${
+              touch ? 'h-11 w-11' : 'h-7 w-7'
+            }`}
             style={{
               background: `rgba(${rgb}, 0.18)`,
               color: accent,
@@ -445,7 +464,9 @@ export default function IslandChat({
             type="submit"
             disabled={!input.trim() || disabled}
             aria-label="Send message"
-            className="flex h-7 w-7 items-center justify-center rounded-full transition-all hover:scale-105 disabled:opacity-40"
+            className={`flex items-center justify-center rounded-full transition-all hover:scale-105 disabled:opacity-40 ${
+              touch ? 'h-11 w-11' : 'h-7 w-7'
+            }`}
             style={{
               background: `rgba(${rgb}, 0.18)`,
               color: accent,
