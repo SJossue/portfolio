@@ -25,6 +25,10 @@ Add **LogRocket** for session replay + frontend error capture.
   of the initial bundle so the first paint / LCP posture is unaffected.
 - The app ID (`w3kmv1/portfolio`) is a public client identifier; it defaults in
   code and can be overridden per environment with `NEXT_PUBLIC_LOGROCKET_ID`.
+- Shared helpers live in `src/lib/logrocket.ts` (`initLogRocket`,
+  `identifyLogRocketUser`). The booking form calls `identifyLogRocketUser` on a
+  confirmed booking — the one place the site learns a visitor's name + email — so
+  those sessions are searchable by person; all other sessions stay anonymous.
 
 ## Rationale
 

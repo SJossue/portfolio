@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Textarea';
+import { identifyLogRocketUser } from '@/lib/logrocket';
 import type { BookingInput } from '@/lib/scheduling/types';
 
 interface BookingFormProps {
@@ -45,6 +46,9 @@ export function BookingForm({
 
       if (res.status === 201) {
         const data = (await res.json().catch(() => ({}))) as { videoUrl?: string };
+        // Link this replay session to the person who just booked (the one point where
+        // the site learns a visitor's identity). Fire-and-forget; deployed-only.
+        void identifyLogRocketUser(email, { name, email });
         onConfirmed(data.videoUrl);
         return;
       }
