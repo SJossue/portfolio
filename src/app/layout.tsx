@@ -4,6 +4,7 @@ import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import '@/styles/globals.css';
 import { JsonLd } from '@/components/features/JsonLd';
+import LogRocketInit from '@/components/features/LogRocketInit';
 import WorldLoader from '@/components/features/hub/WorldLoader';
 import { siteConfig } from '@/lib/site';
 
@@ -74,6 +75,7 @@ export default function RootLayout({
           Skip to content
         </a>
         <JsonLd />
+        <LogRocketInit />
         {children}
         <WorldLoader />
         <Analytics />
