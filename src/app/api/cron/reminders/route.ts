@@ -13,8 +13,12 @@ export const dynamic = 'force-dynamic';
  * `Authorization: Bearer $CRON_SECRET` when CRON_SECRET is set; we verify it.
  */
 export async function GET(req: NextRequest) {
+  // Fail closed: require CRON_SECRET to be configured AND matched. Previously an
+  // unset secret skipped the check entirely, leaving this endpoint publicly
+  // triggerable. Vercel Cron sends `Authorization: Bearer $CRON_SECRET` when the
+  // env var is set — so CRON_SECRET MUST be set in production for reminders to run.
   const secret = process.env.CRON_SECRET;
-  if (secret && req.headers.get('authorization') !== `Bearer ${secret}`) {
+  if (!secret || req.headers.get('authorization') !== `Bearer ${secret}`) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   }
 
