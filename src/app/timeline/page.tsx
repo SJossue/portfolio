@@ -11,6 +11,12 @@ import { worlds } from '@/content/worlds';
 export const metadata: Metadata = {
   title: 'My Timeline',
   description: 'A journey through the roles, milestones, and moments that shaped the path.',
+  alternates: { canonical: '/timeline' },
+  openGraph: {
+    title: 'My Timeline — Jossue Sarango',
+    description: 'A journey through the roles, milestones, and moments that shaped the path.',
+    url: '/timeline',
+  },
 };
 
 const TIMELINE_ACCENT = worlds.find((w) => w.id === 'timeline')?.color ?? '#8b5cf6';

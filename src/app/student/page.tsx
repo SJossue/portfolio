@@ -10,6 +10,12 @@ import { researchData } from '@/content/research';
 export const metadata: Metadata = {
   title: 'The Student',
   description: 'Research, education, and the academic journey.',
+  alternates: { canonical: '/student' },
+  openGraph: {
+    title: 'The Student — Jossue Sarango',
+    description: 'Research, education, and the academic journey.',
+    url: '/student',
+  },
 };
 
 export default function StudentPage() {
