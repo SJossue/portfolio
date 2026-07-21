@@ -16,6 +16,17 @@ function fmt(d: Date, tz: string): string {
   }).format(d);
 }
 
+/** Escape invitee-supplied text before interpolating into email HTML — a booked
+ *  name/notes value is untrusted and would otherwise inject markup into the inbox. */
+function esc(s: string): string {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 /** Email-safe HTML shell: centered card, dark header, light body. */
 function shell(preheader: string, body: string): string {
   return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
@@ -77,7 +88,7 @@ export function renderInviteeConfirmation(i: ConfirmInput): string {
   const rescheduleUrl = `${siteConfig.url}/book/reschedule?token=${i.cancelToken}`;
   const body = `
 <p style="margin:0 0 6px;color:${ACCENT};font-size:13px;font-weight:600;letter-spacing:0.06em;">YOU&rsquo;RE BOOKED</p>
-<h1 style="margin:0 0 8px;color:${INK};font-size:24px;">See you soon, ${i.inviteeName.split(' ')[0]}.</h1>
+<h1 style="margin:0 0 8px;color:${INK};font-size:24px;">See you soon, ${esc(i.inviteeName.split(' ')[0])}.</h1>
 <p style="margin:0 0 16px;color:${MUTED};font-size:14px;line-height:1.6;">Your ${i.meetingType.name.toLowerCase()} with ${siteConfig.author} is confirmed. The details are below and a calendar invite is attached.</p>
 ${detailsTable([
   ['Meeting', i.meetingType.name],
@@ -134,12 +145,12 @@ export async function sendConfirmationEmails(i: ConfirmInput): Promise<void> {
   // ---- Owner notification ----
   const ownerBody = `
 <p style="margin:0 0 6px;color:${ACCENT};font-size:13px;font-weight:600;letter-spacing:0.06em;">NEW BOOKING</p>
-<h1 style="margin:0 0 16px;color:${INK};font-size:22px;">${i.inviteeName} booked a ${i.meetingType.name.toLowerCase()}.</h1>
+<h1 style="margin:0 0 16px;color:${INK};font-size:22px;">${esc(i.inviteeName)} booked a ${i.meetingType.name.toLowerCase()}.</h1>
 ${detailsTable([
-  ['Guest', `${i.inviteeName} (${i.inviteeEmail})`],
+  ['Guest', `${esc(i.inviteeName)} (${esc(i.inviteeEmail)})`],
   ['When', fmt(i.start, ownerTz)],
   ['Duration', `${i.meetingType.durationMin} minutes`],
-  ['Notes', i.notes ? i.notes.replace(/</g, '&lt;') : '—'],
+  ['Notes', i.notes ? esc(i.notes) : '—'],
 ])}
 ${i.videoUrl ? joinButton(i.videoUrl) : ''}`;
 
@@ -147,7 +158,7 @@ ${i.videoUrl ? joinButton(i.videoUrl) : ''}`;
     from: FROM,
     to: owner,
     subject: `New booking: ${i.meetingType.name} — ${i.inviteeName}`,
-    html: shell(`${i.inviteeName} booked a ${i.meetingType.name}`, ownerBody),
+    html: shell(`${esc(i.inviteeName)} booked a ${i.meetingType.name}`, ownerBody),
     text: `${i.inviteeName} (${i.inviteeEmail}) booked a ${i.meetingType.name}.\n${fmt(i.start, ownerTz)}\nNotes: ${i.notes ?? '—'}${i.videoUrl ? `\nJoin: ${i.videoUrl}` : ''}`,
     attachments,
   });
@@ -197,7 +208,7 @@ ${detailsTable([
     subject: `Cancelled: ${i.meetingTypeName} — ${i.inviteeName}`,
     html: shell(
       'A booking was cancelled',
-      body(fmt(i.start, ownerTz), `${i.inviteeName} cancelled their booking.`),
+      body(fmt(i.start, ownerTz), `${esc(i.inviteeName)} cancelled their booking.`),
     ),
     text: `${i.inviteeName} (${i.inviteeEmail}) cancelled their ${i.meetingTypeName} on ${fmt(i.start, ownerTz)}.`,
   });
@@ -309,11 +320,11 @@ ${manage ? `<p style="margin:18px 0 0;color:${MUTED};font-size:13px;border-top:1
     to: owner,
     subject: `Rescheduled: ${i.meetingType.name} — ${i.inviteeName}`,
     html: shell(
-      `${i.inviteeName} rescheduled`,
+      `${esc(i.inviteeName)} rescheduled`,
       body(
         fmt(i.newStart, ownerTz),
         fmt(i.oldStart, ownerTz),
-        `${i.inviteeName} moved their booking.`,
+        `${esc(i.inviteeName)} moved their booking.`,
         false,
       ),
     ),
