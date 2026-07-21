@@ -93,7 +93,7 @@ export default function IslandShell({
         ),
       }}
       center={{
-        as: 'section',
+        as: 'main',
         panelProps: { id: 'island-main', tabIndex: -1, 'aria-label': world.name },
         children: (
           <div ref={scrollRef} className="lg:h-full lg:overflow-y-auto">

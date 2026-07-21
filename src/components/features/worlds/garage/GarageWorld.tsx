@@ -567,9 +567,9 @@ export default function GarageWorld() {
         <span aria-hidden>&larr;</span> Hub
       </Link>
       <div>
-        <p className="text-lg font-bold tracking-tight" style={{ color: world.color }}>
+        <h1 className="text-lg font-bold tracking-tight" style={{ color: world.color }}>
           {world.name}
-        </p>
+        </h1>
       </div>
       <p className="text-sm leading-relaxed text-white/60">{intro}</p>
       <nav aria-label="Projects" className="flex flex-col gap-0.5">
@@ -712,7 +712,7 @@ export default function GarageWorld() {
                 {stat.value}
                 {stat.value >= 10 ? <span style={{ color: `rgb(${ACCENT})` }}>+</span> : null}
               </p>
-              <p className="mt-1 font-mono text-[10px] uppercase tracking-wider text-white/40">
+              <p className="mt-1 font-mono text-[10px] uppercase tracking-wider text-white/60">
                 {stat.label}
               </p>
             </div>
@@ -737,7 +737,7 @@ export default function GarageWorld() {
       }
       left={{ as: 'aside', panelProps: { 'aria-label': 'Project navigation' }, children: left }}
       center={{
-        as: 'section',
+        as: 'main',
         panelProps: { id: 'garage-main', tabIndex: -1, 'aria-label': world.name },
         children: center,
       }}

@@ -496,7 +496,7 @@ export default function IslandChat({
           {friendlyError ? (
             <span className="text-red-400/80">{friendlyError}</span>
           ) : (
-            <span className="text-white/30">Answers return when chat is back online.</span>
+            <span className="text-white/60">Answers return when chat is back online.</span>
           )}
         </div>
       )}

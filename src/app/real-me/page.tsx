@@ -9,6 +9,12 @@ import { worlds } from '@/content/worlds';
 export const metadata: Metadata = {
   title: 'About Me',
   description: 'The human behind the code. Connect, chat, and get to know me.',
+  alternates: { canonical: '/real-me' },
+  openGraph: {
+    title: 'About Me — Jossue Sarango',
+    description: 'The human behind the code. Connect, chat, and get to know me.',
+    url: '/real-me',
+  },
 };
 
 const REALME_ACCENT = worlds.find((w) => w.id === 'real-me')?.color ?? '#10b981';

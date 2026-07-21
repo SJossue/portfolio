@@ -60,7 +60,7 @@ export default function IslandAside({
                 {s.value}
                 {s.value >= 10 ? <span style={{ color: world.color }}>+</span> : null}
               </p>
-              <p className="mt-0.5 font-mono text-[10px] uppercase tracking-wider text-white/40">
+              <p className="mt-0.5 font-mono text-[10px] uppercase tracking-wider text-white/60">
                 {s.label}
               </p>
             </div>

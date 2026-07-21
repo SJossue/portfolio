@@ -67,9 +67,9 @@ export default function IslandTOC({ worldId, sections, intro, chat, scrollRef }:
       </Link>
 
       <div>
-        <p className="text-lg font-bold tracking-tight" style={{ color: world.color }}>
+        <h1 className="text-lg font-bold tracking-tight" style={{ color: world.color }}>
           {world.name}
-        </p>
+        </h1>
       </div>
 
       {intro ? <p className="text-sm leading-relaxed text-white/60">{intro}</p> : null}
