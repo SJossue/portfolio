@@ -108,73 +108,6 @@ header {
   border-right: 1px solid rgba(0, 240, 255, 0.4);
 }
 
-/* Typing / terminal text animation */
-@keyframes typing-cursor {
-  0%,
-  100% {
-    border-color: rgba(0, 240, 255, 0.8);
-  }
-
-  50% {
-    border-color: transparent;
-  }
-}
-
-.animate-typing-cursor {
-  border-right: 2px solid rgba(0, 240, 255, 0.8);
-  animation: typing-cursor 1s step-end infinite;
-}
-
-/* Glitch text effect */
-@keyframes glitch {
-  0%,
-  100% {
-    transform: translate(0);
-    opacity: 1;
-  }
-
-  20% {
-    transform: translate(-2px, 1px);
-  }
-
-  40% {
-    transform: translate(2px, -1px);
-    opacity: 0.8;
-  }
-
-  60% {
-    transform: translate(-1px, -1px);
-  }
-
-  80% {
-    transform: translate(1px, 1px);
-    opacity: 0.9;
-  }
-}
-
-@keyframes glitch-skew {
-  0%,
-  100% {
-    transform: skew(0deg);
-  }
-
-  25% {
-    transform: skew(-0.5deg);
-  }
-
-  75% {
-    transform: skew(0.5deg);
-  }
-}
-
-.animate-glitch {
-  animation: glitch 3s ease-in-out infinite;
-}
-
-.animate-glitch-skew {
-  animation: glitch-skew 4s ease-in-out infinite;
-}
-
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -361,20 +294,6 @@ body {
 .section-divider {
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.2) 50%, transparent);
-}
-
-/* Lenis overrides — disable smooth scroll when not needed */
-html.lenis,
-html.lenis body {
-  height: auto;
-}
-
-.lenis.lenis-smooth {
-  scroll-behavior: auto !important;
-}
-
-.lenis.lenis-smooth [data-lenis-prevent] {
-  overscroll-behavior: contain;
 }
 
 /* Accessible focus rings — cyberpunk themed */
