@@ -175,13 +175,13 @@ function EducationBlock() {
             {gpa ? (
               <div>
                 <p className="text-xl font-black text-white">{gpa}</p>
-                <p className="font-mono text-[10px] uppercase tracking-wider text-white/40">GPA</p>
+                <p className="font-mono text-[10px] uppercase tracking-wider text-white/60">GPA</p>
               </div>
             ) : null}
             {gradTerm ? (
               <div>
                 <p className="text-xl font-black text-white">{gradTerm}</p>
-                <p className="font-mono text-[10px] uppercase tracking-wider text-white/40">
+                <p className="font-mono text-[10px] uppercase tracking-wider text-white/60">
                   Expected graduation
                 </p>
               </div>
@@ -361,9 +361,9 @@ export default function StudentWorld({ renderedPapers }: StudentWorldProps) {
         <span aria-hidden>&larr;</span> Hub
       </Link>
       <div>
-        <p className="text-lg font-bold tracking-tight" style={{ color: world.color }}>
+        <h1 className="text-lg font-bold tracking-tight" style={{ color: world.color }}>
           {world.name}
-        </p>
+        </h1>
       </div>
       <p className="text-sm leading-relaxed text-white/60">{intro}</p>
 
@@ -519,7 +519,7 @@ export default function StudentWorld({ renderedPapers }: StudentWorldProps) {
           {TALLY.map((stat) => (
             <div key={stat.label} className="border-white/8 rounded-2xl border bg-white/[0.02] p-4">
               <p className="text-2xl font-black text-white">{stat.value}</p>
-              <p className="mt-1 font-mono text-[10px] uppercase tracking-wider text-white/40">
+              <p className="mt-1 font-mono text-[10px] uppercase tracking-wider text-white/60">
                 {stat.label}
               </p>
             </div>
@@ -559,7 +559,7 @@ export default function StudentWorld({ renderedPapers }: StudentWorldProps) {
       }
       left={{ as: 'aside', panelProps: { 'aria-label': 'Research navigation' }, children: left }}
       center={{
-        as: 'section',
+        as: 'main',
         panelProps: { id: 'student-main', tabIndex: -1, 'aria-label': world.name },
         children: center,
       }}

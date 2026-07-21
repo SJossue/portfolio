@@ -329,7 +329,7 @@ export default function BookingTrifold() {
       }
       left={{ as: 'aside', panelProps: { 'aria-label': 'Booking summary' }, children: left }}
       center={{
-        as: 'section',
+        as: 'main',
         panelProps: { id: 'book-main', tabIndex: -1, 'aria-label': 'Book a call' },
         children: center,
       }}
