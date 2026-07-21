@@ -21,22 +21,12 @@ export default {
         mono: ['var(--font-mono)', 'ui-monospace', 'monospace'],
       },
       keyframes: {
-        'slide-lr': {
-          '0%': { transform: 'translateX(-100%)' },
-          '100%': { transform: 'translateX(400%)' },
-        },
-        'glow-pulse': {
-          '0%, 100%': { boxShadow: '0 0 4px rgba(0, 240, 255, 0.3)' },
-          '50%': { boxShadow: '0 0 12px rgba(0, 240, 255, 0.6), 0 0 24px rgba(0, 240, 255, 0.2)' },
-        },
         'island-float': {
           '0%, 100%': { transform: 'translateY(0px)' },
           '50%': { transform: 'translateY(-8px)' },
         },
       },
       animation: {
-        'slide-lr': 'slide-lr 1.5s ease-in-out infinite',
-        'glow-pulse': 'glow-pulse 2s ease-in-out infinite',
         'island-float': 'island-float 4s ease-in-out infinite',
       },
     },
