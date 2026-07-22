@@ -1,8 +1,4 @@
-'use client';
-
-import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import type { IconType } from 'react-icons';
 import {
   SiArduino,
@@ -31,20 +27,26 @@ import {
 } from 'react-icons/si';
 
 import HubSocials from '@/components/features/hub/HubSocials';
-import IslandChat from '@/components/features/hub/LazyIslandChat';
-import TrifoldLayout from '@/components/features/hub/trifold/TrifoldLayout';
+import type { Hackathon } from '@/content/hackathons';
 import { hackathons } from '@/content/hackathons';
 import { imageDimensions } from '@/content/project-media';
-import { type Project, projects } from '@/content/projects';
+import type { Project } from '@/content/projects';
 import { worlds } from '@/content/worlds';
-import { useIsMobile } from '@/hooks/useIsMobile';
-import { useWorldLoader } from '@/lib/world-loader-store';
+
+/**
+ * Server-only presentational pieces for the garage world — icons, static data,
+ * and every leaf that renders a project's content with zero interactivity. None
+ * of this carries a 'use client' directive, so none of it (including the
+ * react-icons set) ships to the browser: `garage/page.tsx` calls these directly
+ * to produce plain ReactNode trees, which `GarageShell` (the client component)
+ * only ever picks between — it never re-renders this module's code itself.
+ */
 
 const world = worlds.find((w) => w.id === 'garage') ?? worlds[0];
-const ACCENT = world.colorRgb;
+export const ACCENT = world.colorRgb;
+export const WORLD = world;
 
-const intro =
-  'The workshop where projects, tools, and ideas come together. Nine builds spanning mechanical systems, AI infrastructure, and product UX — each a different way to think through a problem, break it down, and refine it until it feels correct.';
+export const eyebrow = 'mb-3 font-mono text-[0.6rem] uppercase tracking-[0.3em] text-white/45';
 
 /** SolidWorks isn't in Simple Icons (pulled over trademark) — a small local mark. */
 function SolidWorksMark(props: React.SVGProps<SVGSVGElement>) {
@@ -87,7 +89,7 @@ const LOGOS: Record<string, { Icon: IconType; color: string }> = {
 
 /** Curated overview toolbox — real, named tools only (each with a logo).
  *  `[lookup key, display label]`. */
-const OVERVIEW_TOOLS: [string, string][] = [
+export const OVERVIEW_TOOLS: [string, string][] = [
   // Mechanical · embedded
   ['SolidWorks', 'SolidWorks'],
   ['ROS 2', 'ROS 2'],
@@ -113,17 +115,15 @@ const OVERVIEW_TOOLS: [string, string][] = [
   ['Neo4j', 'Neo4j'],
 ];
 
-const TALLY = [
+export const TALLY = [
   { label: 'Projects', value: 9 },
   { label: 'Technologies', value: 20 },
   { label: 'Simulations', value: 50 },
   { label: 'Years Building', value: 3 },
 ];
 
-const eyebrow = 'mb-3 font-mono text-[0.6rem] uppercase tracking-[0.3em] text-white/45';
-
 /** One tool row: brand logo (or an accent dot fallback) + name. */
-function ToolRow({ name, label }: { name: string; label?: string }) {
+export function ToolRow({ name, label }: { name: string; label?: string }) {
   const logo = LOGOS[name];
   return (
     <li title={label ?? name} className="flex items-center gap-2.5">
@@ -149,7 +149,7 @@ function ToolRow({ name, label }: { name: string; label?: string }) {
   );
 }
 
-function Socials() {
+export function Socials() {
   return (
     <div className="mt-auto flex justify-center pt-2">
       <HubSocials accentColor={world.color} accentRgb={world.colorRgb} layout="inline" />
@@ -157,7 +157,7 @@ function Socials() {
   );
 }
 
-function TrophyIcon({ className = 'h-5 w-5' }: { className?: string }) {
+export function TrophyIcon({ className = 'h-5 w-5' }: { className?: string }) {
   return (
     <svg
       aria-hidden
@@ -176,7 +176,7 @@ function TrophyIcon({ className = 'h-5 w-5' }: { className?: string }) {
   );
 }
 
-function PinIcon({ className = 'h-5 w-5' }: { className?: string }) {
+export function PinIcon({ className = 'h-5 w-5' }: { className?: string }) {
   return (
     <svg
       aria-hidden
@@ -194,7 +194,7 @@ function PinIcon({ className = 'h-5 w-5' }: { className?: string }) {
   );
 }
 
-function LockIcon({ className = 'h-3.5 w-3.5' }: { className?: string }) {
+export function LockIcon({ className = 'h-3.5 w-3.5' }: { className?: string }) {
   return (
     <svg
       aria-hidden
@@ -215,7 +215,7 @@ function LockIcon({ className = 'h-3.5 w-3.5' }: { className?: string }) {
 /** Left-panel hero — an event/org photo with a leading icon, title, and location
  *  beneath, mirroring the hub's `HackathonHero`. `badge` (e.g. "1st Place") is
  *  emphasized as a gold pill over the photo and a "… Winner" prefix. */
-function SpotlightHero({
+export function SpotlightHero({
   image,
   title,
   subtitle,
@@ -265,15 +265,12 @@ function SpotlightHero({
   );
 }
 
-/** A selectable project preview in the overview middle panel. */
-function ProjectCard({ project, onSelect }: { project: Project; onSelect: (p: Project) => void }) {
+/** A project preview's body content — image, title, description, tech chips, and
+ *  the "View project →" affordance. The click behavior is added by the caller
+ *  (a `GarageSelectTrigger` wrapping this). */
+export function ProjectCardBody({ project }: { project: Project }) {
   return (
-    <button
-      type="button"
-      onClick={() => onSelect(project)}
-      className="border-white/8 group block w-full overflow-hidden rounded-2xl border bg-white/[0.03] text-left transition-colors hover:border-[color:var(--world-color)]"
-      style={{ ['--world-color' as string]: `rgba(${ACCENT}, 0.5)` }}
-    >
+    <>
       {project.heroImage ? (
         <div className="relative aspect-[16/9] w-full overflow-hidden">
           <Image
@@ -311,12 +308,12 @@ function ProjectCard({ project, onSelect }: { project: Project; onSelect: (p: Pr
           View project <span aria-hidden>&rarr;</span>
         </span>
       </div>
-    </button>
+    </>
   );
 }
 
 /** Case-study body for the detail middle panel. */
-function CaseStudy({ project }: { project: Project }) {
+export function CaseStudy({ project }: { project: Project }) {
   const rows = (
     [
       ['Situation', project.situation],
@@ -360,7 +357,7 @@ function CaseStudy({ project }: { project: Project }) {
  *  (dimensions from `project-media` so there's no crop and no layout shift).
  *  An all-portrait set (e.g. phone screenshots) is laid out side by side; a
  *  mixed/landscape set flows in a masonry. */
-function Gallery({ images, title }: { images: string[]; title: string }) {
+export function Gallery({ images, title }: { images: string[]; title: string }) {
   if (images.length === 0) return null;
   const allPortrait = images.every((src) => {
     const [w, h] = imageDimensions[src] ?? [16, 9];
@@ -406,7 +403,7 @@ function Gallery({ images, title }: { images: string[]; title: string }) {
 
 /** Preview card for a supporting document (e.g. a design report PDF) — a
  *  first-page thumbnail plus a label that opens the full file in a new tab. */
-function ReportCard({ report }: { report: NonNullable<Project['report']> }) {
+export function ReportCard({ report }: { report: NonNullable<Project['report']> }) {
   const meta = ['PDF', report.pages ? `${report.pages} pages` : null].filter(Boolean).join(' · ');
   return (
     <a
@@ -441,307 +438,88 @@ function ReportCard({ report }: { report: NonNullable<Project['report']> }) {
   );
 }
 
-/**
- * My Garage — a self-contained trifold that swaps its three panels between an
- * overview (project directory · featured cards · toolbox) and a per-project
- * detail view (short description · hero + case study · tools used), all via
- * client state (no route change). Renders `TrifoldLayout` directly so the panel
- * geometry matches the world loader for a seamless handoff.
- */
-export default function GarageWorld() {
-  const markReady = useWorldLoader((s) => s.markReady);
-  const dismiss = useWorldLoader((s) => s.dismiss);
-  const isMobile = useIsMobile();
-  const [selected, setSelected] = useState<Project | null>(null);
-  const scrollRef = useRef<HTMLDivElement>(null);
+/** External links row — plain anchors (or an inert "Private" row); no
+ *  interactivity needed, so this renders fully server-side. */
+export function ExternalLinks({
+  links,
+}: {
+  links: { label: string; url: string; locked?: boolean }[];
+}) {
+  if (links.length === 0) return null;
+  return (
+    <section>
+      <p className={eyebrow}>Links</p>
+      <div className="space-y-2">
+        {links.map(({ label, url, locked }) =>
+          locked ? (
+            <div
+              key={url}
+              title="Private repository — not publicly accessible"
+              aria-disabled="true"
+              className="border-white/8 flex cursor-not-allowed items-center justify-between gap-2 rounded-lg border bg-white/[0.02] px-3 py-2 text-sm text-white/50"
+            >
+              {label}
+              <span className="flex items-center gap-1.5 text-white/35">
+                <span className="font-mono text-[10px] uppercase tracking-wider">Private</span>
+                <LockIcon />
+              </span>
+            </div>
+          ) : (
+            <a
+              key={url}
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="border-white/8 flex items-center justify-between gap-2 rounded-lg border bg-white/[0.02] px-3 py-2 text-sm text-white/70 transition-colors hover:border-white/15 hover:text-white"
+            >
+              {label}
+              <span aria-hidden className="text-white/30">
+                &rarr;
+              </span>
+            </a>
+          ),
+        )}
+      </div>
+    </section>
+  );
+}
 
-  // Signal the world loader to dismiss once the island chrome has painted.
-  useEffect(() => {
-    let cancelled = false;
-    const id = requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        if (!cancelled) markReady();
-      });
-    });
-    return () => {
-      cancelled = true;
-      cancelAnimationFrame(id);
-    };
-  }, [markReady]);
+type HeroHackathon = Hackathon | NonNullable<Project['hackathon']>;
 
-  // Safety net: force-dismiss the loader if it's somehow still up after 6s.
-  useEffect(() => {
-    const t = window.setTimeout(() => dismiss(), 6000);
-    return () => window.clearTimeout(t);
-  }, [dismiss]);
+/** Resolves a project's left-panel spotlight hero: its own hackathon record
+ *  (self-contained), a shared hub hackathon by id, or nothing. */
+export function resolveHeroHackathon(project: Project): HeroHackathon | null {
+  return (
+    project.hackathon ??
+    (project.hackathonId ? (hackathons.find((h) => h.id === project.hackathonId) ?? null) : null)
+  );
+}
 
-  const select = (p: Project) => {
-    setSelected(p);
-    scrollRef.current?.scrollTo({ top: 0 });
-  };
-
-  const heroHackathon =
-    selected?.hackathon ??
-    (selected?.hackathonId
-      ? (hackathons.find((h) => h.id === selected.hackathonId) ?? null)
-      : null);
-  const liveLabel = selected?.liveUrl
-    ? selected.liveUrl.includes('apps.apple.com')
+/** The right-panel "Links" list for a project: live/store links, extra links,
+ *  and source repos (public or private-locked). */
+export function buildExternalLinks(
+  project: Project,
+): { label: string; url: string; locked?: boolean }[] {
+  const liveLabel = project.liveUrl
+    ? project.liveUrl.includes('apps.apple.com')
       ? 'App Store'
-      : selected.liveUrl.includes('play.google.com')
+      : project.liveUrl.includes('play.google.com')
         ? 'Google Play'
         : 'Website'
     : null;
-  const externalLinks: { label: string; url: string; locked?: boolean }[] = [
-    ...(selected?.liveUrl && liveLabel ? [{ label: liveLabel, url: selected.liveUrl }] : []),
-    ...(selected?.playUrl ? [{ label: 'Google Play', url: selected.playUrl }] : []),
-    ...(selected?.links ?? []),
-    ...(selected?.repos ??
-      (selected?.githubUrl
+  return [
+    ...(project.liveUrl && liveLabel ? [{ label: liveLabel, url: project.liveUrl }] : []),
+    ...(project.playUrl ? [{ label: 'Google Play', url: project.playUrl }] : []),
+    ...(project.links ?? []),
+    ...(project.repos ??
+      (project.githubUrl
         ? [
             {
-              label: selected.githubPrivate ? 'GitHub' : 'View on GitHub',
-              url: selected.githubUrl,
-              locked: selected.githubPrivate,
+              label: project.githubPrivate ? 'GitHub' : 'View on GitHub',
+              url: project.githubUrl,
+              locked: project.githubPrivate,
             },
           ]
         : [])),
   ];
-
-  // ── Left panel ────────────────────────────────────────────────────────────
-  const left = selected ? (
-    <div className="flex h-full flex-col gap-5 p-6">
-      <button
-        type="button"
-        onClick={() => setSelected(null)}
-        className="inline-flex items-center gap-2 self-start text-sm font-medium text-white/65 transition-colors hover:text-white"
-      >
-        <span aria-hidden>&larr;</span> Projects
-      </button>
-
-      {heroHackathon ? (
-        <SpotlightHero
-          image={heroHackathon.image}
-          title={heroHackathon.name}
-          subtitle={heroHackathon.location}
-          badge={'award' in heroHackathon ? heroHackathon.award : undefined}
-          icon={<TrophyIcon />}
-        />
-      ) : selected.banner ? (
-        <SpotlightHero
-          image={selected.banner.image}
-          title={selected.banner.name}
-          subtitle={selected.banner.location}
-          icon={<PinIcon />}
-        />
-      ) : (
-        <>
-          <div>
-            <h2 className="text-lg font-bold tracking-tight" style={{ color: world.color }}>
-              {selected.title}
-            </h2>
-          </div>
-          <p className="text-sm leading-relaxed text-white/70">{selected.description}</p>
-        </>
-      )}
-
-      {/* Project-scoped assistant — ask questions about this specific build. */}
-      <div className="mt-auto pt-2">
-        <IslandChat
-          key={selected.id}
-          projectId={selected.id}
-          projectLabel={selected.title.split(':')[0]}
-          accentColor={world.color}
-          accentRgb={world.colorRgb}
-          isMobile={isMobile}
-          defaultMinimized={isMobile}
-        />
-      </div>
-    </div>
-  ) : (
-    <div className="flex h-full flex-col gap-5 p-6">
-      <Link
-        href="/"
-        className="inline-flex items-center gap-2 self-start text-sm font-medium text-white/65 transition-colors hover:text-white"
-      >
-        <span aria-hidden>&larr;</span> Hub
-      </Link>
-      <div>
-        <h1 className="text-lg font-bold tracking-tight" style={{ color: world.color }}>
-          {world.name}
-        </h1>
-      </div>
-      <p className="text-sm leading-relaxed text-white/60">{intro}</p>
-      <nav aria-label="Projects" className="flex flex-col gap-0.5">
-        {projects.map((p) => (
-          <button
-            key={p.id}
-            type="button"
-            onClick={() => select(p)}
-            className="rounded-lg px-3 py-2 text-left text-sm font-medium text-white/60 transition-colors hover:bg-white/5 hover:text-white lg:border-l-2 lg:border-transparent"
-          >
-            {p.navLabel ?? p.title.split(':')[0]}
-          </button>
-        ))}
-      </nav>
-    </div>
-  );
-
-  // ── Center panel ──────────────────────────────────────────────────────────
-  const center = (
-    <div key={selected?.id ?? 'overview'} ref={scrollRef} className="lg:h-full lg:overflow-y-auto">
-      {selected ? (
-        <article className="text-white">
-          {selected.heroImage ? (
-            <div className="relative aspect-[16/9] w-full overflow-hidden">
-              <Image
-                src={selected.heroImage}
-                alt={selected.title}
-                fill
-                sizes="(min-width: 1024px) 55vw, 100vw"
-                className="object-cover"
-                style={
-                  selected.heroPosition ? { objectPosition: selected.heroPosition } : undefined
-                }
-                priority
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
-            </div>
-          ) : (
-            <div className="aspect-[16/9] w-full" style={{ background: `rgba(${ACCENT}, 0.12)` }} />
-          )}
-          <div className="p-6 sm:p-8">
-            <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{selected.title}</h1>
-            <p className="mt-3 max-w-prose leading-relaxed text-white/70">{selected.description}</p>
-            <CaseStudy project={selected} />
-            {selected.images?.length ? (
-              <Gallery images={selected.images} title={selected.title} />
-            ) : null}
-          </div>
-        </article>
-      ) : (
-        <div className="text-white">
-          <div className="border-b border-white/5 px-6 pb-4 pt-8 sm:px-8">
-            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">Featured Projects</h2>
-          </div>
-          <div className="space-y-6 px-6 pb-6 pt-4 sm:px-8 sm:pb-8">
-            {projects.map((p) => (
-              <ProjectCard key={p.id} project={p} onSelect={select} />
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-
-  // ── Right panel ───────────────────────────────────────────────────────────
-  const right = selected ? (
-    <div className="flex h-full flex-col gap-8 p-6 text-white">
-      <section>
-        <p className={eyebrow}>Tools &amp; Software</p>
-        <ul className="space-y-3">
-          {selected.techStack.map((name) => (
-            <ToolRow key={name} name={name} />
-          ))}
-        </ul>
-      </section>
-      {externalLinks.length > 0 ? (
-        <section>
-          <p className={eyebrow}>Links</p>
-          <div className="space-y-2">
-            {externalLinks.map(({ label, url, locked }) =>
-              locked ? (
-                <div
-                  key={url}
-                  title="Private repository — not publicly accessible"
-                  aria-disabled="true"
-                  className="border-white/8 flex cursor-not-allowed items-center justify-between gap-2 rounded-lg border bg-white/[0.02] px-3 py-2 text-sm text-white/50"
-                >
-                  {label}
-                  <span className="flex items-center gap-1.5 text-white/35">
-                    <span className="font-mono text-[10px] uppercase tracking-wider">Private</span>
-                    <LockIcon />
-                  </span>
-                </div>
-              ) : (
-                <a
-                  key={url}
-                  href={url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="border-white/8 flex items-center justify-between gap-2 rounded-lg border bg-white/[0.02] px-3 py-2 text-sm text-white/70 transition-colors hover:border-white/15 hover:text-white"
-                >
-                  {label}
-                  <span aria-hidden className="text-white/30">
-                    &rarr;
-                  </span>
-                </a>
-              ),
-            )}
-          </div>
-        </section>
-      ) : null}
-      {selected.report ? (
-        <section>
-          <p className={eyebrow}>Report</p>
-          <ReportCard report={selected.report} />
-        </section>
-      ) : null}
-      <Socials />
-    </div>
-  ) : (
-    <div className="flex h-full flex-col gap-8 p-6 text-white">
-      <section>
-        <p className={eyebrow}>Tools &amp; Software</p>
-        <ul className="grid grid-cols-2 gap-x-4 gap-y-3">
-          {OVERVIEW_TOOLS.map(([name, label]) => (
-            <ToolRow key={name} name={name} label={label} />
-          ))}
-        </ul>
-      </section>
-
-      <section>
-        <p className={eyebrow}>The Tally</p>
-        <div className="grid grid-cols-2 gap-3">
-          {TALLY.map((stat) => (
-            <div
-              key={stat.label}
-              className="border-white/8 rounded-2xl border bg-white/[0.02] p-4 text-center"
-            >
-              <p className="text-3xl font-black text-white">
-                {stat.value}
-                {stat.value >= 10 ? <span style={{ color: `rgb(${ACCENT})` }}>+</span> : null}
-              </p>
-              <p className="mt-1 font-mono text-[10px] uppercase tracking-wider text-white/60">
-                {stat.label}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <Socials />
-    </div>
-  );
-
-  return (
-    <TrifoldLayout
-      colorRgb={world.colorRgb}
-      lead={
-        <a
-          href="#garage-main"
-          className="sr-only fixed left-4 top-4 z-[100] rounded bg-cyan-400 px-4 py-2 font-mono text-sm text-black focus:not-sr-only"
-        >
-          Skip to content
-        </a>
-      }
-      left={{ as: 'aside', panelProps: { 'aria-label': 'Project navigation' }, children: left }}
-      center={{
-        as: 'main',
-        panelProps: { id: 'garage-main', tabIndex: -1, 'aria-label': world.name },
-        children: center,
-      }}
-      right={{ as: 'aside', panelProps: { 'aria-label': 'Project details' }, children: right }}
-    />
-  );
 }
