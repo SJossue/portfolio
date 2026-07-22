@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
-import IslandChat from '@/components/features/hub/IslandChat';
+import IslandChat from '@/components/features/hub/LazyIslandChat';
 import { worlds } from '@/content/worlds';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { useReducedMotion } from '@/hooks/useReducedMotion';

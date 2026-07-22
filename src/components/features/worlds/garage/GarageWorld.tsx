@@ -31,7 +31,7 @@ import {
 } from 'react-icons/si';
 
 import HubSocials from '@/components/features/hub/HubSocials';
-import IslandChat from '@/components/features/hub/IslandChat';
+import IslandChat from '@/components/features/hub/LazyIslandChat';
 import TrifoldLayout from '@/components/features/hub/trifold/TrifoldLayout';
 import { hackathons } from '@/content/hackathons';
 import { imageDimensions } from '@/content/project-media';

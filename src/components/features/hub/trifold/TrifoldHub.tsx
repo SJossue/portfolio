@@ -8,7 +8,7 @@ import { useIsMobile } from '@/hooks/useIsMobile';
 import { useWorldLoader } from '@/lib/world-loader-store';
 
 import HubSocials from '../HubSocials';
-import IslandChat from '../IslandChat';
+import IslandChat from '../LazyIslandChat';
 import HackathonHero from './HackathonHero';
 import IslandListPanel from './IslandListPanel';
 import IslandSelector from './IslandSelector';
