@@ -34,3 +34,4 @@ gh-cli-cache/
 node-compile-cache/
 .superpowers/
 .local-assets/
+.worktrees/
