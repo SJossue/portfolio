@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 import IslandChat from '@/components/features/hub/LazyIslandChat';
 import TrifoldLayout from '@/components/features/hub/trifold/TrifoldLayout';
-import type { ResourceStage } from '@/content/resources';
+import type { ResourceStage, ResourceStageId } from '@/content/resources';
 import { useIsMobile } from '@/hooks/useIsMobile';
 
 import {
@@ -42,19 +42,21 @@ const CARD_STYLE = { ['--world-color' as string]: `rgba(${ACCENT}, 0.5)` };
  */
 export default function ResourcesShell({ stages }: ResourcesShellProps) {
   const isMobile = useIsMobile();
-  const [selectedStageId, setSelectedStageId] = useState<string | null>(null);
+  const [selectedStageId, setSelectedStageId] = useState<ResourceStageId | null>(null);
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const stage = stages.find((s) => s.id === selectedStageId) ?? null;
   const item = stage?.items.find((i) => i.id === selectedItemId) ?? null;
 
-  // Reset scroll position on every view change.
+  // Reset scroll position and move focus to the panel on every view change,
+  // so keyboard/screen-reader users aren't left on an unmounted button.
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: 0 });
+    scrollRef.current?.focus({ preventScroll: true });
   }, [selectedStageId, selectedItemId]);
 
-  const enterStage = (id: string) => {
+  const enterStage = (id: ResourceStageId) => {
     setSelectedStageId(id);
     setSelectedItemId(null);
   };
@@ -206,7 +208,7 @@ export default function ResourcesShell({ stages }: ResourcesShellProps) {
     );
   }
   const center = (
-    <div ref={scrollRef} className="lg:h-full lg:overflow-y-auto">
+    <div ref={scrollRef} tabIndex={-1} className="lg:h-full lg:overflow-y-auto">
       {centerContent}
     </div>
   );
@@ -285,7 +287,7 @@ export default function ResourcesShell({ stages }: ResourcesShellProps) {
       lead={
         <a
           href="#resources-main"
-          className="sr-only fixed left-4 top-4 z-[100] rounded bg-cyan-400 px-4 py-2 font-mono text-sm text-black focus:not-sr-only"
+          className="sr-only fixed left-4 top-4 z-[100] rounded bg-amber-400 px-4 py-2 font-mono text-sm text-black focus:not-sr-only"
         >
           Skip to content
         </a>
