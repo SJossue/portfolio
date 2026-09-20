@@ -468,9 +468,7 @@ export function FieldTest() {
               </p>
             </div>
             <p className="text-xs leading-relaxed text-white/45">
-              Whatever the outcome here, if you want to talk through anything — outreach, events,
-              how the chapter runs — I&apos;m glad to. That&apos;s most of the point of the
-              committee anyway.
+              I&apos;ll get back to you with a decision by Tuesday, 11:59 PM.
             </p>
           </div>
         )}
