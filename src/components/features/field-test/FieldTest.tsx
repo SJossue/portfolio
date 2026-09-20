@@ -467,6 +467,10 @@ export function FieldTest() {
                 <span className="mt-1 block text-white/40">Reference {submitCode}</span>
               </p>
             </div>
+            <p className="text-sm leading-relaxed text-white/55">
+              Thank you for taking the time to work through this — I know it wasn&apos;t nothing,
+              and I genuinely appreciate it.
+            </p>
             <p className="text-xs leading-relaxed text-white/45">
               I&apos;ll get back to you with a decision by Tuesday, 11:59 PM.
             </p>
