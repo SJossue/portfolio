@@ -53,7 +53,7 @@ function buildFallbackText(input: {
 }): string {
   const matched = JSON.stringify(input.pattern) === JSON.stringify(input.recall);
   const lines = [
-    `FIELD TEST RESULT (fallback — the automatic submission didn't go through)`,
+    `IVP COMMITTEE SCREENING RESULT (fallback — the automatic submission didn't go through)`,
     `Name: ${input.name}`,
     '',
     'Step 3 (unresponsive department):',
@@ -211,7 +211,7 @@ export function FieldTest() {
     pattern,
     recall,
   });
-  const fallbackMailHref = `mailto:${FALLBACK_EMAIL}?subject=${encodeURIComponent(`Field Test Result — ${name}`)}&body=${encodeURIComponent(fallbackText)}`;
+  const fallbackMailHref = `mailto:${FALLBACK_EMAIL}?subject=${encodeURIComponent(`IVP Committee Screening Result — ${name}`)}&body=${encodeURIComponent(fallbackText)}`;
 
   const playsLeft = MAX_PLAYS - playsUsed;
   const progress = step === 7 ? 6 : step - 1;
@@ -256,7 +256,9 @@ export function FieldTest() {
         {step === 1 && (
           <div className="flex flex-col gap-6">
             <div>
-              <h1 className="mt-2 text-4xl font-black tracking-tight sm:text-5xl">Field Test</h1>
+              <h1 className="mt-2 text-4xl font-black tracking-tight sm:text-5xl">
+                IVP Committee Screening
+              </h1>
               <p className="mt-3 max-w-prose text-white/60">
                 Six short steps — a memory round, two quick calls, and one real story. No wrong
                 answers, and once you move forward you can&apos;t go back, so take your time on each

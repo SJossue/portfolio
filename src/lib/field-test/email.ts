@@ -2,7 +2,7 @@ import { Resend } from 'resend';
 
 import type { SubmissionInput } from './submissions';
 
-const FROM = 'Field Test <field-test@jossue.dev>';
+const FROM = 'IVP Committee Screening <field-test@jossue.dev>';
 const ACCENT = '#22d3ee';
 const INK = '#0f172a';
 const MUTED = '#64748b';
@@ -45,11 +45,11 @@ export function renderSubmissionNotification(i: SubmissionInput): string {
 <tr><td align="center">
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:600px;max-width:100%;background:#ffffff;border-radius:16px;overflow:hidden;font-family:'Segoe UI',Helvetica,Arial,sans-serif;box-shadow:0 8px 30px rgba(2,6,23,0.08);">
 <tr><td style="background:#0d0d14;padding:20px 28px;">
-<span style="color:${ACCENT};font-weight:700;font-size:14px;letter-spacing:0.04em;">SHPE NJIT &middot; Field Test</span>
+<span style="color:${ACCENT};font-weight:700;font-size:14px;letter-spacing:0.04em;">SHPE NJIT &middot; IVP Committee Screening</span>
 </td></tr>
 <tr><td style="padding:28px 28px 8px;">
 <p style="margin:0 0 4px;color:${ACCENT};font-size:13px;font-weight:600;letter-spacing:0.06em;">NEW SUBMISSION</p>
-<h1 style="margin:0 0 16px;color:${INK};font-size:22px;">${esc(i.candidateName)} completed the Field Test.</h1>
+<h1 style="margin:0 0 16px;color:${INK};font-size:22px;">${esc(i.candidateName)} completed the IVP Committee Screening.</h1>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e2e8f0;border-radius:12px;">${rows}</table>
 </td></tr>
 <tr><td style="padding:18px 28px 28px;color:${MUTED};font-size:12px;">Reference ${i.code} &middot; saved to the field_test_submissions table.</td></tr>
@@ -59,7 +59,7 @@ export function renderSubmissionNotification(i: SubmissionInput): string {
 
 function renderSubmissionNotificationText(i: SubmissionInput): string {
   return [
-    `New Field Test submission — ${i.code}`,
+    `New IVP Committee Screening submission — ${i.code}`,
     ``,
     `Candidate: ${i.candidateName}`,
     `Department move: ${i.deptChoiceLabel}`,
@@ -88,7 +88,7 @@ export async function sendSubmissionNotification(input: SubmissionInput): Promis
   await resend.emails.send({
     from: FROM,
     to: owner,
-    subject: `Field Test: ${input.candidateName} — ${input.code}`,
+    subject: `IVP Committee Screening: ${input.candidateName} — ${input.code}`,
     html: renderSubmissionNotification(input),
     text: renderSubmissionNotificationText(input),
   });

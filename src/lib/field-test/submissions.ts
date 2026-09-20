@@ -19,7 +19,7 @@ export interface SubmissionRow extends SubmissionInput {
   created_at: string;
 }
 
-/** Persist a completed Field Test. The database write is the durable record —
+/** Persist a completed IVP Committee Screening. The database write is the durable record —
  * the candidate never has to do anything for their answers to be saved. */
 export async function insertSubmission(input: SubmissionInput): Promise<{ id: string }> {
   const sql = getSql();

@@ -28,7 +28,7 @@ describe('renderSubmissionNotification', () => {
   it('includes the reference code and candidate name', () => {
     const html = renderSubmissionNotification(base);
     expect(html).toContain('AB12');
-    expect(html).toContain('Ada Lovelace completed the Field Test.');
+    expect(html).toContain('Ada Lovelace completed the IVP Committee Screening.');
   });
 
   it('only shows the why line when one was given', () => {
