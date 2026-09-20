@@ -28,3 +28,19 @@ ALTER TABLE bookings ADD COLUMN IF NOT EXISTS video_url text;
 ALTER TABLE bookings ADD COLUMN IF NOT EXISTS video_meeting_id text;
 -- Migration for the 24h reminder feature:
 ALTER TABLE bookings ADD COLUMN IF NOT EXISTS reminded_at timestamptz;
+
+CREATE TABLE IF NOT EXISTS field_test_submissions (
+  id                  uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  code                text NOT NULL,
+  candidate_name      text NOT NULL,
+  dept_choice_id      text NOT NULL,
+  dept_choice_label   text NOT NULL,
+  dept_why            text,
+  early_choice_id     text NOT NULL,
+  early_choice_label  text NOT NULL,
+  story               text NOT NULL,
+  pattern_shown       jsonb NOT NULL,
+  pattern_recalled    jsonb NOT NULL,
+  pattern_matched     boolean NOT NULL,
+  created_at          timestamptz NOT NULL DEFAULT now()
+);
