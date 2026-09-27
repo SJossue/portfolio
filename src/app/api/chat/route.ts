@@ -202,11 +202,18 @@ Tech: ${p.techStack.join(', ')}${study ? `\n${study}` : ''}`;
   }
 
   // --- Stream response ---
+  // GLM-5.3-Flash is a reasoning-capable model — without headroom it can burn
+  // the whole output budget on hidden chain-of-thought before ever writing
+  // the visible answer, leaving the reply empty. `reasoningEffort` asks it to
+  // keep that thinking short; the larger cap is the actual safety margin.
   const result = streamText({
     model: nebius(CHAT_MODEL),
     system,
     messages: normalized,
-    maxOutputTokens: 300,
+    maxOutputTokens: 1024,
+    providerOptions: {
+      nebius: { reasoningEffort: 'low' },
+    },
   });
 
   return result.toUIMessageStreamResponse();
