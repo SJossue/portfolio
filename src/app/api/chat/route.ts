@@ -10,15 +10,16 @@ const ALLOWED_ORIGINS = new Set(
   (process.env.ALLOWED_CHAT_ORIGINS ?? '').split(',').filter(Boolean),
 );
 
-// Nebius AI Studio exposes an OpenAI-compatible API. The model is overridable
-// via NEBIUS_MODEL so the chat persona can be retuned without a code change.
+// Nebius Token Factory exposes an OpenAI-compatible API. The model is
+// overridable via NEBIUS_MODEL so the chat persona can be retuned without a
+// code change.
 const nebius = createOpenAICompatible({
   name: 'nebius',
-  baseURL: process.env.NEBIUS_BASE_URL ?? 'https://api.tokenfactory.nebius.com/v1',
+  baseURL: process.env.NEBIUS_BASE_URL ?? 'https://api.tokenfactory.us-north1.nebius.com/v1',
   apiKey: process.env.NEBIUS_API_KEY ?? '',
 });
 
-const CHAT_MODEL = process.env.NEBIUS_MODEL ?? 'Llama-3.3-70B-Instruct';
+const CHAT_MODEL = process.env.NEBIUS_MODEL ?? 'zai-org/GLM-5.3-Flash';
 
 const MAX_MESSAGE_LENGTH = 500;
 const MAX_CONVERSATION_TURNS = 20;
