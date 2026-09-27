@@ -14,7 +14,7 @@ const ALLOWED_ORIGINS = new Set(
 // via NEBIUS_MODEL so the chat persona can be retuned without a code change.
 const nebius = createOpenAICompatible({
   name: 'nebius',
-  baseURL: process.env.NEBIUS_BASE_URL ?? 'https://api.studio.nebius.com/v1',
+  baseURL: process.env.NEBIUS_BASE_URL ?? 'https://api.tokenfactory.nebius.com/v1',
   apiKey: process.env.NEBIUS_API_KEY ?? '',
 });
 
