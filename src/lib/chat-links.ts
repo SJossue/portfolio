@@ -17,6 +17,7 @@ export const chatLinks: readonly ChatLink[] = [
   { patterns: ['Real Me'], href: worldById['real-me'].slug },
   { patterns: ['GitHub'], href: contactById.github.href, external: true },
   { patterns: ['LinkedIn'], href: contactById.linkedin.href, external: true },
+  { patterns: ['Resume', 'resume'], href: contactById.resume.href, external: true },
   {
     patterns: ['email me', 'email Jossue'],
     href: contactById.email.href,

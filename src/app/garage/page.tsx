@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 
+import { BeforeAfterSlider } from '@/components/features/worlds/garage/BeforeAfterSlider';
 import { GarageSelectTrigger } from '@/components/features/worlds/garage/GarageSelectTrigger';
 import GarageShell from '@/components/features/worlds/garage/GarageShell';
 import {
@@ -36,7 +37,7 @@ export const metadata: Metadata = {
 };
 
 const intro =
-  'The workshop where projects, tools, and ideas come together. Nine builds spanning mechanical systems, AI infrastructure, and product UX — each a different way to think through a problem, break it down, and refine it until it feels correct.';
+  'The workshop where projects, tools, and ideas come together. Ten builds spanning mechanical systems, AI infrastructure, and product UX — each a different way to think through a problem, break it down, and refine it until it feels correct.';
 
 // Precompute every project's detail panels once, server-side. The client shell
 // (GarageShell) only ever picks between these ready-made nodes and the overview
@@ -95,6 +96,19 @@ const details = Object.fromEntries(
           <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{project.title}</h1>
           <p className="mt-3 max-w-prose leading-relaxed text-white/70">{project.description}</p>
           <CaseStudy project={project} />
+          {project.beforeAfter ? (
+            <div className="border-white/8 mt-6 border-t pt-6">
+              <p className={eyebrow}>Before / After</p>
+              <BeforeAfterSlider
+                before={project.beforeAfter.before}
+                after={project.beforeAfter.after}
+                beforeLabel={project.beforeAfter.beforeLabel}
+                afterLabel={project.beforeAfter.afterLabel}
+                aspectRatio={project.beforeAfter.aspectRatio}
+                alt={project.title}
+              />
+            </div>
+          ) : null}
           {project.images?.length ? (
             <Gallery images={project.images} title={project.title} />
           ) : null}

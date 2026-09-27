@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og';
 import { siteConfig } from '@/lib/site';
 
-export const alt = `${siteConfig.author} — Engineer & Builder`;
+export const alt = `${siteConfig.author} — Mechanical Design Engineer`;
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -54,7 +54,8 @@ export default function OpengraphImage() {
           maxWidth: 900,
         }}
       >
-        Engineer & builder across hardware and software — FEA, CAD, React, Next.js & applied AI.
+        Mechanical design engineer building hardware that ships: CAD, GD&T, tolerance stack-ups, and
+        FEA.
       </div>
       <div
         style={{

@@ -22,7 +22,7 @@ export interface AboutData {
 
 export const aboutData: AboutData = {
   name: 'Jossue Sarango',
-  roleTitle: 'Product Engineer',
+  roleTitle: 'Mechanical Design Engineer',
   ethnicity: 'Salvadoran & Ecuadorian',
   images: [
     '/jossue/headshot.jpg',
@@ -31,23 +31,29 @@ export const aboutData: AboutData = {
     '/social/jossue-accord-photo-together.jpg',
     '/social/jossue-accord-photo.jpg',
   ],
-  bio: 'I build things — physical and digital — and I understand how complex systems come together. I am currently pursuing a Bachelor of Science in Mechanical Engineering with a minor in Electrical Engineering at NJIT. My approach is driven by a "Learn by building" philosophy, rooted in automotive engineering and wrenching on cars, and now pointed squarely at robotics and embedded systems — building autonomous machines on ROS 2 and Jetson hardware. Whether it is a suspension geometry, a robot chassis, a data pipeline, or a web application, the process is the same: break the system down, understand constraints, iterate, and refine until it feels correct.',
+  bio: 'I design and build physical mechanisms, not diagrams of them. I am pursuing a Bachelor of Science in Mechanical Engineering with a minor in Electrical Engineering at NJIT. My "learn by building" philosophy started under the hood of my own car and now drives every mechanism I take from CAD to a working part: a suction end-effector and servo-actuated tilt mechanism on a 50 lb autonomous tiling robot deployed in Puerto Rico, a Baja SAE roll cage cut 12% lighter at a 1.5x factor of safety, and a tendon-driven prosthetic hand. Two internships inside a regulated utility also gave me exposure most mechanical engineering juniors do not get: substation drawing audits, field walkdowns, and a $60M+ capital project portfolio. I still build software on the side (this site is one example), but the work I am chasing next is CAD, GD&T, tolerance stack-ups, and DFMEA on real hardware, on the way to eventually founding a hardware company of my own.',
   skills: [
     {
-      category: 'Mechanical Eng',
-      items: ['SolidWorks', 'CAD Modeling', 'FEA Simulation', 'MIG/TIG Welding'],
+      category: 'CAD & Analysis',
+      items: ['SolidWorks', 'Fusion 360', 'GD&T', 'Tolerance Stack-Up', 'FEA Simulation'],
     },
     {
-      category: 'Robotics & Embedded',
-      items: ['ROS 2', 'NVIDIA Jetson', 'ESP32', 'Embedded Linux'],
+      category: 'Manufacturing',
+      items: [
+        'TIG/MIG Welding',
+        'Rapid Prototyping',
+        'SAE Compliance',
+        'Fault Tree Analysis',
+        'DFMEA',
+      ],
     },
     {
-      category: 'Software & Product',
-      items: ['TypeScript', 'React', 'Next.js', 'Python', 'Tailwind CSS'],
+      category: 'Programming',
+      items: ['Python', 'TypeScript/React', 'MATLAB', 'SQL', 'Git'],
     },
     {
-      category: 'Systems & AI',
-      items: ['HW/SW Integration', 'LLM Integration', 'A* Path Planning', 'Automation'],
+      category: 'Robotics & Controls',
+      items: ['ROS 2', 'NVIDIA Jetson', 'LiDAR', 'Servos & Actuators', 'Microcontrollers'],
     },
     {
       category: 'Leadership',
@@ -56,12 +62,12 @@ export const aboutData: AboutData = {
   ],
   highlights: [
     { label: 'Philosophy', value: 'Learn by Building' },
-    { label: 'Pillars', value: 'Execution, Systems, Leadership' },
-    { label: 'Roles', value: '10' },
-    { label: 'Projects', value: '7' },
+    { label: 'Pillars', value: 'Design, Execution, Leadership' },
+    { label: 'Roles', value: '12' },
+    { label: 'Projects', value: '10' },
   ],
   currently: [
-    'Project Management Intern @ PSEG',
+    'Program Assistant @ NJIT Career Services',
     'Internal VP @ SHPE NJIT',
     'MLT CareerPrep Fellow',
     'BS Mechanical Engineering @ NJIT',

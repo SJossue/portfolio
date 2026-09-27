@@ -33,7 +33,9 @@ export default function StageHero() {
         <h1 className="mt-1 text-4xl font-extrabold tracking-tight text-white sm:text-5xl 3xl:text-6xl">
           Jossue Sarango
         </h1>
-        <p className="mt-1.5 text-sm text-white/60">Engineer &amp; builder — hardware × software</p>
+        <p className="mt-1.5 text-sm text-white/60">
+          Mechanical design engineer. Builder of things that ship.
+        </p>
       </div>
     </div>
   );

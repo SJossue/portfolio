@@ -12,13 +12,13 @@ export const hackathons: Hackathon[] = [
     id: 'claude',
     name: 'Claude Hackathon',
     image: '/hackathons/claude-hackathon.jpeg',
-    location: 'San Francisco, CA',
+    location: 'Newark, NJ',
   },
   {
     id: 'aws',
     name: 'AWS Hackathon',
     image: '/hackathons/aws-hackathon.jpeg',
-    location: 'New York, NY',
+    location: 'San Francisco, CA',
   },
   {
     id: 'cmu',

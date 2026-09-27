@@ -25,6 +25,12 @@ export const contactLinks: ContactLink[] = [
     icon: 'X',
   },
   {
+    id: 'resume',
+    label: 'Resume',
+    href: '/resume/Sarango_Jossue_Resume.pdf',
+    icon: 'PDF',
+  },
+  {
     id: 'email',
     label: 'Email',
     href: 'mailto:jossuesarango1@gmail.com',

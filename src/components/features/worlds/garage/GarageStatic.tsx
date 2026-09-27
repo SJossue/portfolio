@@ -116,7 +116,7 @@ export const OVERVIEW_TOOLS: [string, string][] = [
 ];
 
 export const TALLY = [
-  { label: 'Projects', value: 9 },
+  { label: 'Projects', value: 10 },
   { label: 'Technologies', value: 20 },
   { label: 'Simulations', value: 50 },
   { label: 'Years Building', value: 3 },

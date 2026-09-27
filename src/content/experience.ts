@@ -19,25 +19,40 @@ export interface ExperienceEntry {
 export const experienceData: ExperienceEntry[] = [
   // ── Experience ──────────────────────────────────────────────────────────
   {
+    id: 'njit-career-services',
+    role: 'Program Assistant',
+    company: 'NJIT Career Services',
+    period: 'Sep 2026 — Present',
+    section: 'experience',
+    description:
+      "Support NJIT Career Services' undergraduate engineering co-op pipeline: employer research and business development, posting-eligibility review, program data and assessment (reference lists, testimonials, trend analysis), student communications, and career-resource upkeep.",
+    techStack: ['Employer Research', 'Program Assessment', 'Student Communications'],
+  },
+  {
     id: 'pseg',
     role: 'Project Management Intern',
     company: 'PSEG (Public Service Enterprise Group)',
-    period: 'Jun 2026 — Present',
+    period: 'Jun 2026 — Aug 2026',
     section: 'experience',
     description:
-      'Manage multiple concurrent electrical transmission and distribution capital projects, coordinating procurement, environmental permitting, and budget forecasting for multi-million-dollar substation construction on the Projects & Construction integration team.',
-    techStack: ['Project Management', 'Electrical T&D', 'Budget Forecasting'],
+      'Authored the civil and layout design review (IFR pageturn) for a 138kV ring-bus substation expansion, validating structural steel alignment, foundation elevations, and disconnect-switch coordination against geotechnical and survey data. Audited legacy foundation drawings and ran field walkdowns across a $60M+, 5-project substation portfolio, matching CAD drawings to as-built conditions to preemptively resolve structural discrepancies.',
+    techStack: [
+      'Electrical T&D',
+      'Substation Design Review',
+      'Field Walkdowns',
+      'Project Management',
+    ],
     logo: '/experience/pseg.png',
   },
   {
     id: 'hfr',
-    role: 'Robotics Engineering Intern',
+    role: 'Mechanical Design Intern',
     company: 'Human Friendly Robotics',
     period: 'Mar 2026 — Jun 2026',
     section: 'experience',
     description:
-      'Developed autonomous robots for a construction-tech startup — iterating mechanical assemblies and performing clearance and fit analysis to integrate actuators, sensors, and end-effectors within tight chassis tolerances. Collaborated with engineers on ROS 2 control systems running on NVIDIA Jetson hardware across embedded Linux workflows and real-time sensor–actuator integration.',
-    techStack: ['ROS 2', 'NVIDIA Jetson', 'Embedded Linux', 'Mechanical Design'],
+      "Owned mechanical design for Tyler, a 50 lb autonomous floor-tiling robot, from CAD through fabrication support. Engineered a custom suction end-effector and servo-actuated tilt mechanism for placing tile, LVT, and VCT flooring, then ran clearance and tolerance analysis across the chassis-to-end-effector interface to hold Tyler's ±1mm placement precision. That precision shipped: the robot installed flooring at 100 sq ft/hr in a live deployment at Plaza Las Américas, Puerto Rico.",
+    techStack: ['SolidWorks', 'GD&T', 'Tolerance Analysis', 'Servo Mechanisms'],
     logo: '/experience/hfr.png',
   },
   {

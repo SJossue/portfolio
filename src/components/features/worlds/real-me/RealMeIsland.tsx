@@ -18,7 +18,7 @@ export const sections: IslandSectionRef[] = [
 /** Left-rail blurb — points at the two ways to reach me: the chat below and the
  *  booking CTA in the connect section. */
 export const intro =
-  'The human behind the code — I build things, cars, robots, and apps, and I like talking about all of it. Look around, then ask me anything below or book a time to talk.';
+  'The human behind the builds. I design things, cars, mechanisms, and apps, and I like talking about all of it. Look around, then ask me anything below or book a time to talk.';
 
 /** Descriptive alt text for the gallery photos (keyed by image path). */
 const GALLERY_ALT: Record<string, string> = {

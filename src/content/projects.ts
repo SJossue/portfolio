@@ -36,9 +36,216 @@ export interface Project {
   solution?: string;
   lessons?: string[];
   images?: string[];
+  /** A draggable before/after image comparison, rendered above the Gallery. */
+  beforeAfter?: {
+    before: string;
+    after: string;
+    beforeLabel?: string;
+    afterLabel?: string;
+    /** CSS `aspect-ratio` value matching the images' own ratio, e.g. '1774 / 1108'. */
+    aspectRatio?: string;
+  };
 }
 
 export const projects: Project[] = [
+  {
+    id: 'tyler',
+    title: 'Tyler: Autonomous Tile-Setting Robot',
+    navLabel: 'Tyler - Human Friendly Robotics',
+    description:
+      "Mechanical design for Tyler, Human Friendly Robotics' 50 lb autonomous floor-tiling robot: a custom suction end-effector and servo-actuated tilt mechanism that place tile, LVT, and VCT flooring to ±1mm precision. Deployed live at Plaza Las Américas, Puerto Rico.",
+    techStack: [
+      'SolidWorks',
+      'GD&T',
+      'Tolerance Analysis',
+      'Servo Mechanisms',
+      'Suction End-Effector',
+    ],
+    banner: {
+      name: 'Human Friendly Robotics',
+      location: 'Plaza Las Américas, Puerto Rico',
+      image: '/projects/tyler/tyler-jobsite-wide.webp',
+    },
+    heroImage: '/projects/tyler/tyler-hero.webp',
+    situation:
+      'Commercial flooring installation is skilled, physically taxing labor that does not scale, and any robot attempting it needs sub-millimeter placement accuracy to pass a real inspection, not just perform in a demo.',
+    task: 'Design the mechanical system that lets Tyler, a 50 lb mobile robot, pick up and place tile, LVT, and VCT flooring with tolerances tight enough for a live commercial jobsite.',
+    action:
+      "Engineered a custom suction end-effector and a servo-actuated tilt mechanism riding a linear-rail gantry to pick, orient, and place each piece of flooring. Ran clearance and tolerance analysis across the chassis-to-end-effector interface to hold Tyler's ±1mm placement precision, and packaged actuators and sensors into a rugged mobile chassis built for repeated jobsite use.",
+    solution:
+      'Tyler shipped: the robot installed flooring at 100 sq ft/hr in a live deployment at Plaza Las Américas, Puerto Rico, holding tolerance across real, imperfect subfloor conditions.',
+    lessons: [
+      'Tolerance stacks compound fast across a chassis-to-end-effector interface — treating ±1mm as a system-level constraint, not a single-part spec, is what actually held it in the field.',
+      'A mechanism that works on a bench and one that survives a real jobsite are different designs; field serviceability had to be a first-class requirement from the start, not an afterthought.',
+    ],
+    images: [
+      '/projects/tyler/tyler-suction-carriage.webp',
+      '/projects/tyler/tyler-tilt-placement.webp',
+      '/projects/tyler/tyler-crew.webp',
+    ],
+  },
+  {
+    id: 'stress-analysis',
+    title: 'Baja Chassis FEA',
+    description:
+      'Conducted rigorous finite element analysis through iterative cycles on a Baja SAE roll cage for maximal structural efficiency.',
+    techStack: ['SolidWorks', 'FEA Simulation', 'Vehicle Dynamics'],
+    banner: {
+      name: 'Baja SAE at NJIT (Highlander Racing)',
+      location: 'New Jersey Institute of Technology',
+      image: '/projects/stress-analysis/chassis.jpeg',
+    },
+    heroImage: '/projects/stress-analysis/baja-action-run.png',
+    situation:
+      'Previous multi-axis impact models showed potential over-engineering in low-stress support tubing, artificially increasing curb weight.',
+    task: 'Optimize the 4130 steel spaceframe across rigorous simulated load cases to shave weight while verifying SAE minimum safety factors.',
+    action:
+      'Processed CAD assemblies through iterative mechanical stress models mapping varied torsion, side-impact, and frontal collision conditions.',
+    solution:
+      'Mapped critical high-stress nodes vs low-stress lengths to dictate the tubing profile alterations ultimately securing the chassis bounds.',
+    beforeAfter: {
+      before: '/projects/stress-analysis/chassis-frame-before.png',
+      after: '/projects/stress-analysis/chassis-frame-after.png',
+      beforeLabel: 'Before',
+      afterLabel: 'After',
+      aspectRatio: '1774 / 1108',
+    },
+    images: [
+      '/projects/stress-analysis/stressed-chassis.jpeg',
+      '/projects/stress-analysis/chassis-weld-shock-mount.png',
+      '/projects/stress-analysis/baja-static-competition.png',
+    ],
+  },
+  {
+    id: 'prosthetic',
+    title: 'Linear Actuator Hand',
+    description:
+      'A low-cost (~$100), 3D-printed hand prosthetic driven by a single linear actuator — fishing-line tendons pull the fingers into a fist so the wearer can grip and carry everyday objects. FED 101 design project in NJIT Mechanical & Industrial Engineering.',
+    techStack: ['SolidWorks', '3D Printing', 'PLA', 'Linear Actuator'],
+    banner: {
+      name: 'Department of Mechanical & Industrial Engineering',
+      location: 'New Jersey Institute of Technology',
+      image: '/projects/prosthetic/angle-view.png',
+    },
+    heroImage: '/projects/prosthetic/final-display.jpeg',
+    report: {
+      url: '/projects/prosthetic/linear-actuator-driven-hand-prosthetic.pdf',
+      label: 'Design Report',
+      pages: 27,
+      cover: '/projects/prosthetic/report-cover.jpg',
+    },
+    situation:
+      'Advanced hand prosthetics are expensive and often unreliable, putting a functional grip out of reach for many amputees and people with congenital limb differences who just need to grab and carry everyday objects.',
+    task: 'Design and build a working hand prosthetic for under ~$120 that a single linear actuator can drive into a fist, replicating a natural grip — the term project for FED 101, Fundamentals of Engineering Design.',
+    action:
+      "Modeled the palm, metacarpals, phalanges, and forearm/elbow cuff in SolidWorks and 3D-printed them in PLA at NJIT's Makerspace. Routed fishing-line tendons through the fingers to a forearm-mounted linear actuator (12V power bank + rocker switch) so one actuator stroke contracts every finger into a fist, with rubber bands acting as return springs. Fasteners were chosen per joint by load — custom PLA pins at the light finger joints, wooden dowels and metal hardware where the palm carries the actuator.",
+    solution:
+      'A functioning tendon-driven prosthetic (~$100 in parts) that closes into a fist to grip and carry objects. Iterated straight from testing: rounded the finger slots to unlock full range of motion, and dropped the separate forearm — repurposing the elbow cuff — to cut weight. Built with Krishna, Lucas, and Erick.',
+    lessons: [
+      'Where the load goes decides the fastener — printed pins for the light finger joints, wooden dowels and metal hardware where the palm carries the actuator and forearm.',
+      'Geometry is function: a rectangular finger slot quietly capped the range of motion until it was rounded — the small CAD details make or break the mechanism.',
+      'Removing a whole part (the forearm) did more for usability than any material tweak — simplify before you optimize.',
+    ],
+    images: [
+      '/projects/prosthetic/exploded-cad-view.jpeg',
+      '/projects/prosthetic/exploded-sketch.jpeg',
+      '/projects/prosthetic/descriptive-sketch.jpeg',
+    ],
+  },
+  {
+    id: 'shpe-app',
+    title: 'SHPE Mobile App',
+    description:
+      "SHPE NJIT's official mobile app — the first student-built app in NJIT history, shipped in 27 days and now live on the App Store (5.0★) and Google Play. A cross-platform hub for events, QR check-in, a social feed, and a seasonal points leaderboard.",
+    techStack: ['React Native', 'Expo', 'TypeScript', 'Supabase', 'PostgreSQL'],
+    githubUrl: 'https://github.com/njitshpe/shpe-app',
+    githubPrivate: true,
+    liveUrl: 'https://apps.apple.com/us/app/shpe-njit/id6757627370',
+    playUrl: 'https://play.google.com/store/apps/details?id=com.shpenjit.officialapp&hl=en_US',
+    banner: {
+      name: 'Society of Hispanic Professional Engineers',
+      location: 'New Jersey Institute of Technology',
+      image: '/social/shpe-convention.png',
+    },
+    heroImage: '/projects/shpe-app/app-store-listing.png',
+    heroPosition: 'top',
+    situation:
+      'The chapter ran on a patchwork — email blasts, a shared calendar, GroupMe, Instagram — so events got missed, involvement was invisible, and there was no single place members actually opened.',
+    task: 'Ship one app the chapter lives in: events and RSVP, QR attendance check-in, a moderated social feed, and a points system that makes involvement visible — for members, alumni, and guests alike.',
+    action:
+      'Built a cross-platform Expo / React Native app (TypeScript, Expo Router) on a Supabase backend — PostgreSQL with row-level security and Deno edge functions for admin actions, QR check-in tokens, and account deletion. Layered in a moderated social feed (blocking + reporting), a seasonal points leaderboard, committee pages, role-based admin dashboards, push notifications, Sign in with Apple, and multi-step onboarding for students, alumni, and guests. A Cloudflare Worker serves branded event-share links off events.shpenjit.org.',
+    solution:
+      "Live as SHPE NJIT on the App Store (5.0★, Education) and Google Play — the chapter's daily hub for events, check-in, and recognition, and the first student-built app in NJIT history.",
+    images: [
+      '/projects/shpe-app/app-store-home-feed.jpg',
+      '/projects/shpe-app/app-store-events-calendar.jpg',
+      '/projects/shpe-app/app-store-social-feed.jpg',
+      '/projects/shpe-app/app-store-event-checkin.jpg',
+      '/projects/shpe-app/app-store-leaderboard.jpg',
+      '/projects/shpe-app/app-store-chat-messaging.jpg',
+      '/projects/shpe-app/app-store-game-hub.jpg',
+    ],
+  },
+  {
+    id: 'shpe-web',
+    title: 'NJIT SHPE Website',
+    description:
+      "The official website for NJIT's SHPE chapter (shpenjit.org) — a fast, animated Next.js site spanning events, the annual Gala, convention, sponsors, programs, and team, with a self-serve admin dashboard the e-board uses to publish events.",
+    techStack: ['Next.js', 'TypeScript', 'Tailwind CSS', 'Framer Motion', 'GSAP'],
+    githubUrl: 'https://github.com/shpewebmaster/website',
+    githubPrivate: true,
+    liveUrl: 'https://shpenjit.org',
+    banner: {
+      name: 'Society of Hispanic Professional Engineers',
+      location: 'New Jersey Institute of Technology',
+      image: '/projects/shpe-web/group.jpeg',
+    },
+    heroImage: '/projects/shpe-web/gala-home.jpg',
+    heroPosition: 'top',
+    situation:
+      "The chapter's web presence was scattered and stale — a site the e-board couldn't touch without a developer, plus one-off microsites spun up for each event.",
+    task: 'Build one polished, maintainable site for everything the chapter does — events, the annual Gala, convention, sponsorships, programs, and team — that the e-board can keep current themselves.',
+    action:
+      'Built shpenjit.org with Next.js (App Router) and TypeScript, styled in Tailwind, with motion from Framer Motion and GSAP and WebGL backdrops via OGL. Wired a calendar-backed events feed, a Resend-powered contact flow, and an admin dashboard for the e-board to publish events — plus dedicated microsites for the Gala (with its own sponsor deck), Convention, InternSHPE, and SHPEtinas.',
+    solution:
+      "Live at shpenjit.org as the chapter's front door — one codebase serving the whole org, animated and responsive, that the e-board maintains long after the developer graduates.",
+    lessons: [
+      'A shared design system across a dozen page types is what keeps a multi-purpose org site from fracturing into a dozen mismatched microsites.',
+      'Shipping a self-serve admin makes maintainability a feature — the site stays current after the person who built it moves on.',
+    ],
+    images: [
+      '/projects/shpe-web/gala-itinerary-design.jpg',
+      '/projects/shpe-web/eboard-design.jpg',
+      '/projects/shpe-web/shpetinas.png',
+      '/projects/shpe-web/convention.png',
+    ],
+  },
+  {
+    id: 'autonomous-robot',
+    title: 'Autonomous Robot Simulator',
+    description:
+      'A from-scratch 2D simulator for autonomous robot navigation — a differential-drive robot that steers itself to clicked waypoints with a proportional controller, plus manual keyboard driving and a live trajectory trail. Built in Python with Pygame.',
+    techStack: ['Python', 'Pygame', 'NumPy', 'Matplotlib'],
+    githubUrl: 'https://github.com/SJossue/Autonomous_Robot',
+    banner: {
+      name: 'Differential-Drive Robot',
+      location: 'Waypoint navigation · Python + Pygame',
+      image: '/projects/autonomous-robot/simulator.jpg',
+    },
+    heroImage: '/projects/autonomous-robot/loop.jpg',
+    situation:
+      'How a wheeled robot actually moves — and how a control loop turns a target into steering commands — is hard to feel from equations alone. I wanted a sandbox where differential-drive kinematics and closed-loop control play out in real time, not just on paper.',
+    task: 'Build a 2D simulator from scratch where a two-wheeled robot can be driven by hand and can also navigate itself to a target, so both the motion model and the control law are visible and tunable.',
+    action:
+      'Modeled a differential-drive robot in Python / Pygame — pose integrated from independent left and right wheel velocities (x and y from the average wheel speed along the heading, θ from their difference over the wheelbase). For autonomy, a proportional controller reads the Euclidean distance and heading error to a clicked waypoint (target angle via atan2, error normalized to [-π, π]) and sets the wheel speeds with separate angular (0.5) and linear (0.3) gains, arriving within a 5-pixel threshold. Shipped three modes — manual (W/S and Q/A drive each wheel), fully autonomous, and a combined mode that hands control to the autopilot on a click and returns it on arrival — with a live velocity/heading readout, a body-frame axis overlay, and a rendered path trail.',
+    solution:
+      'A working navigation sandbox: click anywhere and the robot turns and drives to the point, tracing its path as it goes — or take the wheels yourself. Building the loop by hand made the gain tradeoff tangible: too much linear gain and it overshoots the turn, too little and it crawls.',
+    lessons: [
+      'Differential-drive motion is only a few lines of integration — but watching the pose update live is what finally made the kinematics click.',
+      'A proportional controller is the smallest thing that already "looks autonomous"; tuning its two gains taught me more about control than any amount of reading about PID.',
+      'Keeping manual, autonomous, and hand-off as separate modes over one robot model made it easy to compare driving it against watching it drive itself.',
+    ],
+  },
   {
     id: 'data-cool',
     title: 'DataCool: Data Center Optimization',
@@ -135,72 +342,6 @@ export const projects: Project[] = [
     ],
   },
   {
-    id: 'prosthetic',
-    title: 'Linear Actuator Hand',
-    description:
-      'A low-cost (~$100), 3D-printed hand prosthetic driven by a single linear actuator — fishing-line tendons pull the fingers into a fist so the wearer can grip and carry everyday objects. FED 101 design project in NJIT Mechanical & Industrial Engineering.',
-    techStack: ['SolidWorks', '3D Printing', 'PLA', 'Linear Actuator'],
-    banner: {
-      name: 'Department of Mechanical & Industrial Engineering',
-      location: 'New Jersey Institute of Technology',
-      image: '/projects/prosthetic/angle-view.png',
-    },
-    heroImage: '/projects/prosthetic/final-display.jpeg',
-    report: {
-      url: '/projects/prosthetic/linear-actuator-driven-hand-prosthetic.pdf',
-      label: 'Design Report',
-      pages: 27,
-      cover: '/projects/prosthetic/report-cover.jpg',
-    },
-    situation:
-      'Advanced hand prosthetics are expensive and often unreliable, putting a functional grip out of reach for many amputees and people with congenital limb differences who just need to grab and carry everyday objects.',
-    task: 'Design and build a working hand prosthetic for under ~$120 that a single linear actuator can drive into a fist, replicating a natural grip — the term project for FED 101, Fundamentals of Engineering Design.',
-    action:
-      "Modeled the palm, metacarpals, phalanges, and forearm/elbow cuff in SolidWorks and 3D-printed them in PLA at NJIT's Makerspace. Routed fishing-line tendons through the fingers to a forearm-mounted linear actuator (12V power bank + rocker switch) so one actuator stroke contracts every finger into a fist, with rubber bands acting as return springs. Fasteners were chosen per joint by load — custom PLA pins at the light finger joints, wooden dowels and metal hardware where the palm carries the actuator.",
-    solution:
-      'A functioning tendon-driven prosthetic (~$100 in parts) that closes into a fist to grip and carry objects. Iterated straight from testing: rounded the finger slots to unlock full range of motion, and dropped the separate forearm — repurposing the elbow cuff — to cut weight. Built with Krishna, Lucas, and Erick.',
-    lessons: [
-      'Where the load goes decides the fastener — printed pins for the light finger joints, wooden dowels and metal hardware where the palm carries the actuator and forearm.',
-      'Geometry is function: a rectangular finger slot quietly capped the range of motion until it was rounded — the small CAD details make or break the mechanism.',
-      'Removing a whole part (the forearm) did more for usability than any material tweak — simplify before you optimize.',
-    ],
-    images: [
-      '/projects/prosthetic/exploded-cad-view.jpeg',
-      '/projects/prosthetic/exploded-sketch.jpeg',
-      '/projects/prosthetic/descriptive-sketch.jpeg',
-    ],
-  },
-  {
-    id: 'shpe-app',
-    title: 'SHPE Mobile App',
-    description:
-      "SHPE NJIT's official mobile app — the first student-built app in NJIT history, shipped in 27 days and now live on the App Store (5.0★) and Google Play. A cross-platform hub for events, QR check-in, a social feed, and a seasonal points leaderboard.",
-    techStack: ['React Native', 'Expo', 'TypeScript', 'Supabase', 'PostgreSQL'],
-    githubUrl: 'https://github.com/njitshpe/shpe-app',
-    githubPrivate: true,
-    liveUrl: 'https://apps.apple.com/us/app/shpe-njit/id6757627370',
-    playUrl: 'https://play.google.com/store/apps/details?id=com.shpenjit.officialapp&hl=en_US',
-    banner: {
-      name: 'Society of Hispanic Professional Engineers',
-      location: 'New Jersey Institute of Technology',
-      image: '/social/shpe-convention.png',
-    },
-    heroImage: '/projects/shpe-app/apple-app-store.png',
-    heroPosition: 'top',
-    situation:
-      'The chapter ran on a patchwork — email blasts, a shared calendar, GroupMe, Instagram — so events got missed, involvement was invisible, and there was no single place members actually opened.',
-    task: 'Ship one app the chapter lives in: events and RSVP, QR attendance check-in, a moderated social feed, and a points system that makes involvement visible — for members, alumni, and guests alike.',
-    action:
-      'Built a cross-platform Expo / React Native app (TypeScript, Expo Router) on a Supabase backend — PostgreSQL with row-level security and Deno edge functions for admin actions, QR check-in tokens, and account deletion. Layered in a moderated social feed (blocking + reporting), a seasonal points leaderboard, committee pages, role-based admin dashboards, push notifications, Sign in with Apple, and multi-step onboarding for students, alumni, and guests. A Cloudflare Worker serves branded event-share links off events.shpenjit.org.',
-    solution:
-      "Live as SHPE NJIT on the App Store (5.0★, Education) and Google Play — the chapter's daily hub for events, check-in, and recognition, and the first student-built app in NJIT history.",
-    images: [
-      '/projects/shpe-app/app-landing-page.jpeg',
-      '/projects/shpe-app/app-events-page.jpeg',
-      '/projects/shpe-app/app-user-rank.jpeg',
-    ],
-  },
-  {
     id: 'recall',
     title: 'Recall: Ambient Memory',
     navLabel: 'Recall - HackPrinceton',
@@ -231,86 +372,6 @@ export const projects: Project[] = [
       'Reducing video to text events at the edge is what makes the whole thing private and shippable — the LLM reasons over kilobytes of structured logs, not pixels.',
       'A dual-LLM path (K2 primary, Claude failover, safe fallback) kept the demo answering even when a provider hiccupped — reliability is a feature under stage lights.',
       'The ambient display sold the idea as much as the pipeline did — the particle cloud morphing from "thinking" to "answer" is what made the device feel alive.',
-    ],
-  },
-  {
-    id: 'shpe-web',
-    title: 'NJIT SHPE Website',
-    description:
-      "The official website for NJIT's SHPE chapter (shpenjit.org) — a fast, animated Next.js site spanning events, the annual Gala, convention, sponsors, programs, and team, with a self-serve admin dashboard the e-board uses to publish events.",
-    techStack: ['Next.js', 'TypeScript', 'Tailwind CSS', 'Framer Motion', 'GSAP'],
-    githubUrl: 'https://github.com/shpewebmaster/website',
-    githubPrivate: true,
-    liveUrl: 'https://shpenjit.org',
-    banner: {
-      name: 'Society of Hispanic Professional Engineers',
-      location: 'New Jersey Institute of Technology',
-      image: '/projects/shpe-web/group.jpeg',
-    },
-    heroImage: '/projects/shpe-web/gala-home.jpg',
-    heroPosition: 'top',
-    situation:
-      "The chapter's web presence was scattered and stale — a site the e-board couldn't touch without a developer, plus one-off microsites spun up for each event.",
-    task: 'Build one polished, maintainable site for everything the chapter does — events, the annual Gala, convention, sponsorships, programs, and team — that the e-board can keep current themselves.',
-    action:
-      'Built shpenjit.org with Next.js (App Router) and TypeScript, styled in Tailwind, with motion from Framer Motion and GSAP and WebGL backdrops via OGL. Wired a calendar-backed events feed, a Resend-powered contact flow, and an admin dashboard for the e-board to publish events — plus dedicated microsites for the Gala (with its own sponsor deck), Convention, InternSHPE, and SHPEtinas.',
-    solution:
-      "Live at shpenjit.org as the chapter's front door — one codebase serving the whole org, animated and responsive, that the e-board maintains long after the developer graduates.",
-    lessons: [
-      'A shared design system across a dozen page types is what keeps a multi-purpose org site from fracturing into a dozen mismatched microsites.',
-      'Shipping a self-serve admin makes maintainability a feature — the site stays current after the person who built it moves on.',
-    ],
-    images: [
-      '/projects/shpe-web/gala-itinerary-design.jpg',
-      '/projects/shpe-web/eboard-design.jpg',
-      '/projects/shpe-web/shpetinas.png',
-      '/projects/shpe-web/convention.png',
-    ],
-  },
-  {
-    id: 'autonomous-robot',
-    title: 'Autonomous Robot Simulator',
-    description:
-      'A from-scratch 2D simulator for autonomous robot navigation — a differential-drive robot that steers itself to clicked waypoints with a proportional controller, plus manual keyboard driving and a live trajectory trail. Built in Python with Pygame.',
-    techStack: ['Python', 'Pygame', 'NumPy', 'Matplotlib'],
-    githubUrl: 'https://github.com/SJossue/Autonomous_Robot',
-    banner: {
-      name: 'Differential-Drive Robot',
-      location: 'Waypoint navigation · Python + Pygame',
-      image: '/projects/autonomous-robot/simulator.jpg',
-    },
-    heroImage: '/projects/autonomous-robot/loop.jpg',
-    situation:
-      'How a wheeled robot actually moves — and how a control loop turns a target into steering commands — is hard to feel from equations alone. I wanted a sandbox where differential-drive kinematics and closed-loop control play out in real time, not just on paper.',
-    task: 'Build a 2D simulator from scratch where a two-wheeled robot can be driven by hand and can also navigate itself to a target, so both the motion model and the control law are visible and tunable.',
-    action:
-      'Modeled a differential-drive robot in Python / Pygame — pose integrated from independent left and right wheel velocities (x and y from the average wheel speed along the heading, θ from their difference over the wheelbase). For autonomy, a proportional controller reads the Euclidean distance and heading error to a clicked waypoint (target angle via atan2, error normalized to [-π, π]) and sets the wheel speeds with separate angular (0.5) and linear (0.3) gains, arriving within a 5-pixel threshold. Shipped three modes — manual (W/S and Q/A drive each wheel), fully autonomous, and a combined mode that hands control to the autopilot on a click and returns it on arrival — with a live velocity/heading readout, a body-frame axis overlay, and a rendered path trail.',
-    solution:
-      'A working navigation sandbox: click anywhere and the robot turns and drives to the point, tracing its path as it goes — or take the wheels yourself. Building the loop by hand made the gain tradeoff tangible: too much linear gain and it overshoots the turn, too little and it crawls.',
-    lessons: [
-      'Differential-drive motion is only a few lines of integration — but watching the pose update live is what finally made the kinematics click.',
-      'A proportional controller is the smallest thing that already "looks autonomous"; tuning its two gains taught me more about control than any amount of reading about PID.',
-      'Keeping manual, autonomous, and hand-off as separate modes over one robot model made it easy to compare driving it against watching it drive itself.',
-    ],
-  },
-  {
-    id: 'stress-analysis',
-    title: 'Baja Chassis FEA',
-    description:
-      'Conducted rigorous finite element analysis through iterative cycles on a Baja SAE roll cage for maximal structural efficiency.',
-    techStack: ['SolidWorks', 'FEA Simulation', 'Vehicle Dynamics'],
-    heroImage: '/projects/stress-analysis/stressed-chassis.jpeg',
-    situation:
-      'Previous multi-axis impact models showed potential over-engineering in low-stress support tubing, artificially increasing curb weight.',
-    task: 'Optimize the 4130 steel spaceframe across rigorous simulated load cases to shave weight while verifying SAE minimum safety factors.',
-    action:
-      'Processed CAD assemblies through iterative mechanical stress models mapping varied torsion, side-impact, and frontal collision conditions.',
-    solution:
-      'Mapped critical high-stress nodes vs low-stress lengths to dictate the tubing profile alterations ultimately securing the chassis bounds.',
-    images: [
-      '/projects/stress-analysis/chassis-left-side.jpeg',
-      '/projects/stress-analysis/chassis-left-bare.jpeg',
-      '/projects/stress-analysis/baja-website.jpeg',
     ],
   },
 ];
