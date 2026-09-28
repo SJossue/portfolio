@@ -316,10 +316,9 @@ export function ProjectCardBody({ project }: { project: Project }) {
 export function CaseStudy({ project }: { project: Project }) {
   const rows = (
     [
-      ['Situation', project.situation],
-      ['Task', project.task],
-      ['Action', project.action],
-      ['Result', project.solution],
+      ['Scope', project.scope],
+      ['Approach', project.approach],
+      ['Outcome', project.outcome],
     ] as const
   ).filter(([, value]) => Boolean(value));
 

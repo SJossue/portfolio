@@ -30,10 +30,12 @@ export interface Project {
   /** A supporting document (e.g. a design report PDF), shown as a preview card
    *  that opens the file. `cover` is a rendered first-page thumbnail. */
   report?: { url: string; label?: string; pages?: number; cover?: string };
-  situation?: string;
-  task?: string;
-  action?: string;
-  solution?: string;
+  /** What the project's scope actually was — the constraint or gap that defined it. */
+  scope?: string;
+  /** How it was built — the concrete method, not a tech-stack recap. */
+  approach?: string;
+  /** The result — numbers where they exist, shipped/deployed state otherwise. */
+  outcome?: string;
   lessons?: string[];
   images?: string[];
   /** A draggable before/after image comparison, rendered above the Gallery. */
@@ -67,12 +69,11 @@ export const projects: Project[] = [
       image: '/projects/tyler/tyler-jobsite-wide.webp',
     },
     heroImage: '/projects/tyler/tyler-hero.webp',
-    situation:
-      'Commercial flooring installation is skilled, physically taxing labor that does not scale, and any robot attempting it needs sub-millimeter placement accuracy to pass a real inspection, not just perform in a demo.',
-    task: 'Design the mechanical system that lets Tyler, a 50 lb mobile robot, pick up and place tile, LVT, and VCT flooring with tolerances tight enough for a live commercial jobsite.',
-    action:
+    scope:
+      "Design the mechanical system that lets Tyler, a 50 lb mobile robot, pick up and place tile, LVT, and VCT flooring at ±1mm accuracy — commercial flooring installation is skilled, physically taxing labor that doesn't scale, and any robot attempting it needs sub-millimeter placement to pass a real inspection, not just a demo.",
+    approach:
       "Engineered a custom suction end-effector and a servo-actuated tilt mechanism riding a linear-rail gantry to pick, orient, and place each piece of flooring. Ran clearance and tolerance analysis across the chassis-to-end-effector interface to hold Tyler's ±1mm placement precision, and packaged actuators and sensors into a rugged mobile chassis built for repeated jobsite use.",
-    solution:
+    outcome:
       'Tyler shipped: the robot installed flooring at 100 sq ft/hr in a live deployment at Plaza Las Américas, Puerto Rico, holding tolerance across real, imperfect subfloor conditions.',
     lessons: [
       'Tolerance stacks compound fast across a chassis-to-end-effector interface — treating ±1mm as a system-level constraint, not a single-part spec, is what actually held it in the field.',
@@ -96,13 +97,12 @@ export const projects: Project[] = [
       image: '/projects/stress-analysis/chassis.jpeg',
     },
     heroImage: '/projects/stress-analysis/baja-action-run.png',
-    situation:
-      'Previous multi-axis impact models showed potential over-engineering in low-stress support tubing, artificially increasing curb weight.',
-    task: 'Optimize the 4130 steel spaceframe across rigorous simulated load cases to shave weight while verifying SAE minimum safety factors.',
-    action:
-      'Processed CAD assemblies through iterative mechanical stress models mapping varied torsion, side-impact, and frontal collision conditions.',
-    solution:
-      'Mapped critical high-stress nodes vs low-stress lengths to dictate the tubing profile alterations ultimately securing the chassis bounds.',
+    scope:
+      'Optimize the 4130 steel spaceframe of the Baja SAE roll cage across rigorous simulated load cases — prior multi-axis impact models showed over-engineering in low-stress support tubing, adding curb weight the car did not need.',
+    approach:
+      'Processed CAD assemblies through 12+ iterative mechanical stress models mapping varied torsion, side-impact, and frontal-collision conditions, then mapped critical high-stress nodes against low-stress tubing lengths to target where material could actually come out.',
+    outcome:
+      'Cut chassis weight 12% at a 1.5× factor of safety across 15g front, 10g side, and 8g rear impact cases, with tubing profile changes traced directly to the mapped stress data.',
     beforeAfter: {
       before: '/projects/stress-analysis/chassis-frame-before.png',
       after: '/projects/stress-analysis/chassis-frame-after.png',
@@ -120,7 +120,7 @@ export const projects: Project[] = [
     id: 'prosthetic',
     title: 'Linear Actuator Hand',
     description:
-      'A low-cost (~$100), 3D-printed hand prosthetic driven by a single linear actuator — fishing-line tendons pull the fingers into a fist so the wearer can grip and carry everyday objects. FED 101 design project in NJIT Mechanical & Industrial Engineering.',
+      'A low-cost (~$100), 3D-printed hand prosthetic driven by a single linear actuator — fishing-line tendons pull the fingers into a fist so the wearer can grip and carry everyday objects.',
     techStack: ['SolidWorks', '3D Printing', 'PLA', 'Linear Actuator'],
     banner: {
       name: 'Department of Mechanical & Industrial Engineering',
@@ -131,15 +131,14 @@ export const projects: Project[] = [
     report: {
       url: '/projects/prosthetic/linear-actuator-driven-hand-prosthetic.pdf',
       label: 'Design Report',
-      pages: 27,
+      pages: 19,
       cover: '/projects/prosthetic/report-cover.jpg',
     },
-    situation:
-      'Advanced hand prosthetics are expensive and often unreliable, putting a functional grip out of reach for many amputees and people with congenital limb differences who just need to grab and carry everyday objects.',
-    task: 'Design and build a working hand prosthetic for under ~$120 that a single linear actuator can drive into a fist, replicating a natural grip — the term project for FED 101, Fundamentals of Engineering Design.',
-    action:
+    scope:
+      'Design and build a working hand prosthetic for under ~$120 that a single linear actuator can drive into a fist, replicating a natural grip — advanced prosthetics are expensive and often unreliable, putting a functional grip out of reach for people who just need to grab and carry everyday objects.',
+    approach:
       "Modeled the palm, metacarpals, phalanges, and forearm/elbow cuff in SolidWorks and 3D-printed them in PLA at NJIT's Makerspace. Routed fishing-line tendons through the fingers to a forearm-mounted linear actuator (12V power bank + rocker switch) so one actuator stroke contracts every finger into a fist, with rubber bands acting as return springs. Fasteners were chosen per joint by load — custom PLA pins at the light finger joints, wooden dowels and metal hardware where the palm carries the actuator.",
-    solution:
+    outcome:
       'A functioning tendon-driven prosthetic (~$100 in parts) that closes into a fist to grip and carry objects. Iterated straight from testing: rounded the finger slots to unlock full range of motion, and dropped the separate forearm — repurposing the elbow cuff — to cut weight. Built with Krishna, Lucas, and Erick.',
     lessons: [
       'Where the load goes decides the fastener — printed pins for the light finger joints, wooden dowels and metal hardware where the palm carries the actuator and forearm.',
@@ -169,12 +168,11 @@ export const projects: Project[] = [
     },
     heroImage: '/projects/shpe-app/app-store-listing.png',
     heroPosition: 'top',
-    situation:
-      'The chapter ran on a patchwork — email blasts, a shared calendar, GroupMe, Instagram — so events got missed, involvement was invisible, and there was no single place members actually opened.',
-    task: 'Ship one app the chapter lives in: events and RSVP, QR attendance check-in, a moderated social feed, and a points system that makes involvement visible — for members, alumni, and guests alike.',
-    action:
+    scope:
+      'Ship one app the chapter lives in — events and RSVP, QR attendance check-in, a moderated social feed, and a points system that makes involvement visible — for members, alumni, and guests alike. The chapter had been running on a patchwork of email blasts, a shared calendar, GroupMe, and Instagram, so events got missed and involvement was invisible.',
+    approach:
       'Built a cross-platform Expo / React Native app (TypeScript, Expo Router) on a Supabase backend — PostgreSQL with row-level security and Deno edge functions for admin actions, QR check-in tokens, and account deletion. Layered in a moderated social feed (blocking + reporting), a seasonal points leaderboard, committee pages, role-based admin dashboards, push notifications, Sign in with Apple, and multi-step onboarding for students, alumni, and guests. A Cloudflare Worker serves branded event-share links off events.shpenjit.org.',
-    solution:
+    outcome:
       "Live as SHPE NJIT on the App Store (5.0★, Education) and Google Play — the chapter's daily hub for events, check-in, and recognition, and the first student-built app in NJIT history.",
     images: [
       '/projects/shpe-app/app-store-home-feed.jpg',
@@ -202,12 +200,11 @@ export const projects: Project[] = [
     },
     heroImage: '/projects/shpe-web/gala-home.jpg',
     heroPosition: 'top',
-    situation:
-      "The chapter's web presence was scattered and stale — a site the e-board couldn't touch without a developer, plus one-off microsites spun up for each event.",
-    task: 'Build one polished, maintainable site for everything the chapter does — events, the annual Gala, convention, sponsorships, programs, and team — that the e-board can keep current themselves.',
-    action:
+    scope:
+      "Build one polished, maintainable site for everything the chapter does — events, the annual Gala, convention, sponsorships, programs, and team — that the e-board can keep current themselves. The prior web presence was scattered and stale: a site the e-board couldn't touch without a developer, plus one-off microsites spun up for each event.",
+    approach:
       'Built shpenjit.org with Next.js (App Router) and TypeScript, styled in Tailwind, with motion from Framer Motion and GSAP and WebGL backdrops via OGL. Wired a calendar-backed events feed, a Resend-powered contact flow, and an admin dashboard for the e-board to publish events — plus dedicated microsites for the Gala (with its own sponsor deck), Convention, InternSHPE, and SHPEtinas.',
-    solution:
+    outcome:
       "Live at shpenjit.org as the chapter's front door — one codebase serving the whole org, animated and responsive, that the e-board maintains long after the developer graduates.",
     lessons: [
       'A shared design system across a dozen page types is what keeps a multi-purpose org site from fracturing into a dozen mismatched microsites.',
@@ -233,12 +230,11 @@ export const projects: Project[] = [
       image: '/projects/autonomous-robot/simulator.jpg',
     },
     heroImage: '/projects/autonomous-robot/loop.jpg',
-    situation:
-      'How a wheeled robot actually moves — and how a control loop turns a target into steering commands — is hard to feel from equations alone. I wanted a sandbox where differential-drive kinematics and closed-loop control play out in real time, not just on paper.',
-    task: 'Build a 2D simulator from scratch where a two-wheeled robot can be driven by hand and can also navigate itself to a target, so both the motion model and the control law are visible and tunable.',
-    action:
+    scope:
+      'Build a 2D simulator from scratch where a two-wheeled robot can be driven by hand and can also navigate itself to a target, so both the motion model and the control law are visible and tunable — differential-drive kinematics and closed-loop control are hard to feel from equations alone.',
+    approach:
       'Modeled a differential-drive robot in Python / Pygame — pose integrated from independent left and right wheel velocities (x and y from the average wheel speed along the heading, θ from their difference over the wheelbase). For autonomy, a proportional controller reads the Euclidean distance and heading error to a clicked waypoint (target angle via atan2, error normalized to [-π, π]) and sets the wheel speeds with separate angular (0.5) and linear (0.3) gains, arriving within a 5-pixel threshold. Shipped three modes — manual (W/S and Q/A drive each wheel), fully autonomous, and a combined mode that hands control to the autopilot on a click and returns it on arrival — with a live velocity/heading readout, a body-frame axis overlay, and a rendered path trail.',
-    solution:
+    outcome:
       'A working navigation sandbox: click anywhere and the robot turns and drives to the point, tracing its path as it goes — or take the wheels yourself. Building the loop by hand made the gain tradeoff tangible: too much linear gain and it overshoots the turn, too little and it crawls.',
     lessons: [
       'Differential-drive motion is only a few lines of integration — but watching the pose update live is what finally made the kinematics click.',
@@ -261,12 +257,11 @@ export const projects: Project[] = [
       award: '1st Place',
     },
     heroImage: '/projects/data-cool/team-brainstorming.jpeg',
-    situation:
-      'Data-center cooling is mostly reactive — static thresholds and manual intervention — so thermal spikes surface as hardware failure or wasted, over-provisioned cooling instead of being prevented.',
-    task: 'Predict which racks will overheat before they do, then automatically generate a workload-migration plan that respects thermal physics, migration cost, and capacity limits.',
-    action:
+    scope:
+      'Predict which data-center racks will overheat before they do, then automatically generate a workload-migration plan that respects thermal physics, migration cost, and capacity limits — data-center cooling today is mostly reactive, static thresholds and manual intervention, so thermal spikes surface as hardware failure or wasted, over-provisioned cooling.',
+    approach:
       'Trained a Histogram Gradient Boosting classifier with SHAP interpretability for per-rack risk scoring, then paired it with a constraint-satisfaction optimizer and a thermal-coupling simulation that models heat between adjacent racks — sorting high-risk racks, finding cool receivers, and costing each transfer by CPU load × distance. Surfaced it all in a Streamlit dashboard with interactive 3D/2D heatmaps and before/after comparison.',
-    solution:
+    outcome:
       'Hit 94% prediction accuracy and cut hotspots 4 → 1 (75%), dropping peak rack temperature from 78.3°C to 71.2°C in simulation — 1st place at the Claude NJIT Hackathon 2025. Built in 4 hours with Yahil, Guru, and Sergio.',
     lessons: [
       'Constraint satisfaction is a balancing act — thermal physics pulls against migration cost and capacity, and the optimizer is only as good as how you price the tradeoff.',
@@ -291,12 +286,11 @@ export const projects: Project[] = [
     ],
     hackathonId: 'cmu',
     heroImage: '/projects/forge/forge-hero.jpg',
-    situation:
-      'Getting started with hardware is gated behind desktop IDEs, USB-tethered flashing, and knowing C/C++, pin maps, and datasheets — a wall that stops most people before their first blink.',
-    task: 'Collapse the entire embedded workflow onto a phone: let anyone describe device behavior in plain language and have working firmware land on real hardware, wirelessly.',
-    action:
+    scope:
+      'Collapse the entire embedded-development workflow onto a phone: let anyone describe device behavior in plain language and have working firmware land on real hardware, wirelessly — getting started with hardware is normally gated behind desktop IDEs, USB-tethered flashing, and knowing C/C++, pin maps, and datasheets.',
+    approach:
       'Built a React Native (Expo) app that sends intent to Dedalus Labs AI agents, which generate hardware-aware Arduino code and validate it. A cloud service compiles the firmware with the PlatformIO CLI and pushes it to the ESP32 over the air via ArduinoOTA, then the app auto-generates a control GUI — sliders, toggles, and live indicators — from the components in the request.',
-    solution:
+    outcome:
       'A working mobile-first platform demoed at TartanHacks 2026 (CMU): speak or type "add a servo on pin 9 that sweeps," and ~15 seconds later the board is running it — no IDE, no cable. Built with Yahil and Eren.',
     lessons: [
       'Cloud-compiling for constrained hardware means treating the toolchain itself as a service — the phone never touches a compiler.',
@@ -323,12 +317,11 @@ export const projects: Project[] = [
       image: '/hackathons/aws-hackathon.jpeg',
     },
     heroImage: '/projects/reunion/imessage.jpg',
-    situation:
-      'Friend groups plan trips in the group chat, but the planning state — who is in, what dates, dietary needs, budget — scatters across dozens of messages. Momentum dies, and someone ends up manually chasing everyone. Most travel tools assume a solo search session; the real problem is group coordination.',
-    task: "Build an agent that stays inside iMessage, notices when a trip is forming, remembers each person's constraints, and proposes the next concrete coordination step — a single visible loop wiring five sponsor tools end to end.",
-    action:
+    scope:
+      "Build an agent that stays inside iMessage, notices when a trip is forming, remembers each person's constraints, and proposes the next concrete coordination step — a single visible loop wiring five sponsor tools end to end. Friend groups plan trips in the group chat, but the planning state (who's in, what dates, dietary needs, budget) scatters across dozens of messages until momentum dies.",
+    approach:
       "Wrote a TypeScript spine — message → on-device gate → extract → route → plan → next action → reply. A cheap local gate wakes only on travel intent so normal chatter never hits the cloud. RocketRide extracts destination, dates, constraints, and preferences; XTrace holds durable per-person and group memory with belief revision (a newer fact supersedes a stale one); Butterbase stores trips, participants, polls, and plan state; and a Neo4j culture graph maps each friend's heritage to food and destination picks. Photon / Spectrum carry it over iMessage. Every layer degrades to an in-memory stub, so the team could build different pieces in parallel and still run the whole loop on day one.",
-    solution:
+    outcome:
       'A working end-to-end agent demoed at the Agentic AI Hackathon in San Francisco: drop "we should go to Mexico City in July" into the chat and Reunion extracts the trip, folds in each person\'s constraints (weekends-only, vegetarian), and posts back a dated itinerary — then revises its memory when someone changes their availability. Built with Pablo, Kevin, and Ethan.',
     lessons: [
       'A cheap on-device gate before any cloud call is what makes an always-listening chat agent usable — it wakes on intent instead of reacting to every message.',
@@ -361,12 +354,11 @@ export const projects: Project[] = [
     heroImage: '/projects/recall/dashboard.jpg',
     heroPosition: 'top',
     images: ['/projects/recall/floorplan.jpg', '/projects/recall/ambient.jpg'],
-    situation:
-      'Rooms forget. Where did I leave my keys? Did I take my meds? — the space saw all of it, but nobody can ask it. An always-on camera could answer, but no one wants their living room streamed to the cloud.',
-    task: 'Build an ambient device that remembers what happens in a room and answers questions about it in plain English — without ever recording or transmitting video.',
-    action:
+    scope:
+      'Build an ambient device that remembers what happens in a room and answers questions about it in plain English — without ever recording or transmitting video. Rooms forget: where did I leave my keys, did I take my meds — the space saw all of it, but nobody can ask it, and an always-on camera could answer but no one wants their living room streamed to the cloud.',
+    approach:
       "Housed a Raspberry Pi 4 and camera in a tiger that streams frames only over the LAN. A laptop runs YOLOv8 + ByteTrack to reduce the stream to structured events ('bottle placed on the desk in the Living Room') in SQLite. A FastAPI backend feeds recent events to K2 Think V2 (Claude Opus as failover) to answer questions, speaks answers via ElevenLabs, and drives two surfaces — a Next.js editorial dashboard and a phone-stand ambient display whose Three.js particle cloud morphs through idle → listening → thinking → answer. Video never leaves the tiger; only short text events cross any wire.",
-    solution:
+    outcome:
       "A working privacy-first memory companion demoed at HackPrinceton 2026 — ask 'did I take my meds?' and it answers from what it actually saw, with a proactive agent that drafts (never sends) a caregiver text when a scheduled med is missed. Built with Sunghoo, Ariji, and Jeeyan across the CV, hardware, and frontend.",
     lessons: [
       'Reducing video to text events at the edge is what makes the whole thing private and shippable — the LLM reasons over kilobytes of structured logs, not pixels.',

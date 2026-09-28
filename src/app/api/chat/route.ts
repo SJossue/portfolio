@@ -184,10 +184,9 @@ export async function POST(req: Request) {
     const p = projects.find((pr) => pr.id === projectId);
     if (p) {
       const study = [
-        p.situation && `Situation: ${p.situation}`,
-        p.task && `Task: ${p.task}`,
-        p.action && `Action: ${p.action}`,
-        p.solution && `Result: ${p.solution}`,
+        p.scope && `Scope: ${p.scope}`,
+        p.approach && `Approach: ${p.approach}`,
+        p.outcome && `Outcome: ${p.outcome}`,
         p.lessons?.length && `Lessons: ${p.lessons.join('; ')}`,
       ]
         .filter(Boolean)
