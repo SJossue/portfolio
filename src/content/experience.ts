@@ -20,12 +20,12 @@ export const experienceData: ExperienceEntry[] = [
   // ── Experience ──────────────────────────────────────────────────────────
   {
     id: 'njit-career-services',
-    role: 'Program Assistant',
+    role: 'Program Lead',
     company: 'NJIT Career Services',
     period: 'Sep 2026 — Present',
     section: 'experience',
     description:
-      "Support NJIT Career Services' undergraduate engineering co-op pipeline: employer research and business development, posting-eligibility review, program data and assessment (reference lists, testimonials, trend analysis), student communications, and career-resource upkeep.",
+      "Lead NJIT Career Services' undergraduate engineering co-op pipeline: employer research and business development, posting-eligibility review, program data and assessment (reference lists, testimonials, trend analysis), student communications, and career-resource upkeep.",
     techStack: ['Employer Research', 'Program Assessment', 'Student Communications'],
   },
   {
