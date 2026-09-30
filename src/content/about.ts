@@ -25,13 +25,14 @@ export const aboutData: AboutData = {
   roleTitle: 'Mechanical Design Engineer',
   ethnicity: 'Salvadoran & Ecuadorian',
   images: [
+    '/social/shpe-eboard-meeting.jpg',
     '/jossue/headshot.jpg',
     '/jossue/crossed-headshots.jpg',
     '/jossue/hands-headshot.jpg',
     '/social/jossue-accord-photo-together.jpg',
     '/social/jossue-accord-photo.jpg',
   ],
-  bio: 'I design and build physical mechanisms, not diagrams of them. I am pursuing a Bachelor of Science in Mechanical Engineering with a minor in Electrical Engineering at NJIT. My "learn by building" philosophy started under the hood of my own car and now drives every mechanism I take from CAD to a working part: a suction end-effector and servo-actuated tilt mechanism on a 50 lb autonomous tiling robot deployed in Puerto Rico, a Baja SAE roll cage cut 12% lighter at a 1.5x factor of safety, and a tendon-driven prosthetic hand. Two internships inside a regulated utility also gave me exposure most mechanical engineering juniors do not get: substation drawing audits, field walkdowns, and a $60M+ capital project portfolio. I still build software on the side (this site is one example), but the work I am chasing next is CAD, GD&T, tolerance stack-ups, and DFMEA on real hardware, on the way to eventually founding a hardware company of my own.',
+  bio: 'From harvesting limes in Ecuador at eleven to presenting research at Yongfeng High School in Taiwan at seventeen, my path has been defined by drastically different environments. It is in navigating these distinct languages, cultures and communities where I learned a core truth of engineering: no system is truly efficient unless it is designed for the people who actually depend on it. As the first in my family to go to college, I am proud to pursue a Bachelor of Science in Mechanical Engineering with a minor in Electrical Engineering. I consider myself privileged for the opportunity to be in a place many others would trade anything to be in. My passion for engineering is rooted in being a car-loving teenager who struggled to afford repairs and enhancements. It is in these late nights chasing a 10mm, heating a seized bolt, or spinning a washer with two fingers that I learned the value of persistence and power tools. My career has taken me across many fields, from state government, to software development, to entrepreneurship, to project management, and most recently startup robotics. I am proud of my Salvadoran and Ecuadorian heritage and I am grateful for every opportunity I get to smile and contribute my piece to the world.',
   skills: [
     {
       category: 'CAD & Analysis',
@@ -63,11 +64,11 @@ export const aboutData: AboutData = {
   highlights: [
     { label: 'Philosophy', value: 'Learn by Building' },
     { label: 'Pillars', value: 'Design, Execution, Leadership' },
-    { label: 'Roles', value: '12' },
+    { label: 'Roles', value: '13' },
     { label: 'Projects', value: '10' },
   ],
   currently: [
-    'Program Assistant @ NJIT Career Services',
+    'Program Lead @ NJIT Career Services',
     'Internal VP @ SHPE NJIT',
     'MLT CareerPrep Fellow',
     'BS Mechanical Engineering @ NJIT',
