@@ -27,6 +27,7 @@ import {
 } from 'react-icons/si';
 
 import HubSocials from '@/components/features/hub/HubSocials';
+import { LightboxTrigger } from '@/components/features/shared/LightboxTrigger';
 import type { Hackathon } from '@/content/hackathons';
 import { hackathons } from '@/content/hackathons';
 import { imageDimensions } from '@/content/project-media';
@@ -364,6 +365,7 @@ export function Gallery({ images, title }: { images: string[]; title: string }) 
   });
   // Portrait sets sit side by side; a set of four wraps into a 2×2 grid.
   const cols = images.length === 4 ? 2 : Math.min(images.length, 3);
+  const lightboxImages = images.map((src, i) => ({ src, alt: `${title} — image ${i + 1}` }));
   return (
     <section className="border-white/8 mt-6 border-t pt-6">
       <p className={eyebrow}>Gallery</p>
@@ -376,22 +378,28 @@ export function Gallery({ images, title }: { images: string[]; title: string }) 
           return (
             <figure
               key={src}
-              className={`border-white/8 overflow-hidden rounded-xl border bg-black/20 ${
+              className={`border-white/8 group overflow-hidden rounded-xl border bg-black/20 ${
                 allPortrait ? '' : 'mb-4 [break-inside:avoid]'
               }`}
             >
-              <Image
-                src={src}
-                alt={`${title} — image ${i + 1}`}
-                width={w}
-                height={h}
-                sizes={
-                  allPortrait
-                    ? `(min-width: 1024px) ${Math.round(52 / cols)}vw, ${Math.round(92 / cols)}vw`
-                    : '(min-width: 1024px) 28vw, (min-width: 640px) 45vw, 90vw'
-                }
-                className="h-auto w-full"
-              />
+              <LightboxTrigger
+                images={lightboxImages}
+                index={i}
+                className="block w-full cursor-zoom-in"
+              >
+                <Image
+                  src={src}
+                  alt={`${title} — image ${i + 1}`}
+                  width={w}
+                  height={h}
+                  sizes={
+                    allPortrait
+                      ? `(min-width: 1024px) ${Math.round(52 / cols)}vw, ${Math.round(92 / cols)}vw`
+                      : '(min-width: 1024px) 28vw, (min-width: 640px) 45vw, 90vw'
+                  }
+                  className="h-auto w-full transition-transform duration-500 group-hover:scale-[1.03]"
+                />
+              </LightboxTrigger>
             </figure>
           );
         })}

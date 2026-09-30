@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
+import { LightboxTrigger } from '@/components/features/shared/LightboxTrigger';
 import IslandSection from '@/components/features/worlds/shared/IslandSection';
 import { aboutData } from '@/content/about';
 import { contactLinks } from '@/content/contact';
@@ -22,6 +23,7 @@ export const intro =
 
 /** Descriptive alt text for the gallery photos (keyed by image path). */
 const GALLERY_ALT: Record<string, string> = {
+  '/jossue/headshot.jpg': 'Jossue Sarango — headshot',
   '/jossue/crossed-headshots.jpg': 'Jossue Sarango — studio portrait',
   '/jossue/hands-headshot.jpg': 'Jossue Sarango — portrait',
   '/social/jossue-accord-photo-together.jpg': 'Jossue with his Honda Accord',
@@ -35,20 +37,28 @@ const GALLERY_ALT: Record<string, string> = {
  */
 export default function RealMeIsland() {
   const [lead, ...gallery] = aboutData.images;
+  const lightboxImages = aboutData.images.map((src) => ({
+    src,
+    alt: GALLERY_ALT[src] ?? aboutData.name,
+  }));
 
   return (
     <div className="text-white">
       <IslandSection id="about" eyebrow="The human behind the code" title="About Me">
-        <div className="border-white/8 relative aspect-[4/3] w-full overflow-hidden rounded-2xl border bg-white/[0.03]">
+        <LightboxTrigger
+          images={lightboxImages}
+          index={0}
+          className="border-white/8 group relative block aspect-[4/3] w-full cursor-zoom-in overflow-hidden rounded-2xl border bg-white/[0.03]"
+        >
           <Image
             src={lead}
             alt={aboutData.name}
             fill
             sizes="(min-width: 1024px) 40vw, 100vw"
-            className="object-cover"
+            className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
             priority
           />
-        </div>
+        </LightboxTrigger>
 
         <div className="mt-5">
           <h3 className="text-xl font-bold text-white">{aboutData.name}</h3>
@@ -92,19 +102,21 @@ export default function RealMeIsland() {
 
       <IslandSection id="gallery" eyebrow="Moments" title="Gallery">
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-          {gallery.map((src) => (
-            <div
+          {gallery.map((src, i) => (
+            <LightboxTrigger
               key={src}
-              className="border-white/8 relative aspect-square w-full overflow-hidden rounded-2xl border bg-white/[0.03]"
+              images={lightboxImages}
+              index={i + 1}
+              className="border-white/8 group relative block aspect-square w-full cursor-zoom-in overflow-hidden rounded-2xl border bg-white/[0.03]"
             >
               <Image
                 src={src}
                 alt={GALLERY_ALT[src] ?? aboutData.name}
                 fill
                 sizes="(min-width: 1024px) 13vw, 45vw"
-                className="object-cover"
+                className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
               />
-            </div>
+            </LightboxTrigger>
           ))}
         </div>
       </IslandSection>

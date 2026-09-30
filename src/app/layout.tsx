@@ -5,6 +5,7 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 import '@/styles/globals.css';
 import { JsonLd } from '@/components/features/JsonLd';
 import LogRocketInit from '@/components/features/LogRocketInit';
+import Lightbox from '@/components/features/shared/Lightbox';
 import WorldLoader from '@/components/features/hub/WorldLoader';
 import { siteConfig } from '@/lib/site';
 
@@ -78,6 +79,7 @@ export default function RootLayout({
         <LogRocketInit />
         {children}
         <WorldLoader />
+        <Lightbox />
         <Analytics />
         <SpeedInsights />
       </body>
