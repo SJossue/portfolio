@@ -36,7 +36,7 @@ export const aboutData: AboutData = {
   skills: [
     {
       category: 'CAD & Analysis',
-      items: ['SolidWorks', 'Fusion 360', 'GD&T', 'Tolerance Stack-Up', 'FEA Simulation'],
+      items: ['SolidWorks', 'Fusion 360', 'GD&T', 'Tolerance Stack-Up', 'FEA Simulation', 'DFMA'],
     },
     {
       category: 'Manufacturing',
@@ -57,6 +57,10 @@ export const aboutData: AboutData = {
       items: ['ROS 2', 'NVIDIA Jetson', 'LiDAR', 'Servos & Actuators', 'Microcontrollers'],
     },
     {
+      category: 'Languages',
+      items: ['Spanish', 'English', 'Portuguese', 'Mandarin (HSK 2)'],
+    },
+    {
       category: 'Leadership',
       items: ['Technical Leadership', 'Cross-Functional Collaboration', 'Project Execution'],
     },
@@ -65,11 +69,12 @@ export const aboutData: AboutData = {
     { label: 'Philosophy', value: 'Learn by Building' },
     { label: 'Pillars', value: 'Design, Execution, Leadership' },
     { label: 'Roles', value: '13' },
-    { label: 'Projects', value: '10' },
+    { label: 'Projects', value: '11' },
   ],
   currently: [
     'Program Lead @ NJIT Career Services',
     'Internal VP @ SHPE NJIT',
+    'Resident Assistant @ NJIT Residence Life',
     'MLT CareerPrep Fellow',
     'BS Mechanical Engineering @ NJIT',
   ],
