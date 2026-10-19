@@ -20,4 +20,8 @@ describe('projects data', () => {
     const ids = projects.map((p) => p.id);
     expect(new Set(ids).size).toBe(ids.length);
   });
+
+  it('includes the wearable companion robot project', () => {
+    expect(projects.some((p) => p.id === 'companion-robot')).toBe(true);
+  });
 });

@@ -57,6 +57,7 @@ export const projects: Project[] = [
     description:
       "Mechanical design for Tyler, Human Friendly Robotics' 50 lb autonomous floor-tiling robot: a custom suction end-effector and servo-actuated tilt mechanism that place tile, LVT, and VCT flooring to ±1mm precision. Deployed live at Plaza Las Américas, Puerto Rico.",
     techStack: [
+      'Autodesk Fusion',
       'SolidWorks',
       'GD&T',
       'Tolerance Analysis',
@@ -72,9 +73,9 @@ export const projects: Project[] = [
     scope:
       "Design the mechanical system that lets Tyler, a 50 lb mobile robot, pick up and place tile, LVT, and VCT flooring at ±1mm accuracy — commercial flooring installation is skilled, physically taxing labor that doesn't scale, and any robot attempting it needs sub-millimeter placement to pass a real inspection, not just a demo.",
     approach:
-      "Engineered a custom suction end-effector and a servo-actuated tilt mechanism riding a linear-rail gantry to pick, orient, and place each piece of flooring. Ran clearance and tolerance analysis across the chassis-to-end-effector interface to hold Tyler's ±1mm placement precision, and packaged actuators and sensors into a rugged mobile chassis built for repeated jobsite use.",
+      "Designed the 912 × 728 × 145 mm chassis base in Autodesk Fusion, sized for standard doorways, center of mass, and wheel clearance. Engineered interchangeable end-effectors — a three-pad vacuum gripper on Hitec HLS12 linear servos for LVT and VCT (staggered pad touchdown to expel air) and a hook-and-loop pad for 305 × 305 mm carpet tile. The tool-change interface uses a rabbeted lip for self-location and latches placed by moment balance of the cantilevered end-effector to limit flex against the ±1mm placement spec, swapping 8 screws for 2 quick-release latches. The PETG side panel was split into two four-screw panels to fit the printer's build volume and speed service, joined by a gasketed rabbet seam to damp vibration.",
     outcome:
-      'Tyler shipped: the robot installed flooring at 100 sq ft/hr in a live deployment at Plaza Las Américas, Puerto Rico, holding tolerance across real, imperfect subfloor conditions.',
+      'Tyler shipped: the robot installed flooring at 100 sq ft/hr in a live deployment at Plaza Las Américas, Puerto Rico, holding tolerance across real, imperfect subfloor conditions — and the split-panel design let the team make an on-site wire repair during deployment.',
     lessons: [
       'Tolerance stacks compound fast across a chassis-to-end-effector interface — treating ±1mm as a system-level constraint, not a single-part spec, is what actually held it in the field.',
       'A mechanism that works on a bench and one that survives a real jobsite are different designs; field serviceability had to be a first-class requirement from the start, not an afterthought.',
@@ -90,7 +91,7 @@ export const projects: Project[] = [
     title: 'Baja Chassis FEA',
     description:
       'Conducted rigorous finite element analysis through iterative cycles on a Baja SAE roll cage for maximal structural efficiency.',
-    techStack: ['SolidWorks', 'FEA Simulation', 'Vehicle Dynamics'],
+    techStack: ['SolidWorks', 'FEA Simulation', 'TIG Welding', 'Laser Cutting'],
     banner: {
       name: 'Baja SAE at NJIT (Highlander Racing)',
       location: 'New Jersey Institute of Technology',
@@ -102,7 +103,7 @@ export const projects: Project[] = [
     approach:
       'Processed CAD assemblies through 12+ iterative mechanical stress models mapping varied torsion, side-impact, and frontal-collision conditions, then mapped critical high-stress nodes against low-stress tubing lengths to target where material could actually come out.',
     outcome:
-      'Cut chassis weight 12% at a 1.5× factor of safety across 15g front, 10g side, and 8g rear impact cases, with tubing profile changes traced directly to the mapped stress data.',
+      'Cut chassis weight 12% at a 1.5× factor of safety across 15g front, 10g side, and 8g rear impact cases, with tubing profile changes traced directly to the mapped stress data. A follow-on static FEA of the 4130 frame and suspension tabs saved a further 3.6 lb (4.35%) and converged tab designs toward a 1.2 factor of safety, correlated with load-rig testing. The fabricated 2026 car completed a 4-hour mock endurance race with no critical failures for the first time in 5 years.',
     beforeAfter: {
       before: '/projects/stress-analysis/chassis-frame-before.png',
       after: '/projects/stress-analysis/chassis-frame-after.png',
@@ -152,6 +153,20 @@ export const projects: Project[] = [
     ],
   },
   {
+    id: 'companion-robot',
+    title: 'Wearable Companion Robot',
+    navLabel: 'Companion Robot - Animatronics',
+    description:
+      'A 7-DOF animatronic head and neck for a shoulder-worn companion robot: a 2-axis neck and a 2-axis camera-eye gimbal with synchronized eyelids, sized with hand calculations for body-worn loading. Currently a prototype.',
+    techStack: ['SolidWorks', 'MG996R Servos', 'Four-Bar Linkage', 'Hand Calculations'],
+    scope:
+      'Design the animatronic head and neck for a robot worn on the shoulder — expressive enough to read as alive, yet light and gentle enough to be carried against the body, where mass, torque, and bearing loads all have to stay small.',
+    approach:
+      'Modeled a 7-DOF head and neck in SolidWorks: a 2-axis neck with a preloaded tapered-roller pan bearing, a direct-drive MG996R servo, and a four-bar tilt linkage, plus a 2-axis camera-eye gimbal with synchronized eyelids. Sized it with hand calculations — a 350 g head-mass budget, a 2:1 four-bar that holds tilt torque to 20% of servo stall (under a 1/3 design limit), and 1 N per roller on the pan bearing.',
+    outcome:
+      'A prototype-stage mechanism whose neck loads are sized with margin against the servos before anything is printed.',
+  },
+  {
     id: 'shpe-app',
     title: 'SHPE Mobile App',
     description:
@@ -173,7 +188,7 @@ export const projects: Project[] = [
     approach:
       'Built a cross-platform Expo / React Native app (TypeScript, Expo Router) on a Supabase backend — PostgreSQL with row-level security and Deno edge functions for admin actions, QR check-in tokens, and account deletion. Layered in a moderated social feed (blocking + reporting), a seasonal points leaderboard, committee pages, role-based admin dashboards, push notifications, Sign in with Apple, and multi-step onboarding for students, alumni, and guests. A Cloudflare Worker serves branded event-share links off events.shpenjit.org.',
     outcome:
-      "Live as SHPE NJIT on the App Store (5.0★, Education) and Google Play — the chapter's daily hub for events, check-in, and recognition, and the first student-built app in NJIT history.",
+      "Live as SHPE NJIT on the App Store (5.0★, Education) and Google Play — SHPE's highest-rated app nationally, built by a 3-person team in 27 days and used by 250 members in its first month. The chapter's daily hub for events, check-in, and recognition, and the first student-built app in NJIT history.",
     images: [
       '/projects/shpe-app/app-store-home-feed.jpg',
       '/projects/shpe-app/app-store-events-calendar.jpg',
