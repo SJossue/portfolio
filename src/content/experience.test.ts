@@ -40,4 +40,9 @@ describe('experience data', () => {
       if (e.logo) expect(e.logo).toMatch(/^\/experience\/.+\.(png|svg|jpe?g|webp)$/);
     }
   });
+
+  it('lists the resident assistant role under leadership', () => {
+    const ra = experienceData.find((e) => e.id === 'reslife-ra');
+    expect(ra?.section).toBe('leadership');
+  });
 });

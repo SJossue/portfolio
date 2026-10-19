@@ -35,7 +35,7 @@ export const experienceData: ExperienceEntry[] = [
     period: 'Jun 2026 — Aug 2026',
     section: 'experience',
     description:
-      'Authored the civil and layout design review (IFR pageturn) for a 138kV ring-bus substation expansion, validating structural steel alignment, foundation elevations, and disconnect-switch coordination against geotechnical and survey data. Audited legacy foundation drawings and ran field walkdowns across a $60M+, 5-project substation portfolio, matching CAD drawings to as-built conditions to preemptively resolve structural discrepancies.',
+      'Authored the civil and layout design review (IFR pageturn) for a 138kV ring-bus substation expansion, validating structural steel alignment, H-frame foundation elevations, and disconnect-switch coordination against geotechnical and survey data. Audited legacy foundation drawings and ran field walkdowns across a $60M+, 5-project substation portfolio, matching CAD drawings to as-built conditions and introducing verification test pits after identifying legacy foundations 5 ft below grade.',
     techStack: [
       'Electrical T&D',
       'Substation Design Review',
@@ -46,13 +46,13 @@ export const experienceData: ExperienceEntry[] = [
   },
   {
     id: 'hfr',
-    role: 'Mechanical Design Intern',
+    role: 'Mechanical Design Engineer Intern',
     company: 'Human Friendly Robotics',
     period: 'Mar 2026 — Jun 2026',
     section: 'experience',
     description:
-      "Owned mechanical design for Tyler, a 50 lb autonomous floor-tiling robot, from CAD through fabrication support. Engineered a custom suction end-effector and servo-actuated tilt mechanism for placing tile, LVT, and VCT flooring, then ran clearance and tolerance analysis across the chassis-to-end-effector interface to hold Tyler's ±1mm placement precision. That precision shipped: the robot installed flooring at 100 sq ft/hr in a live deployment at Plaza Las Américas, Puerto Rico.",
-    techStack: ['SolidWorks', 'GD&T', 'Tolerance Analysis', 'Servo Mechanisms'],
+      'Designed the 912 × 728 × 145 mm chassis base in Autodesk Fusion for Tyler, a 50 lb autonomous floor-tiling robot, sizing it for standard doorways, center of mass, and wheel clearance. Engineered interchangeable end-effectors (a three-pad vacuum gripper on Hitec HLS12 linear servos for LVT and VCT, and a hook-and-loop pad for 305 × 305 mm carpet tile) with a quick-release tool-change interface balanced by moments to hold a ±1mm placement spec, replacing 8 screws with 2 latches. Split the PETG side panel to fit the build volume and speed service. Tyler is deployed at Plaza Las Américas, Puerto Rico, installing flooring at 100 sq ft/hr, and the panel design allowed an on-site wire repair during deployment.',
+    techStack: ['Autodesk Fusion', 'SolidWorks', 'GD&T', 'Tolerance Analysis', 'Servo Mechanisms'],
     logo: '/experience/hfr.png',
   },
   {
@@ -62,18 +62,18 @@ export const experienceData: ExperienceEntry[] = [
     period: 'Sep 2025 — May 2026',
     section: 'experience',
     description:
-      'Performed finite element analysis (FEA) across 12+ design iterations evaluating roll-cage performance under 15g front, 10g side, and 8g rear impacts — achieving a 12% weight reduction at a 1.5× factor of safety. Fabricated suspension and chassis components via MIG/TIG welding, collaborating with drivetrain and suspension teams to ensure vehicle-level structural integrity.',
-    techStack: ['SolidWorks', 'FEA Simulation', 'MIG/TIG Welding', 'Vehicle Dynamics'],
+      'Performed finite element analysis (FEA) across 12+ design iterations evaluating roll-cage performance under 15g front, 10g side, and 8g rear impacts — achieving a 12% weight reduction at a 1.5× factor of safety. Separately ran static FEA on the 4130 steel frame and suspension tabs, cutting 3.6 lb (4.35%) and converging tab designs toward a 1.2 factor of safety, correlated with load-rig testing. Laser-cut tubing on a fiber laser and TIG-welded suspension and mounting tabs onto the 2026 car, which completed a 4-hour mock endurance race with no critical failures for the first time in 5 years.',
+    techStack: ['SolidWorks', 'FEA Simulation', 'TIG Welding', 'Laser Cutting'],
     logo: '/experience/baja.png',
   },
   {
     id: 'pseg-public-affairs',
-    role: 'Regional Public Affairs Intern',
+    role: 'Business Intern',
     company: 'PSEG (Public Service Enterprise Group)',
-    period: 'Jun 2025 — Aug 2025',
+    period: 'May 2025 — Aug 2025',
     section: 'experience',
     description:
-      'Built a stakeholder-tracking dashboard logging municipal outreach, community feedback, and public-affairs activity across the Northern Region — improving visibility and coordination for engineering and regional teams. Created communications materials and conducted research on key policy issues.',
+      'On the Regional Public Affairs team, built and deployed a stakeholder-tracking dashboard consolidating municipal outreach across 185 municipalities — adopted by Public Affairs to coordinate infrastructure permitting for a utility serving 2.4M electric and 1.9M gas customers. Created communications materials and conducted research on key policy issues.',
     techStack: ['Community Outreach', 'Research', 'Communication'],
     logo: '/experience/pseg.png',
   },
@@ -97,8 +97,8 @@ export const experienceData: ExperienceEntry[] = [
     period: 'May 2026 — Present',
     section: 'leadership',
     description:
-      "Lead internal chapter operations for NJIT's largest engineering organization — coordinating the executive board, internal communications, and member engagement while mentoring members across the chapter's engineering team.",
-    techStack: ['Leadership', 'Chapter Operations', 'Mentorship'],
+      "Lead internal chapter operations for NJIT's largest engineering organization — coordinating the executive board, internal communications, and member engagement while mentoring members across the chapter's engineering team. Secured $40,000+ in operating funding through a targeted outreach campaign, building partnerships with Deans, Department Chairs, and Executive Cabinets to support 410+ active students and alumni.",
+    techStack: ['Leadership', 'Fundraising', 'Chapter Operations', 'Mentorship'],
     logo: '/experience/shpe.png',
   },
   {
@@ -108,9 +108,19 @@ export const experienceData: ExperienceEntry[] = [
     period: 'Sep 2025 — May 2026',
     section: 'leadership',
     description:
-      "Managed the chapter's digital infrastructure and led a 5-member engineering team — establishing version control, pull requests, and CI/CD workflows while mentoring members in modern software development. Shipped the chapter's mobile app in 27 days, now live on the Apple App Store and Google Play.",
+      "Managed the chapter's digital infrastructure and led a 5-member engineering team — establishing version control, pull requests, and CI/CD workflows while mentoring members in modern software development. Shipped the chapter's mobile app in 27 days — SHPE's highest-rated app nationally, reaching 250 members in its first month and now live on the Apple App Store and Google Play.",
     techStack: ['React Native', 'Supabase', 'Next.js', 'Tailwind CSS'],
     logo: '/experience/shpe.png',
+  },
+  {
+    id: 'reslife-ra',
+    role: 'Resident Assistant',
+    company: 'NJIT Residence Life (Cypress Hall)',
+    period: 'Aug 2026 — Present',
+    section: 'leadership',
+    description:
+      'Support a residence-hall community as a live-in student staff member — building resident relationships, running overnight on-call duty with rounds, responding to and escalating incidents through established protocols, and documenting each one.',
+    techStack: ['Community Building', 'Crisis Response', 'Documentation'],
   },
   {
     id: 'firstgenu',
